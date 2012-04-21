@@ -1,0 +1,186 @@
+body{
+    background-color:#F0F0F0;
+}
+
+h1,h3{
+    background-color:#CCCCCC;
+}
+
+div.table{
+    width:910px;
+    height:250px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+div.menucell{
+    float:left;
+    margin:5px;
+    overflow: hidden;
+}
+
+div.thead{
+    text-align:center;
+    background-color:#CCEEFF;
+    height: 50px;
+}
+
+div#head_map,div#head_cont{
+    width: 160px;
+    line-height: 50px;
+}
+
+div#head_graph{
+    width: 540px;
+    line-height: 25px;
+}
+
+div#head_graph ul{
+    margin:0px;
+    padding:0px;
+}
+
+div#head_graph ul li{
+    float:left;
+    background-color:#99CCFF;
+    display:block;
+    border:solid 1px;
+    border-color:#3399FF;
+    color:#000000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-decoration:none;
+    width: 80px;
+    height: 25px;
+    line-height: 25px;
+    text-align:center;
+    margin:0px;
+    padding:0px;
+}
+
+div#head_graph ul li.hover{
+    background-color:#FFFFFF;
+}
+
+div#head_graph ul li.active{
+    background-color:#FFFFFF;
+}
+
+div.title{
+    background-color:#CCFFCC;
+    text-align:center;
+    font-weight:bold;
+}
+
+div.item{
+    width:170px;
+    margin:5px;
+    background-color:#FFFFCC;
+    float:left;
+}
+
+.formtext,.formmap{
+    margin:0px;
+    max-width:140px;
+}
+
+.formtext,.formlst{
+    margin:0px;
+    max-width:120px;
+    white-space: nowrap;
+}
+
+div#menu_2,div#menu_3{
+    display:none;
+}
+
+div.type, div.name{
+    margin-top:5px;
+    margin-left:3px;
+    min-width:40px;
+    clear:both;
+    float:left;
+}
+
+div.form{
+    margin-right:3px;
+    margin-top:5px;
+    float:left;
+}
+
+div.layer_area{
+    margin-top:5px;
+    float:left;
+}
+
+div.submitbtn{
+    padding:5px;
+    clear:both;
+    text-align:center;
+}
+
+div.reset{
+    clear:both;
+}
+
+div.map_selector{
+    text-align:left;
+    margin-top:5px;
+}
+
+#lst_layer{
+    width:90px;
+    white-space: nowrap;
+}
+
+#lst_object{
+    width:100px;
+    white-space: nowrap;
+}
+
+#map_area,#layer_area{
+    margin-top:5px;
+    margin-left:5px;
+    margin-right:5px;
+    margin-bottom:5px;
+
+}
+
+#obj_area{
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+}
+#obj_cont{
+    text-align:center;
+    float:left;
+    margin-right:5px;
+    margin-top:5px;
+}
+
+#BBCompass{
+    border:1px solid black;
+}
+
+#CanvasArea{
+    text-align:center;
+    padding:10px;
+}
+
+#WorkArea{
+   display:none;
+}
+
+#Changes{
+   width:420px;
+   float:right;
+}
+
+#Thanks{
+   width:580px;
+   float:left;
+}
+
+#address{
+    text-align:right;
+}

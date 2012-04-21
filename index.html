@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="keywords" content="borderbreak,ボーダーブレイク,コンパス">
+<meta name="description" content="セガのゲーム「ボーダーブレイク」用のコンパスツールもどき">
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<title>BBコンパスもどき</title>
+<link rel=stylesheet type="text/css" href="./include/bb_compass.css">
+<script type="text/javascript" src="./include/uuid/uuid.js"></script>
+<script type="text/javascript" src="./include/jquery/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.15i.min.js"></script>
+<script type="text/javascript" src="./include/bb_object.min.js"></script>
+<script type="text/javascript" src="./include/bb_webfunc.js"></script>
+</head>
+<body onload="initialize()">
+<header>
+<h1>BBコンパスもどき</h1>
+</header>
+
+<div class="table">
+  <div class="menucell">
+    <div class="thead" id="head_map">マップ</div>
+    <div id="map_area">
+        <form name="map" action="javascript:chg_map();">
+        <div class="map_selector"><select id="stage" class="formmap">
+            <!--絞り込みに利用するので、valueと子供のclassを一致させてください
+                また、data-scale属性として [1メートルあたりのピクセル数]を記載します。
+                (Javascriptで解釈するので、数式を書いてもOKです)
+                オマケ機能として[pixel/メートル, 倍率]と書いておくと、
+                画像を指定倍率で縮小し、距離の縮尺も倍率にあわせて補正します -->
+            <option value="map"     data-scale="[160/100*0.7]" selected>スカービ渓谷</option>
+            <option value="blouer"  data-scale="[53/45*0.7]">旧ブロア市街地</option>
+            <option value="island"  data-scale="[54/39*0.7]">第三採掘島</option>
+            <option value="tlaza"   data-scale="[160/100*0.7]">トラザ山岳基地</option>
+            <option value="darya"   data-scale="[107/63*0.7]">ダリーヤ遺跡</option>
+            <option value="d51"     data-scale="[154/100*0.7]">放棄区画D51</option>
+            <option value="wuhai"   data-scale="[154/114*0.7]">ウーハイ産業港</option>
+            <option value="valerio" data-scale="[103/94*0.7]">城塞都市バレリオ</option>
+            <option value="belsk"   data-scale="[154/100*0.7]">極洋基地ベルスク</option>
+            <option value="adora"   data-scale="[163/146*0.7]">アドラ火山連峰</option>
+            <option value="algren"  data-scale="[1.138*0.7]">オルグレン湖水基地</option>
+        </select></div>
+        <div class="map_selector"><select id="map">
+            <!-- 絞り込み用にマップのvalueをclass属性として指定する -->
+            <option class="map" value="map_a" data-layer="[]">戦線突破</option>
+            <option class="map" value="map_b" data-layer="[]">砂上の激突</option>
+            <option class="blouer" value="blouer_a" data-layer="[]">熱戦の河畔</option>
+            <option class="blouer" value="blouer_b" data-layer="[]">激戦の丘</option>
+            <option class="blouer" value="blouer_c" data-layer="[]">街路制圧戦</option>
+            <option class="blouer" value="blouer_d" data-layer="[]">制空血戦</option>
+            <option class="island" value="island_a" data-layer="[]">臨界決戦</option>
+            <option class="island" value="island_b" data-layer="[]">夕暮れの戦火</option>
+            <option class="island" value="island_c" data-layer="[]">塔上の攻防</option>
+            <option class="island" value="island_d" data-layer="[]">前線猛爆</option>
+            <option class="island" value="island_ea" data-layer="[]">激闘の孤島</option>
+            <option class="tlaza" value="tlaza_a" data-layer="['通路表示あり']">砂塵の死線</option>
+            <option class="tlaza" value="tlaza_b" data-layer="['通路表示あり']">夜間渡河</option>
+            <option class="tlaza" value="tlaza_c" data-layer="['通路表示あり']">地下進撃</option>
+            <option class="tlaza" value="tlaza_d" data-layer="['通路表示あり']">月下の砲煙</option>
+            <option class="tlaza" value="tlaza_e" data-layer="['通路表示あり']">暗中行軍</option>
+            <option class="darya" value="darya_a" data-layer="['中段','下段','全表示']">廃都行軍</option>
+            <option class="darya" value="darya_b" data-layer="['中段','下段','全表示']">川底の弾雨</option>
+            <option class="darya" value="darya_c" data-layer="['中段','下段','全表示']">交錯の火線</option>
+            <option class="darya" value="darya_d" data-layer="['中段','下段','全表示']">乾季烈戦</option>
+            <option class="darya" value="darya_e" data-layer="['中段','下段','全表示']">橋上の戦線</option>
+            <option class="d51" value="d51_a" data-layer="['中段','下段','全表示']">冷厳なる轟声</option>
+            <option class="d51" value="d51_b" data-layer="['中段','下段','全表示']">白銀死都</option>
+            <option class="d51" value="d51_c" data-layer="['中段','下段','全表示']">雪中遭遇戦</option>
+            <option class="d51" value="d51_d" data-layer="['中段','下段','全表示']">氷点下の鳴動</option>
+            <option class="wuhai" value="wuhai_a" data-layer="['上段','下段','全表示']">要衝襲撃</option>
+            <option class="wuhai" value="wuhai_b" data-layer="['上段','下段','全表示']">暁の威容</option>
+            <option class="wuhai" value="wuhai_c" data-layer="['上段','下段','全表示']">落日銃火</option>
+            <option class="wuhai" value="wuhai_d" data-layer="['上段','下段','全表示']">艦上の交錯線</option>
+            <option class="wuhai" value="wuhai_e" data-layer="['上段','下段','全表示']">残照の閃光</option>
+            <option class="wuhai" value="wuhai_ea" data-layer="['上段','下段','全表示']">激闘の港湾</option>
+            <option class="valerio" value="valerio_a" data-layer="['建築物内部']">強行水路</option>
+            <option class="valerio" value="valerio_b" data-layer="['建築物内部']">巨影侵撃</option>
+            <option class="valerio" value="valerio_c" data-layer="['建築物内部']">血戦の城壁</option>
+            <option class="valerio" value="valerio_d" data-layer="['建築物内部']">高地の硝煙</option>
+            <option class="valerio" value="valerio_ea" data-layer="['建築物内部']">激闘の城下</option>
+            <option class="belsk" value="belsk_a" data-layer="['通路A','通路B','通路C','全表示']">凍て付く戦陣</option>
+            <option class="belsk" value="belsk_b" data-layer="['通路A','通路B','通路C','全表示']">純白の先途</option>
+            <option class="belsk" value="belsk_c" data-layer="['通路A','通路B','通路C','全表示']">氷晶烈戦</option>
+            <option class="belsk" value="belsk_d" data-layer="['通路A','通路B','通路C','全表示']">狭路急襲</option>
+            <option class="belsk" value="belsk_ea" data-layer="['通路A','通路B','通路C','全表示']">激闘の氷海</option>
+            <option class="adora" value="adora_a" data-layer="['上段','下段','全表示']">紅蓮の大河</option>
+            <option class="adora" value="adora_b" data-layer="['上段','下段','全表示']">爆炎戦域</option>
+            <option class="adora" value="adora_c" data-layer="['上段','下段','全表示']">煉獄洞窟</option>
+            <option class="adora" value="adora_d" data-layer="['上段','下段','全表示']">焦熱の死地</option>
+            <option class="adora" value="adora_ea" data-layer="['上段','下段','全表示']">激闘の溶岩域</option>
+            <option class="algren" value="algren_a" data-layer="['中段','下段','全表示']">巨抗侵入</option>
+            <option class="algren" value="algren_b" data-layer="['通路表示あり']">瀑布の死闘</option>
+        </select></div>
+        <div class="submitbtn"><button id="change_map">選択</button></div>
+        </form>
+    </div>
+    <div class="name">階層：</div>
+    <div class="layer_area">
+        <select id="lst_layer" size="4">
+        </select>
+    </div>
+    <div class="reset"></div>
+  </div>
+  <div class="menucell">
+    <div class="thead" id="head_graph">画像
+        <ul>
+            <li id="menu01" data-target="menu_1" class="graphtab active">偵察</a></li>
+            <li id="menu02" data-target="menu_2" class="graphtab">砲撃</a></li>
+            <li id="menu03" data-target="menu_3" class="graphtab">その他</a></li>
+        </ul>
+    </div>
+    <div class="reset"></div>
+    <div id="menu_1" class="graphmenu">
+        <div class=item><form name="scout" action="javascript:set_scout();"> <!--偵察機-->
+            <div class="title">偵察機</div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_scout" size="6" class="formlst">
+                <!--valueは [偵察範囲,進む距離,進む時間] -->
+                <option label="ラーク偵察機" value="[80,200,5.5]">ラーク</option>
+                <option label="ファルコン偵察機" value="[50,500,8]">ファルコン</option>
+                <option label="アウル偵察機" value="[120,200,11]">アウル</option>
+                <option label="ロビン偵察機" value="[250,20,0.6]">ロビン</option>
+                </select>
+            </div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_scout" type="text" size="15" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_scout">設置</button></div>
+        </form></div>
+
+        <div class=item><form name="sensor" action="javascript:set_sensor();"> <!--センサー-->
+            <div class="title">センサー</div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_sensor" size="6" class="formlst">
+                    <!--valueは 索敵半径を指定 -->
+                    <option label="索敵センサー" value="60">初期センサー</option>
+                    <option label="小型索敵センサー" value="45">小型センサー</option>
+                    <option label="広域索敵センサー" value="90">広域センサー</option>
+                    <option label="軽量索敵センサー" value="55">軽量センサー</option>
+                </select>
+            </div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_sensor" type="text" size="15" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_sensor">設置</button></div>
+        </form></div>
+
+        <div class=item><form name="sensor" action="javascript:set_radar();"> <!--レーダー-->
+            <div class="title">レーダー</div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_radar" size="6" class="formlst">
+                    <!--valueは 索敵半径を指定 -->
+                    <option label="レーダー" value="[180,60]">レーダー</option>
+                    <option label="レーダーII" value="[140,120]">レーダーII</option>
+                </select>
+            </div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_radar" type="text" size="15" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_radar">設置</button></div>
+        </form></div>
+        <div class="reset"></div>
+    </div>
+    <div id="menu_2" class="graphmenu">
+        <div class=item><form name="howitzer" action="javascript:set_howitzer()"><!--榴弾-->
+            <div class="title">榴弾</div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_howitzer" size="6" class="formlst">
+                    <!--valueは [射程,爆発半径,着弾誤差半径] -->
+                    <option label="タイタン榴弾砲" value="[300,25,15]">タイタン</option>
+                    <option label="コロッサス榴弾砲" value="[250,24,25]">コロッサス</option>
+                    <option label="アトラント榴弾砲" value="[500,25,20]">アトラント</option>
+                    <option label="ギガノト榴弾砲" value="[350,40,0]">ギガノト</option>
+                    <option label="エアバスターT10" value="[350,28,15]">T10</option>
+                    <option label="エアバスターT25" value="[260,45,0]">T25</option>
+                    <option label="エアバスターXHR" value="[300,30,30]">XHR</option>
+                    <option label="エアバスターT30" value="[450,38,10]">T30</option>
+                </select>
+            </div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_howitzer" type="text" size="15" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_howitzer">設置</button></div>
+        </form></div>
+        <div class="reset"></div>
+    </div>
+    <div id="menu_3" class="graphmenu">
+        <div class=item><form name="circle" action="javascript:set_circle();"> <!--円-->
+            <div class="title">円</div>
+            <div class="type">半径：</div>
+            <div class="form"><input id="rad_circle" type="text" size="5" value="100" form="circle" class="formtext">m</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_circle" type="text" size="15" value="円" form="circle" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_circle">設置</button></div>
+        </form></div>
+        <div class=item><form name="line" action="javascript:set_line();"> <!--直線-->
+            <div class="title">直線</div>
+            <div class="type">長さ：</div>
+            <div class="form"><input id="len_line" type="text" size="5" value="100" class="formtext">m</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_line" type="text" size="15" value="ライン" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_line">設置</button></div>
+        </form></div>
+        <div class=item><form name="freehand" action="javascript:set_freehand();"> <!--フリーハンド-->
+            <div class="title">フリーハンド</div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_freehand" type="text" size="10" value="#FFFFFF" class="formtext"></div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_freehand" type="text" size="15" value="フリーハンド" class="formtext"></div>
+            <div class="submitbtn"><button id="submit_freehand">開始</button>
+                                   <button id="stop_freehand" type="button" disabled>終了</button></div>
+        </form></div>
+        <div class="reset"></div>
+    </div>
+  </div>
+  <div class="menucell">
+    <div class="thead" id="head_cont">制御</div>
+    <div id="cont_area">
+        <div id="obj_area">
+            <select id="lst_object" size="7" multiple>
+            </select>
+        </div>
+        <div id="obj_cont">
+            <button type="button" id="up_object" onclick="up_object()">↑</button><br>
+            <button type="button" id="del_object" onclick="del_object()">削除</button><br>
+            <button type="button" id="down_object" onclick="down_object()">↓</button><br>
+        </div>
+        <div class="reset"></div>
+    </div>
+    <div id="save_area">
+        <form name="save" action="javascript:save()">
+        <div class="submitbtn">
+            <button id="save_img">画像を保存</button>
+        </div></form>
+    </div>
+  </div>
+</div>
+<div id="CanvasArea">
+   <canvas width="800" height="700" id="BBCompass"></canvas><br>
+   (c)SEGA
+</div>
+<div id="WorkArea">
+</div>
+<div id="Changes">
+<h3>更新履歴</h3>
+<textarea id="changelog" rows="5" cols="50"></textarea>
+</div>
+<div id="Thanks">
+<h3>注意事項など</h3>
+<ol>
+<li>本ページのアドレス公開やリンクには特に制限はありません。
+<li>勉強を兼ねてやっつけで作ったものであり、<strong>無保証、無サポート</strong>です。
+<li>Javascriptが動作するHTML5互換環境であれば、<strong>多分</strong>動きます。<br>
+IE9，Firefox11，Chromeは大ざっぱながら動作確認をしています。<br>
+IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いください。
+<li>バグ報告やご要望は<a href="http://bbcompass.blog.fc2.com/">開発室</a>へ。ただし、<strong>対応される保障はありません</strong>。
+<li>新マップが出たときは何pixelで何メートルなのか教えてもらえると喜びます。
+<li>ダウンロード版はBBアップローダに公開します。開発室経由でお持ちください。
+</ol>
+
+<h3>謝辞</h3>
+<p>まず最初に、作者はRangeCheckerやAir Burst Compassにとてもお世話になり、<br>
+また本ツールを作る上での参考にさせて頂きました。<br>
+ツールを作成された方にこの場を借りて御礼申し上げます</p>
+<p>本ツールの地図データはセガが公開しているデータを利用しています。<br>
+自由度の高い規約で地図データを公開してくださってありがとうございます。</p>
+<p>本ツールの作成には、以下の各ライブラリを利用しております。<br>
+ライブラリを開発された方々に御礼申し上げます。</p>
+<ul>
+<li><a href="http://jcscript.com/" target="_blank">jCanvaScript</a>
+<li><a href="http://jquery.com/" target="_blank">jQuery</a>
+<li><a href="https://github.com/LiosK/UUID.js" target="_blank">UUID.js</a>
+</ul>
+</div>
+<div class="reset"></div>
+<div id="address">
+<address>製作者：<a href="http://bbcompass.blog.fc2.com/">暇人@BB</a></address>
+</div>
+</body>
+</html>

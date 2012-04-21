@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript">
+window.onload=function (){
+　　if(!window.opener || window.opener.closed){
+　　　　//親ウィンドウが存在しない
+　　　　window.close();
+　　} else{
+　　　　//window.openerで親ウィンドウから画像を奪う
+　　　　var parent_div=window.opener.document.getElementById('WorkArea');
+　　　　var parent_img=window.opener.document.getElementById('DownloadImg');
+　　　　var imagearea=document.getElementById('ImageArea');
+        var img = document.createElement("img");
+        img.src = parent_img.src;
+        imagearea.appendChild(img);
+        parent_div.removeChild(parent_img);
+　　}
+};
+</script>
+</head>
+<body>
+<header>
+<h2>画像保管用ページ</h2>
+</header>
+<p>下に画像がでますので、右クリックで保管してください。</p>
+<div id="ImageArea">
+</div>
+</body>
+</html>
