@@ -697,9 +697,10 @@ var BB = function (canvasID){
     this.BB_freehand = function ( _color) {
         if (_color===undefined) {_color='rgb(255, 255, 255)';}
         this.id=UUID.genV1().toString();
-        this.type  = "freehand";
-        this._color = _color;
-        this._step  = 0;
+        this.type    = "freehand";
+        this._color  = _color;
+        this._step   = 0;
+        this._hooker = undefined;
 
         //layerを確保するためのダミー画像を設置するのみ
         jcanvas.rect(0, 0, 1, 1, 'rgba(0, 0, 0, 0)').layer(this.id);
@@ -725,28 +726,31 @@ var BB = function (canvasID){
             layer  = jcanvas.layer(this.id),
             canvas = jc.canvas(bbobj.id);
 
+        if (this._hooker !== undefined) return;
+
         // マウスイベントフック用の四角形を最前面に展開
+        this._hooker=UUID.genV1().toString();
         var hooker = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
-                            .layer("hooker_" + this.id).level('top');
+                            .layer(this._hooker).level('top');
 
         hooker.click(function () {return false;});
         hooker.dblclick(function () {return false;});
         hooker.mousemove(function () {return false;});
         hooker.mousedown(function (ptstart) {
-                              obj._step++;
-                              var line = jcanvas.line([[ptstart.x,ptstart.y],[ptstart.x,ptstart.y]],obj._color)
-                                                .layer(obj.id).id(obj._step).lineStyle({lineWidth:3});
-                              hooker.mousemove(function (point) {
-                                                   line.addPoint(point.x,point.y);
-                                                   return false;
-                                            });
-                              return false;
-                        });
+                             obj._step++;
+                             var line = jcanvas.line([[ptstart.x,ptstart.y],[ptstart.x,ptstart.y]],obj._color)
+                                               .layer(obj.id).id(obj._step).lineStyle({lineWidth:3});
+                             hooker.mousemove(function (point) {
+                                                       line.addPoint(point.x,point.y);
+                                                       return false;
+                                                   });
+                             return false;
+                         });
 
         hooker.mouseup(function () {
-                          hooker.mousemove(function () {});
-                          return false;
-                      });
+                           hooker.mousemove(function () {});
+                           return false;
+                       });
 
         return this;
     };
@@ -761,7 +765,8 @@ var BB = function (canvasID){
 
     this.BB_freehand.prototype.end = function() {
         // イベントフック用の四角形を消す
-        jcanvas.layer("hooker_" + this.id).del();
+        (jc.layer(this._hooker)).del();
+        this._hooker = undefined;
         return this;
     };
 };
@@ -820,12 +825,16 @@ BB.prototype.touchToMouse = function(canvas) {
     function pointInObj(touch) {
         var cnvrect = jc.canvas(bbobj.id).cnv.getBoundingClientRect();
         var x = touch.clientX-cnvrect.left,
-            y = touch.clientY-cnvrect.top ;
+            y = touch.clientY-cnvrect.top,
+            result = false;
 
         for (var objid in (bbobj.member)) {
-            //freehandオブジェクトは範囲が未確定なのでチェック対象外
-            if ((bbobj.object(objid)).type == "freehand") continue;
-            var result = jc.layer(objid).isPointIn(x,y);
+            if ((bbobj.object(objid)).type != "freehand") {
+                result = jc.layer(objid).isPointIn(x,y);
+            } else {
+                //freehandオブジェクトは書き込み中であればオブジェクトありとみなす
+                result = ((bbobj.object(objid))._hooker !== undefined);
+            }
             if (result) {break;}
         }
         return result;
