@@ -568,25 +568,32 @@ var BB = function (canvasID){
                    .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
 
         //移動処理(draggableでは回転できないため、独自定義)
-        area.mousedown(function(point){
-                           var pos_base = area.position(),
-                               px_rad   = bbobj.meter_to_pixel(obj._radius),
-                               radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2)),
-                               startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
-                               baserad  = (jcanvas.layer(obj.id)._transform21 < 0)?Math.acos(jcanvas.layer(obj.id)._transform11)
-                                                                                  :(-1) * Math.acos(jcanvas.layer(obj.id)._transform11);
-                           area.mousemove(function (pos) {
-                                              var pos_area = area.position(),
-                                                  nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
-                                                  rad      = baserad+(nowrad - startrad);
-                                              jcanvas.layer(obj.id).rotateTo((rad*180/Math.PI), 0, 0);
-                                              obj.moveTo(pos.x-radius*Math.cos(nowrad), pos.y-radius*Math.sin(nowrad));
-                                          });
-                       });
+        var baserad, startrad, radius;
+        var mmEvent = function (pos) {
+                          var pos_area = area.position(),
+                              nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                              rad      = baserad+(nowrad - startrad);
+                           jcanvas.layer(obj.id).rotateTo((rad*180/Math.PI), 0, 0);
+                           obj.moveTo(pos.x-radius*Math.cos(nowrad), pos.y-radius*Math.sin(nowrad));};
 
-        area.mouseup(function (point) {
+        var mdEvent = function(point){
+                          var pos_base = area.position(),
+                              px_rad   = bbobj.meter_to_pixel(obj._radius);
+                          radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2));
+                          startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x));
+                          baserad  = (jcanvas.layer(obj.id)._transform21 < 0)?Math.acos(jcanvas.layer(obj.id)._transform11)
+                                                                             :(-1) * Math.acos(jcanvas.layer(obj.id)._transform11);
+                          area.mousemove(mmEvent);
+                          text.mousemove(mmEvent);};
+
+        var muEvent = function(){
                            area.mousemove(function () {});
-                       });
+                           text.mousemove(function () {});};
+
+        area.mousedown(mdEvent);
+        text.mousedown(mdEvent);
+        area.mouseup(muEvent);
+        text.mouseup(muEvent);
 
         return this;
     };
