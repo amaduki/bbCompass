@@ -138,6 +138,7 @@ var BB = function (canvasID){
     this.id=canvasID;
     this.jcanvas=jc.start(canvasID,true);
     this.scale=1;
+    this.zoomScale=1;
     this.imgscale=1;
     var bbobj=this,
         jcanvas=this.jcanvas,
@@ -1053,4 +1054,21 @@ BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) 
 
 BB.prototype.add_freehand = function (color) {
     return new this.BB_freehand(color);
+};
+
+//
+//zoom
+//
+BB.prototype.zoom = function (scale, x, y) {
+    var jcanvas = jc.canvas(this.id),
+        layers  = jcanvas.layers;
+
+    for (var i = 0; i < layers.length; i ++) {
+        var posx = jcanvas.layers[i]._transformdx;
+        var posy = jcanvas.layers[i]._transformdy;
+        jcanvas.layers[i].translate(posx*scale-posx, posy*scale-posy);
+        layers[i].scale(scale);
+    }
+    this.zoomScale=this.zoomScale * Scale;
+    return 1;
 };
