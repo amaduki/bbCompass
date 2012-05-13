@@ -166,6 +166,15 @@ function set_freehand(){
 
 }
 
+//拡大
+function zoom_cnv(){
+    bbobj.zoom(2);
+}
+
+//縮小
+function unzoom_cnv(){
+    bbobj.zoom(0.5);
+}
 
 //lst_objectへの追加
 function add_object(id, name) {

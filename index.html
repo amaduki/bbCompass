@@ -108,7 +108,8 @@
         <ul>
             <li id="menu01" data-target="menu_1" class="graphtab active">偵察</a></li>
             <li id="menu02" data-target="menu_2" class="graphtab">砲撃</a></li>
-            <li id="menu03" data-target="menu_3" class="graphtab">その他</a></li>
+            <li id="menu03" data-target="menu_3" class="graphtab">図形</a></li>
+            <li id="menu04" data-target="menu_4" class="graphtab">表示</a></li>
         </ul>
     </div>
     <div class="reset"></div>
@@ -212,6 +213,16 @@
             <div class="submitbtn"><button id="submit_freehand">開始</button>
                                    <button id="stop_freehand" type="button" disabled>終了</button></div>
         </form></div>
+        <div class="reset"></div>
+    </div>
+    <div id="menu_4" class="graphmenu">
+        <div class=item><!--拡縮-->
+            <div class="title">拡大縮小</div>
+            <div class="submitbtn">
+                <button type="button" id="zoom" onclick="zoom_cnv()">拡大</button><br>
+                <button type="button" id="unzoom" onclick="unzoom_cnv()">縮小</button><br>
+            </div>
+        </div>
         <div class="reset"></div>
     </div>
   </div>
