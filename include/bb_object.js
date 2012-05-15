@@ -159,12 +159,17 @@ var BB = function (canvasID){
         //一応ダミーを定義
     };
 
-
     this.BB_base.prototype.redraw = function () {
         jcanvas.layer(this.id).objects().del();
         this.draw();
     };
 
+    this.BB_base.prototype.zoom = function (scale, _x, _y) {
+        var posx = jc.layer(this.id)._transformdx,
+            posy = jc.layer(this.id)._transformdy;
+        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+        this.redraw();
+    };
 
     this.BB_base.prototype.toString = function() {
         return this.id;
@@ -333,6 +338,13 @@ var BB = function (canvasID){
         return this;
     };
 
+    this.BB_circle.prototype.zoom = function (scale, _x, _y) {
+        this._ptpos.x = this._ptpos.x * scale;
+        this._ptpos.y = this._ptpos.y * scale;
+        bbobj.BB_base.prototype.zoom.apply(this, arguments);
+        return this;
+    };
+
   //
   //BB_lineオブジェクト
   //
@@ -427,6 +439,15 @@ var BB = function (canvasID){
                          jcanvas.layer(obj.id).optns.drag.val=true;
                          pt2.optns.drag.val=false;
                      });
+        return this;
+    };
+
+    this.BB_line.prototype.zoom = function (scale, _x, _y) {
+        this._pt1pos.x = this._pt1pos.x * scale;
+        this._pt1pos.y = this._pt1pos.y * scale;
+        this._pt2pos.x = this._pt2pos.x * scale;
+        this._pt2pos.y = this._pt2pos.y * scale;
+        bbobj.BB_base.prototype.zoom.apply(this, arguments);
         return this;
     };
 
@@ -699,6 +720,13 @@ var BB = function (canvasID){
         return this;
     };
 
+    this.BB_howitzer.prototype.zoom = function (scale, _x, _y) {
+        this._markerx = this._markerx * scale;
+        this._markery = this._markery * scale;
+        bbobj.BB_base.prototype.zoom.apply(this, arguments);
+        return this;
+    };
+
   //
   //BB_freehandオブジェクト
   //
@@ -734,6 +762,21 @@ var BB = function (canvasID){
             var points = jc("#" + i, {canvas:bbobj.id, layer:this.id}).points();
             jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
             jcanvas.line(points, this._stepcol[i])
+                   .layer(this.id).id(i).lineStyle({lineWidth:3});
+        }
+    }
+    this.BB_freehand.prototype.zoom = function (scale, _x, _y) {
+        var posx = jc.layer(this.id)._transformdx,
+            posy = jc.layer(this.id)._transformdy;
+        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+
+        for (i=1;i<=this._step;i++) {
+            var points = jc("#" + i, {canvas:bbobj.id, layer:this.id}).points();
+            for (j=0; j<points.length; j++) {
+                points[j] = [(points[j])[0]*scale, (points[j])[1]*scale];
+            }
+            jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
+            jcanvas.line(points, this._color)
                    .layer(this.id).id(i).lineStyle({lineWidth:3});
         }
     }
@@ -938,11 +981,11 @@ BB.prototype.touchToMouse = function(canvas) {
 //縮尺計算
 //
 BB.prototype.meter_to_pixel = function(meter) {
-    return(meter*this.scale);
+    return(meter*(this.scale*this.zoomScale));
 };
 
 BB.prototype.pixel_to_meter = function(pixel) {
-    return(pixel/this.scale);
+    return(pixel/(this.scale*this.zoomScale));
 };
 
 //
@@ -1069,16 +1112,26 @@ BB.prototype.add_freehand = function (color) {
 //
 //zoom
 //
-BB.prototype.zoom = function (scale, x, y) {
-    var jcanvas = jc.canvas(this.id),
-        layers  = jcanvas.layers;
+BB.prototype.zoom = function (scale, _x, _y) {
+    if (_x ===undefined) _x=0;
+    if (_y ===undefined) _y=0;
 
-    for (var i = 0; i < layers.length; i ++) {
-        var posx = jcanvas.layers[i]._transformdx;
-        var posy = jcanvas.layers[i]._transformdy;
-        jcanvas.layers[i].translate(posx*scale-posx, posy*scale-posy);
-        layers[i].scale(scale);
+    this.zoomScale=this.zoomScale * scale;
+
+    //デフォルトレイヤは個別処理(背景部)
+    var layer = jc.canvas(this.id).layers[0];
+        posx  = layer._transformdx,
+        posy  = layer._transformdy;
+    layer.translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+    layer.scale(scale);
+
+    //各画像オブジェクトはオブジェクトごとの動作に従う
+    for (var objid in (bbobj.member)) {
+        bbobj.object(objid).zoom(scale, _x, _y);
     }
-    this.zoomScale=this.zoomScale * Scale;
+
     return 1;
+};
+
+BB.prototype.zoomSelect = function (scale) {
 };
