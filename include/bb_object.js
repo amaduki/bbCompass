@@ -708,6 +708,7 @@ var BB = function (canvasID){
         this.type    = "freehand";
         this._color  = _color;
         this._step   = 0;
+        this._stepcol= new Array;
         this._hooker = undefined;
 
         //layerを確保するためのダミー画像を設置するのみ
@@ -728,6 +729,14 @@ var BB = function (canvasID){
     this.BB_freehand.prototype.down     = this.BB_base.prototype.down;
     this.BB_freehand.prototype.del      = this.BB_base.prototype.del;
 
+    this.BB_freehand.prototype.redraw = function () {
+        for (i=1;i<=this._step;i++) {
+            var points = jc("#" + i, {canvas:bbobj.id, layer:this.id}).points();
+            jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
+            jcanvas.line(points, this._stepcol[i])
+                   .layer(this.id).id(i).lineStyle({lineWidth:3});
+        }
+    }
 
     this.BB_freehand.prototype.start = function () {
         var obj    = this,
@@ -746,6 +755,7 @@ var BB = function (canvasID){
         hooker.mousemove(function () {return false;});
         hooker.mousedown(function (ptstart) {
                              obj._step++;
+                             obj._stepcol[obj._step]=obj._color;
                              var line = jcanvas.line([[ptstart.x,ptstart.y],[ptstart.x,ptstart.y]],obj._color)
                                                .layer(obj.id).id(obj._step).lineStyle({lineWidth:3});
                              hooker.mousemove(function (point) {
