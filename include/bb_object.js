@@ -765,6 +765,7 @@ var BB = function (canvasID){
                    .layer(this.id).id(i).lineStyle({lineWidth:3});
         }
     }
+
     this.BB_freehand.prototype.zoom = function (scale, _x, _y) {
         var posx = jc.layer(this.id)._transformdx,
             posy = jc.layer(this.id)._transformdy;
@@ -776,7 +777,7 @@ var BB = function (canvasID){
                 points[j] = [(points[j])[0]*scale, (points[j])[1]*scale];
             }
             jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
-            jcanvas.line(points, this._color)
+            jcanvas.line(points, this._stepcol[i])
                    .layer(this.id).id(i).lineStyle({lineWidth:3});
         }
     }
