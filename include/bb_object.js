@@ -4,10 +4,18 @@
 {
     //回転処理用に関数一個追加
     jc.addFunction('rotateTo',
-                         function (angle, x1, y1, duration, easing, onstep, fn) {
-                             this.optns.rotateMatrix=[[1,0,0],[0,1,0]];
-                             return this.rotate.apply(this, arguments);
-                         });
+                   function (angle, x1, y1, duration, easing, onstep, fn) {
+                       this.optns.rotateMatrix=[[1,0,0],[0,1,0]];
+                       return this.rotate.apply(this, arguments);
+                   });
+
+    //現在の角度を求める関数を追加
+    jc.addFunction('getAngle',
+                   function () {
+                       var matrix = this.optns.rotateMatrix;
+                           return (matrix[1][0] > 0)?Math.acos(matrix[0][0])
+                                                    :(-1) * Math.acos(matrix[0][0]);
+                   });
 
     //CanvaSciprtに背景合成用のオブジェクト追加
     jc.addObject('imgdiff',
@@ -470,8 +478,7 @@ var BB = function (canvasID){
         mask.mousedown(function(point){
                            var pos_sct  = scout.position();
                            var startrad = Math.atan2((point.y-pos_sct.y), (point.x-pos_sct.x)),
-                               baserad  = (jcanvas.layer(obj.id)._transform21 < 0)?Math.acos(jcanvas.layer(obj.id)._transform11)
-                                                                                  :(-1) * Math.acos(jcanvas.layer(obj.id)._transform11);
+                               baserad  = jcanvas.layer(obj.id).getAngle();
                            mask.mousemove(function (pos) {
                                               var nowrad = Math.atan2((pos.y-pos_sct.y), (pos.x-pos_sct.x));
                                               var rad    = baserad + (nowrad - startrad);
@@ -582,8 +589,7 @@ var BB = function (canvasID){
                               px_rad   = bbobj.meter_to_pixel(obj._radius);
                           radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2));
                           startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x));
-                          baserad  = (jcanvas.layer(obj.id)._transform21 < 0)?Math.acos(jcanvas.layer(obj.id)._transform11)
-                                                                             :(-1) * Math.acos(jcanvas.layer(obj.id)._transform11);
+                          baserad  = jcanvas.layer(obj.id).getAngle();
                           area.mousemove(mmEvent);
                           text.mousemove(mmEvent);};
 
