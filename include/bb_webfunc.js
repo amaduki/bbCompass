@@ -166,15 +166,23 @@ function set_freehand(){
 
 }
 
-//拡大
+//拡大縮小
 function zoom_cnv(){
-    bbobj.zoom(2);
+    var scale    = $("#lst_scale option:selected").val(),
+        canvas = document.getElementById(CanvasName),
+        chgScale = scale/bbobj.zoomScale;
+
+    //変化しない場合そのまま戻る
+    if (bbobj.zoomScale == scale) return;
+
+    //倍率が上がる場合は範囲選択、そうでなければ中心基準
+    if (bbobj.zoomScale < scale) {
+        bbobj.zoomSelect(chgScale);
+    } else {
+        bbobj.zoom(chgScale, (chgScale-1)*canvas.width/2 , (chgScale-1)*canvas.height/2);
+    }
 }
 
-//縮小
-function unzoom_cnv(){
-    bbobj.zoom(0.5);
-}
 
 //lst_objectへの追加
 function add_object(id, name) {
