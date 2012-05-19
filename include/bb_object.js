@@ -1151,4 +1151,36 @@ BB.prototype.zoom = function (scale, _x, _y) {
 };
 
 BB.prototype.zoomSelect = function (scale) {
+    var obj       = this,
+        cnvWidth  = jc.canvas(bbobj.id).width(),
+        cnvHeight = jc.canvas(bbobj.id).height(),
+        xOffset   = cnvWidth/scale/2,
+        yOffset   = cnvHeight/scale/2;
+
+    // ガイドとマウスイベントフック用の四角形を最前面に展開
+    var rect   = jc.rect(0, 0, cnvWidth/scale, cnvHeight/scale).color("#FFFF00");
+    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)')
+                   .layer('zoomSelect');
+    jc.layer('zoomSelect').level('top');
+
+    hooker.mousemove(function (pt) {
+                         var x = pt.x-xOffset,
+                             y = pt.y-yOffset;
+                         if (x < 0) {x=0;}
+                         else if(pt.x+xOffset>cnvWidth) {x=(1-1/scale)*cnvWidth;}
+                         if (y < 0) {y=0;}
+                         else if(pt.y+yOffset>cnvHeight) {y=(1-1/scale)*cnvHeight;}
+                         rect.translateTo(x, y);
+                     });
+
+    hooker.mousedown(function (pos) {
+                         var pt = rect.position();
+                         obj.zoom(scale, pt.x, pt.y);
+
+                         rect.del();
+                         hooker.del();
+                         return false;
+                     });
+
+    return this;
 };
