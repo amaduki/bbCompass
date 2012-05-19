@@ -1114,19 +1114,35 @@ BB.prototype.add_freehand = function (color) {
 //zoom
 //
 BB.prototype.zoom = function (scale, _x, _y) {
-    if (_x ===undefined) _x=0;
-    if (_y ===undefined) _y=0;
+    if (scale===undefined) return (this.zoomScale);
 
-    this.zoomScale=this.zoomScale * scale;
-
-    //デフォルトレイヤは個別処理(背景部)
-    var layer = jc.canvas(this.id).layers[0];
+    var cnvWidth  = jc.canvas(this.id).width(),
+        cnvHeight = jc.canvas(this.id).height(),
+        layer = jc.canvas(this.id).layers[0];
         posx  = layer._transformdx,
         posy  = layer._transformdy;
-    layer.translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
-    layer.scale(scale);
 
-    //各画像オブジェクトはオブジェクトごとの動作に従う
+    //初期値と画面端の処理
+    if (_x ===undefined) _x=0;
+    if (_y ===undefined) _y=0;
+    if (posx -_x > 0) { _x=posx; }
+    else if(posx + _x + cnvWidth > cnvWidth*this.zoomScale) {
+         _x=cnvWidth*this.zoomScale-cnvWidth/scale-posx;
+    }
+    if (posy -_y > 0) { _y=posy; }
+    else if(posy + _y + cnvHeight > cnvHeight*this.zoomScale) {
+         _y=cnvHeight*this.zoomScale-cnvHeight/scale-posy;
+    }
+
+    //拡大・縮小倍率を書き換え
+    this.zoomScale=this.zoomScale * scale;
+
+    //背景(基準レイヤ)の移動
+    jc.canvas(this.id).layers[0].translate((posx-_x)*scale-posx,
+                                           (posy-_y)*scale-posy)
+                                .scale(scale);
+
+    //各画像オブジェクトはオブジェクトごとの拡大動作を実施
     for (var objid in (bbobj.member)) {
         bbobj.object(objid).zoom(scale, _x, _y);
     }
