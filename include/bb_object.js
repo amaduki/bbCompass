@@ -1118,36 +1118,35 @@ BB.prototype.zoom = function (scale, _x, _y) {
 
     var cnvWidth  = jc.canvas(this.id).width(),
         cnvHeight = jc.canvas(this.id).height(),
-        layer = jc.canvas(this.id).layers[0];
-        posx  = layer._transformdx,
-        posy  = layer._transformdy;
+        baseLayer = jc.canvas(this.id).layers[0];
+        posx      = baseLayer._transformdx,
+        posy      = baseLayer._transformdy;
 
     //初期値と画面端の処理
     if (_x ===undefined) _x=0;
     if (_y ===undefined) _y=0;
-    if (posx -_x > 0) { _x=posx; }
-    else if(posx + _x + cnvWidth > cnvWidth*this.zoomScale) {
-         _x=cnvWidth*this.zoomScale-cnvWidth/scale-posx;
+    if (_x - posx < 0) { _x=posx; }
+    else if(_x - posx + cnvWidth/scale > cnvWidth*this.zoomScale) {
+         _x=posx+cnvWidth*this.zoomScale-cnvWidth/scale;
     }
-    if (posy -_y > 0) { _y=posy; }
-    else if(posy + _y + cnvHeight > cnvHeight*this.zoomScale) {
-         _y=cnvHeight*this.zoomScale-cnvHeight/scale-posy;
+    if (_y - posy < 0) { _y=posy; }
+    else if(_y - posy + cnvHeight/scale > cnvHeight*this.zoomScale) {
+         _y=posy+cnvHeight*this.zoomScale-cnvHeight/scale;
     }
 
     //拡大・縮小倍率を書き換え
     this.zoomScale=this.zoomScale * scale;
 
     //背景(基準レイヤ)の移動
-    jc.canvas(this.id).layers[0].translate((posx-_x)*scale-posx,
-                                           (posy-_y)*scale-posy)
-                                .scale(scale);
+    baseLayer.translate((posx-_x)*scale-posx, (posy-_y)*scale-posy)
+             .scale(scale);
 
     //各画像オブジェクトはオブジェクトごとの拡大動作を実施
     for (var objid in (bbobj.member)) {
         bbobj.object(objid).zoom(scale, _x, _y);
     }
 
-    return 1;
+    return this;
 };
 
 BB.prototype.zoomSelect = function (scale) {
