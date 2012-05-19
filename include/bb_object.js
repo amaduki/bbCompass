@@ -1153,18 +1153,17 @@ BB.prototype.zoomSelect = function (scale) {
     var obj       = this,
         cnvWidth  = jc.canvas(bbobj.id).width(),
         cnvHeight = jc.canvas(bbobj.id).height(),
-        xOffset   = cnvWidth/scale/2,
-        yOffset   = cnvHeight/scale/2;
+        xOffset   = cnvWidth/scale,
+        yOffset   = cnvHeight/scale;
 
     // ガイドとマウスイベントフック用の四角形を最前面に展開
-    var rect   = jc.rect(0, 0, cnvWidth/scale, cnvHeight/scale).color("#FFFF00");
-    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)')
-                   .layer('zoomSelect');
+    var rect   = jc.rect(0, 0, xOffset, yOffset, true).color('rgba(255, 255, 0, 0.3)').layer('zoomSelect');
+    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)').layer('zoomSelect');
     jc.layer('zoomSelect').level('top');
 
     hooker.mousemove(function (pt) {
-                         var x = pt.x-xOffset,
-                             y = pt.y-yOffset;
+                         var x = pt.x - 10,
+                             y = pt.y - 10;
                          if (x < 0) {x=0;}
                          else if(pt.x+xOffset>cnvWidth) {x=(1-1/scale)*cnvWidth;}
                          if (y < 0) {y=0;}
