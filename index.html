@@ -216,13 +216,21 @@
         <div class="reset"></div>
     </div>
     <div id="menu_4" class="graphmenu">
-        <div class=item><!--拡縮-->
+        <div class=item><form name="zoom" action="javascript:zoom_cnv();"><!--拡縮-->
             <div class="title">拡大縮小</div>
-            <div class="submitbtn">
-                <button type="button" id="zoom" onclick="zoom_cnv()">拡大</button><br>
-                <button type="button" id="unzoom" onclick="unzoom_cnv()">縮小</button><br>
+            <div class="type">倍率：</div>
+            <div class="form">
+                <select id="lst_scale" class="formzoom">
+                    <option value="1" selected>100%</option>
+                    <option value="1.50">150%</option>
+                    <option value="2">200%</option>
+                    <option value="4">400%</option>
+                </select>
             </div>
-        </div>
+            <div class="submitbtn">
+                <button type="submit" id="zoom">変更</button><br>
+            </div>
+        </form></div>
         <div class="reset"></div>
     </div>
   </div>

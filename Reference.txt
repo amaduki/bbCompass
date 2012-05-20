@@ -17,8 +17,8 @@
     │   bb_webfunc.js           Webのボタン動作などを記述したJavascript
     │  
     ├─jcanvas/
-    │       jCanvaScript.1.5.15i.min.js
-    │       jCanvaScript.1.5.15i.js
+    │       jCanvaScript.1.5.17.min.js
+    │       jCanvaScript.1.5.17.js
     │      
     ├─jquery/
     │       jquery-1.7.1.min.js
@@ -41,8 +41,8 @@
 
   また、下の方にあるjcanvas/jquery/uuidの各ディレクトリは外部ライブラリです。
   基本的には配布されているものをそのまま利用しているのですが、
-  jCanvaScriptは諸事情あって私家改造版を使っています。
-  こちらもminimize版だけでは何なので、私家改造版の元ファイルを同梱しています。
+  jCanvaScriptはgithubから取得した物を自前でminimizeして利用しているため、
+  一応元ファイルとminimizeしたファイルの双方を同梱しています。
 
 
 【この文書で説明する範囲について】
@@ -108,13 +108,17 @@
   背景を表示するときに一緒に指定したものを保管しているだけです。
 
 
+・zoomScale
+  拡大表示・縮小表示に利用する倍率を管理しています。
+
+
 ・imgscale
   地図画像を圧縮、伸長させている場合にその倍率を保持しています。
   これも背景を表示するときに一緒に指定したものを保管しているだけです。
 
 
 ○BBオブジェクトのメソッド
-・setbg(string fipepath, int scale[, int imgscale])
+・setbg(string fipepath, num scale[, num imgscale])
   引数：filepath 地図画像のパス
         scale    1メートルあたりのピクセル数を指定
         imgscale 画像サイズを縮小、拡大したい場合に指定
@@ -137,6 +141,23 @@
   また、空文字列をパスとして渡すと、現在重ねている差分画像を消します。
 
 
+・zoom(num scale, [num _x, num _y])
+  引数：scale    現在の状況からの倍率
+        _x       拡大・縮小後に左上隅になる点の座標
+        _y       拡大・縮小後に左上隅になる点の座標
+  返値：obj      BBオブジェクト
+
+  指定された倍率にあわせて拡大・縮小処理を行います。
+  canvas自体は拡大されず、画像表示のみ拡大されます。
+
+  特に拡大時は範囲を表示しきれなくなる場合もあるため、
+  倍率変更後に左上隅にくる点を指定できるようになっています。
+  （デフォルトではcanvas左上隅を維持したまま拡大）
+
+  jCanvaScriptなどの仕様に合わせているため、
+  現在の倍率を基準とした相対指定しかできません。
+
+
 ・object(string id)
   引数：id       各オブジェクトのid
   返値：obj      画像オブジェクト
@@ -157,7 +178,7 @@
   image.src=bbobj.save()  // srcとしてsaveメソッドの出力を渡す
   
 
-・pixel_to_meter(int pixel)
+・pixel_to_meter(num pixel)
   引数：pixel    ピクセル指定の距離
   返値：meter    メートル指定の距離
 
@@ -165,7 +186,7 @@
   変換の倍率はset_bgで背景を設定したときの値が利用されます。
 
 
-・meter_to_pixel(int meter)
+・meter_to_pixel(num meter)
   引数：meter    メートル指定の距離
   返値：pixel    ピクセル指定の距離
 
@@ -173,7 +194,7 @@
   変換の倍率はset_bgで背景を設定したときの値が利用されます。
 
 
-・add_circle (string text, int radius[, string color])
+・add_circle (string text, num radius[, string color])
   引数：text     オブジェクトの名前
         radius   円の初期半径(m単位)
         color    表示色  省略時は青色
@@ -185,7 +206,7 @@
   画像の基準点は円の中心が利用されます。
 
 
-・add_line (string text, int length[, string color])
+・add_line (string text, num length[, string color])
   引数：text     オブジェクトの名前
         length   直線の初期長さ(m単位)
         color    表示色  省略時は緑色
@@ -197,7 +218,7 @@
   画像の基準点は線を構成する二点の中心が利用されます。
 
 
-・add_scout (string text, int radius, int length, int duration [, string color])
+・add_scout (string text, num radius, num length, num duration [, string color])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         length   偵察機が飛行する距離(m指定)
@@ -211,7 +232,7 @@
   画像の基準点は偵察半径の中心が利用されます。
 
 
-・add_sensor (string text, int radius [, string color])
+・add_sensor (string text, num radius [, string color])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         color    表示色  省略時は赤色
@@ -223,7 +244,7 @@
   この画像の基準点は偵察半径の中心が利用されます。
 
 
-・add_radar (string text, int radius, int angle [, string color])
+・add_radar (string text, num radius, num angle [, string color])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         angle    索敵角度(角度で指定)
@@ -236,7 +257,7 @@
   この画像の基準点は索敵範囲を示す扇形の中心が利用されます。
 
 
-・add_howitzer (string text, int radius1, int radius2, int radius3 [, string color])
+・add_howitzer (string text, num radius1, num radius2, num radius3 [, string color])
   引数：text     オブジェクトの名前
         radius1  砲撃の射程(m指定)
         radius2  攻撃範囲(m指定)
@@ -420,6 +441,7 @@
 
   オブジェクトを削除します
 
+
 ------------------------------------------------------------------------
 【フリーハンドオブジェクトについて】
   フリーハンドオブジェクトは手書き画像を扱うオブジェクトで、
@@ -443,6 +465,13 @@
 
 
 ○フリーハンドオブジェクトが持つ外部向けメソッド
+・redraw()
+  引数：なし
+  返値：obj      画像オブジェクト
+
+  オブジェクトを再描画します。
+
+
 ・color()
   引数：なし
   返値：color    色指定

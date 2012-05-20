@@ -167,12 +167,17 @@ var BB = function (canvasID){
         //一応ダミーを定義
     };
 
-
     this.BB_base.prototype.redraw = function () {
         jcanvas.layer(this.id).objects().del();
         this.draw();
     };
 
+    this.BB_base.prototype.applyZoom = function (scale, _x, _y) {
+        var posx = jc.layer(this.id)._transformdx,
+            posy = jc.layer(this.id)._transformdy;
+        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+        this.redraw();
+    };
 
     this.BB_base.prototype.toString = function() {
         return this.id;
@@ -341,6 +346,13 @@ var BB = function (canvasID){
         return this;
     };
 
+    this.BB_circle.prototype.applyZoom = function (scale, _x, _y) {
+        this._ptpos.x = this._ptpos.x * scale;
+        this._ptpos.y = this._ptpos.y * scale;
+        bbobj.BB_base.prototype.applyZoom.apply(this, arguments);
+        return this;
+    };
+
   //
   //BB_lineオブジェクト
   //
@@ -435,6 +447,15 @@ var BB = function (canvasID){
                          jcanvas.layer(obj.id).optns.drag.val=true;
                          pt2.optns.drag.val=false;
                      });
+        return this;
+    };
+
+    this.BB_line.prototype.applyZoom = function (scale, _x, _y) {
+        this._pt1pos.x = this._pt1pos.x * scale;
+        this._pt1pos.y = this._pt1pos.y * scale;
+        this._pt2pos.x = this._pt2pos.x * scale;
+        this._pt2pos.y = this._pt2pos.y * scale;
+        bbobj.BB_base.prototype.applyZoom.apply(this, arguments);
         return this;
     };
 
@@ -705,6 +726,13 @@ var BB = function (canvasID){
         return this;
     };
 
+    this.BB_howitzer.prototype.applyZoom = function (scale, _x, _y) {
+        this._markerx = this._markerx * scale;
+        this._markery = this._markery * scale;
+        bbobj.BB_base.prototype.applyZoom.apply(this, arguments);
+        return this;
+    };
+
   //
   //BB_freehandオブジェクト
   //
@@ -738,6 +766,22 @@ var BB = function (canvasID){
     this.BB_freehand.prototype.redraw = function () {
         for (i=1;i<=this._step;i++) {
             var points = jc("#" + i, {canvas:bbobj.id, layer:this.id}).points();
+            jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
+            jcanvas.line(points, this._stepcol[i])
+                   .layer(this.id).id(i).lineStyle({lineWidth:3});
+        }
+    }
+
+    this.BB_freehand.prototype.applyZoom = function (scale, _x, _y) {
+        var posx = jc.layer(this.id)._transformdx,
+            posy = jc.layer(this.id)._transformdy;
+        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+
+        for (i=1;i<=this._step;i++) {
+            var points = jc("#" + i, {canvas:bbobj.id, layer:this.id}).points();
+            for (j=0; j<points.length; j++) {
+                points[j] = [(points[j])[0]*scale, (points[j])[1]*scale];
+            }
             jc("#" + i, {canvas:bbobj.id, layer:this.id}).del();
             jcanvas.line(points, this._stepcol[i])
                    .layer(this.id).id(i).lineStyle({lineWidth:3});
@@ -944,11 +988,11 @@ BB.prototype.touchToMouse = function(canvas) {
 //縮尺計算
 //
 BB.prototype.meter_to_pixel = function(meter) {
-    return(meter*this.scale);
+    return(meter*(this.scale*this.zoomScale));
 };
 
 BB.prototype.pixel_to_meter = function(pixel) {
-    return(pixel/this.scale);
+    return(pixel/(this.scale*this.zoomScale));
 };
 
 //
@@ -1075,16 +1119,77 @@ BB.prototype.add_freehand = function (color) {
 //
 //zoom
 //
-BB.prototype.zoom = function (scale, x, y) {
-    var jcanvas = jc.canvas(this.id),
-        layers  = jcanvas.layers;
+BB.prototype.zoom = function (scale, _x, _y) {
+    if (scale===undefined) return (this.zoomScale);
 
-    for (var i = 0; i < layers.length; i ++) {
-        var posx = jcanvas.layers[i]._transformdx;
-        var posy = jcanvas.layers[i]._transformdy;
-        jcanvas.layers[i].translate(posx*scale-posx, posy*scale-posy);
-        layers[i].scale(scale);
+    var cnvWidth  = jc.canvas(this.id).width(),
+        cnvHeight = jc.canvas(this.id).height(),
+        baseLayer = jc.canvas(this.id).layers[0],
+        posx      = baseLayer._transformdx,
+        posy      = baseLayer._transformdy;
+
+    //初期値と画面端の処理
+    if (_x ===undefined) _x=0;
+    if (_y ===undefined) _y=0;
+    if (_x - posx < 0) { _x=posx; }
+    else if(_x - posx + cnvWidth/scale > cnvWidth*this.zoomScale) {
+         _x=posx+cnvWidth*this.zoomScale-cnvWidth/scale;
     }
-    this.zoomScale=this.zoomScale * Scale;
-    return 1;
+    if (_y - posy < 0) { _y=posy; }
+    else if(_y - posy + cnvHeight/scale > cnvHeight*this.zoomScale) {
+         _y=posy+cnvHeight*this.zoomScale-cnvHeight/scale;
+    }
+
+    //拡大・縮小倍率を書き換え
+    this.zoomScale=this.zoomScale * scale;
+
+    //背景(基準レイヤ)の移動
+    baseLayer.translate((posx-_x)*scale-posx, (posy-_y)*scale-posy)
+             .scale(scale);
+
+    //各画像オブジェクトはオブジェクトごとの拡大動作を実施
+    for (var objid in (bbobj.member)) {
+        bbobj.object(objid).applyZoom(scale, _x, _y);
+    }
+
+    return this;
+};
+
+BB.prototype.zoomSelect = function (scale) {
+    var obj       = this,
+        cnvWidth  = jc.canvas(bbobj.id).width(),
+        cnvHeight = jc.canvas(bbobj.id).height(),
+        xOffset   = cnvWidth/scale,
+        yOffset   = cnvHeight/scale;
+
+    var objs = jc.layer('zoomSelect').objs;
+    for (i=0;i<objs.length;i++) {
+        jc.layer('zoomSelect').objs[i].del();
+    }
+
+    // ガイドとマウスイベントフック用の四角形を最前面に展開
+    var rect   = jc.rect(0, 0, xOffset, yOffset, true).color('rgba(255, 255, 0, 0.3)').layer('zoomSelect');
+    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)').layer('zoomSelect');
+    jc.layer('zoomSelect').level('top');
+
+    hooker.mousemove(function (pt) {
+                         var x = pt.x - 10,
+                             y = pt.y - 10;
+                         if (x < 0) {x=0;}
+                         else if(pt.x+xOffset>cnvWidth) {x=(1-1/scale)*cnvWidth;}
+                         if (y < 0) {y=0;}
+                         else if(pt.y+yOffset>cnvHeight) {y=(1-1/scale)*cnvHeight;}
+                         rect.translateTo(x, y);
+                     });
+
+    hooker.mousedown(function (pos) {
+                         var pt = rect.position();
+                         obj.zoom(scale, pt.x, pt.y);
+
+                         rect.del();
+                         hooker.del();
+                         return false;
+                     });
+
+    return this;
 };
