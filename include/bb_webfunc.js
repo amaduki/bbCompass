@@ -155,7 +155,7 @@ function set_freehand(){
                        .click(function(){
                                   obj.end();
                                   $("#col_freehand").change(function(){});
-                                  $("button").attr("disabled",false);
+                                  $("button:not(.disable)").attr("disabled",false);
                                   $("#stop_freehand").attr("disabled", true).unbind("click");
                                   $("#col_freehand").unbind("change");
                               });
@@ -172,17 +172,37 @@ function zoom_cnv(){
         canvas = document.getElementById(CanvasName),
         chgScale = scale/bbobj.zoomScale;
 
-    //変化しない場合そのまま戻る
-    if (bbobj.zoomScale == scale) return;
-
-    //倍率が上がる場合は範囲選択、そうでなければ中心基準
-    if (bbobj.zoomScale < scale) {
+    if (bbobj.zoomScale == scale) {
+        //変化しない場合そのまま戻る
+        bbobj.cancelZoom();
+    } else if (bbobj.zoomScale < scale) {
+        //倍率が上がる場合は範囲選択
         bbobj.zoomSelect(chgScale);
     } else {
+        //その他の場合は中心を維持
+        bbobj.cancelZoom();
         bbobj.zoom(chgScale, (chgScale-1)*canvas.width/2 , (chgScale-1)*canvas.height/2);
     }
 }
 
+//移動開始
+function start_move(){
+    $("button").attr("disabled",true);
+    $("button#zoom").attr("disabled",false);
+    $("#stop_move").attr("disabled", false);
+    $("canvas#"+CanvasName).css("cursor","move");
+
+    bbobj.startMove();
+}
+
+//移動終了
+function stop_move(){
+    $("button:not(.disable)").attr("disabled",false);
+    $("#stop_move").attr("disabled", true);
+    $("canvas#"+CanvasName).css("cursor","auto");
+
+    bbobj.stopMove();
+}
 
 //lst_objectへの追加
 function add_object(id, name) {

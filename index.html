@@ -211,7 +211,7 @@
             <div class="name">名前：</div>
             <div class="form"><input id="name_freehand" type="text" size="15" value="フリーハンド" class="formtext"></div>
             <div class="submitbtn"><button id="submit_freehand">開始</button>
-                                   <button id="stop_freehand" type="button" disabled>終了</button></div>
+                                   <button id="stop_freehand" type="button" class="disable" disabled>終了</button></div>
         </form></div>
         <div class="reset"></div>
     </div>
@@ -231,6 +231,11 @@
                 <button type="submit" id="zoom">変更</button><br>
             </div>
         </form></div>
+        <div class=item><!--移動-->
+            <div class="title">カーソルモード</div>
+            <div class="submitbtn"><button id="stop_move" type="button" onclick="stop_move()" class="disable" disabled>オブジェ選択</button></div>
+            <div class="submitbtn"><button id="start_move" onclick="start_move()">画面移動</button></div>
+        </div>
         <div class="reset"></div>
     </div>
   </div>
