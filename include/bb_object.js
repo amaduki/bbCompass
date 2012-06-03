@@ -176,7 +176,8 @@ var BB = function (canvasID){
     this.BB_base.prototype.applyZoom = function (scale, _x, _y) {
         var posx = jc.layer(this.id)._transformdx,
             posy = jc.layer(this.id)._transformdy;
-        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
+        jc.layer(this.id).translate(posx*scale-posx, posy*scale-posy);
+//        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
         this.redraw();
     };
 
@@ -1003,7 +1004,7 @@ BB.prototype.pixel_to_meter = function(pixel) {
 //背景
 //(画像ファイル, Dot per Meter, 画像縮小比率)
 //
-BB.prototype.setbg = function(file, dpm, imgscale) {
+BB.prototype.setbg = function(file, dpm, imgscale, callback) {
     var image   = new Image;
     var jcanvas = this.jcanvas;
     var id      = this.id;
@@ -1017,6 +1018,7 @@ BB.prototype.setbg = function(file, dpm, imgscale) {
         jc.clear(id);
         jcanvas.image(image,0,0,image.width*imgscale,image.height*imgscale).level(-1).id("bg");
         jc.start(id,true);
+        if (callback !== undefined) callback();
     };
     this.scale=dpm*imgscale;
     this.imgscale=imgscale;
@@ -1149,8 +1151,12 @@ BB.prototype.zoom = function (scale, _x, _y) {
     this.zoomScale=this.zoomScale * scale;
 
     //背景(基準レイヤ)の移動
-    baseLayer.translate((posx-_x)*scale-posx, (posy-_y)*scale-posy)
+    baseLayer//.translate((posx-_x)*scale-posx, (posy-_y)*scale-posy)
              .scale(scale);
+
+    var canvas = document.getElementById(this.id);
+    canvas.width  = jc("#bg").getRect().width;
+    canvas.height  = jc("#bg").getRect().height;
 
     //各画像オブジェクトはオブジェクトごとの拡大動作を実施
     for (var objid in (this.member)) {
@@ -1268,3 +1274,7 @@ BB.prototype.stopMove = function () {
     this.mode=0;
     return this;
 }
+
+BB.prototype.chgScroll = function () {
+    jc.canvas(this.id).recalculateOffset();
+};

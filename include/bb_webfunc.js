@@ -1,5 +1,7 @@
 //初期化
 var CanvasName="BBCompass";
+var scrollBarWidth=0;
+var scrollBarHeight=0;
 var bbobj="";
 
 $(document).ready(function(){
@@ -59,8 +61,14 @@ function initialize(){
     }
     bbobj=new BB(CanvasName);
 
-    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
+    var cnvArea = document.getElementById("CanvasArea");
+    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
+    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight;
+    $("#CanvasArea").width($("#BBCompass").outerWidth() + scrollBarWidth)
+                    .height($("#BBCompass").outerHeight() + scrollBarHeight);
 
+    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
+    $("#CanvasArea").scroll(function(){bbobj.chgScroll();});
 }
 
 //マップ変更
@@ -71,7 +79,12 @@ function chg_map() {
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
     var salt  = "?" + new Date().getTime();
-    bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1]);
+    bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1],
+                function(){
+                    $("#CanvasArea").width($("#BBCompass").outerWidth() + scrollBarWidth)
+                                    .height($("#BBCompass").outerHeight() + scrollBarHeight);
+                });
+
 
     $("#lst_layer").children().remove();
     $("#lst_layer").append($('<option value=""></option>').text("通常"));
@@ -175,13 +188,11 @@ function zoom_cnv(){
     if (bbobj.zoomScale == scale) {
         //変化しない場合そのまま戻る
         bbobj.cancelZoom();
-    } else if (bbobj.zoomScale < scale) {
-        //倍率が上がる場合は範囲選択
-        bbobj.zoomSelect(chgScale);
     } else {
-        //その他の場合は中心を維持
-        bbobj.cancelZoom();
-        bbobj.zoom(chgScale, (chgScale-1)*canvas.width/2 , (chgScale-1)*canvas.height/2);
+        //その他の場合は左上維持
+        bbobj.zoom(chgScale);
+        $("#CanvasArea").scrollLeft($("#CanvasArea").scrollLeft()*chgScale)
+                        .scrollTop($("#CanvasArea").scrollTop()*chgScale);
     }
 }
 
@@ -192,7 +203,33 @@ function start_move(){
     $("#stop_move").attr("disabled", false);
     $("canvas#"+CanvasName).css("cursor","move");
 
-    bbobj.startMove();
+    bbobj.jcanvas.pause(CanvasName);
+    var md,mm,mu,
+        base_x,base_y;
+
+    mm = function(e) {
+                 var dx = e.pageX-base_x, dy = e.pageY-base_y;
+                 $("#CanvasArea").scrollLeft($("#CanvasArea").scrollLeft()-dx);
+                 $("#CanvasArea").scrollTop($("#CanvasArea").scrollTop()-dy);
+                 base_x=e.pageX;
+                 base_y=e.pageY;
+                 return false;
+         };
+
+    mu = function(e) {
+             $("#CanvasArea").unbind('mousemove', mm);
+             $("#CanvasArea").unbind('mouseup', mu);
+             return false;
+         };
+    md = function (e) {
+             base_x = e.pageX;
+             base_y = e.pageY;
+             $("#CanvasArea").bind('mousemove', mm);
+             $("#CanvasArea").bind('mouseup', mu);
+             return false;
+         };
+
+    $("#CanvasArea").mousedown(md);
 }
 
 //移動終了
@@ -201,7 +238,9 @@ function stop_move(){
     $("#stop_move").attr("disabled", true);
     $("canvas#"+CanvasName).css("cursor","auto");
 
-    bbobj.stopMove();
+    bbobj.jcanvas.start(CanvasName, true);
+    $("#CanvasArea").unbind('mousedown');
+
 }
 
 //lst_objectへの追加
