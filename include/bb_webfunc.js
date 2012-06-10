@@ -1,5 +1,6 @@
 //初期化
-var CanvasName="BBCompass";
+var CanvasName = "BBCompass";
+var DivName    = "CanvasArea";
 var scrollBarWidth=0;
 var scrollBarHeight=0;
 var bbobj="";
@@ -61,14 +62,14 @@ function initialize(){
     }
     bbobj=new BB(CanvasName);
 
-    var cnvArea = document.getElementById("CanvasArea");
+    var cnvArea = document.getElementById(DivName);
     scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
     scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight;
-    $("#CanvasArea").width($("#BBCompass").outerWidth() + scrollBarWidth)
-                    .height($("#BBCompass").outerHeight() + scrollBarHeight);
+    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
+                    .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
     $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
-    $("#CanvasArea").scroll(function(){bbobj.chgScroll();});
+    $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 }
 
 //マップ変更
@@ -81,8 +82,8 @@ function chg_map() {
     var salt  = "?" + new Date().getTime();
     bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1],
                 function(){
-                    $("#CanvasArea").width($("#BBCompass").outerWidth() + scrollBarWidth)
-                                    .height($("#BBCompass").outerHeight() + scrollBarHeight);
+                    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
+                                  .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
                 });
 
 
@@ -102,6 +103,7 @@ function set_scout() {
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2]);
     add_object(obj.id, $("#name_scout").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -112,6 +114,7 @@ function set_sensor() {
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val());
     add_object(obj.id, $("#name_sensor").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -123,6 +126,7 @@ function set_radar() {
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1]);
     add_object(obj.id, $("#name_radar").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -134,6 +138,7 @@ function set_howitzer(){
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2]);
     add_object(obj.id, $("#name_howitzer").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -145,6 +150,7 @@ function set_circle(){
 
     var obj = bbobj.add_circle($("#name_circle").val(),$("#rad_circle").val());
     add_object(obj.id, $("#name_circle").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -155,6 +161,7 @@ function set_line(){
 
     var obj = bbobj.add_line($("#name_line").val(),$("#len_line").val());
     add_object(obj.id, $("#name_line").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -191,8 +198,8 @@ function zoom_cnv(){
     } else {
         //その他の場合は左上維持
         bbobj.zoom(chgScale);
-        $("#CanvasArea").scrollLeft($("#CanvasArea").scrollLeft()*chgScale)
-                        .scrollTop($("#CanvasArea").scrollTop()*chgScale);
+        $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()*chgScale)
+                      .scrollTop($("#"+DivName).scrollTop()*chgScale);
     }
 }
 
@@ -209,27 +216,27 @@ function start_move(){
 
     mm = function(e) {
                  var dx = e.pageX-base_x, dy = e.pageY-base_y;
-                 $("#CanvasArea").scrollLeft($("#CanvasArea").scrollLeft()-dx);
-                 $("#CanvasArea").scrollTop($("#CanvasArea").scrollTop()-dy);
+                 $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()-dx);
+                 $("#"+DivName).scrollTop($("#"+DivName).scrollTop()-dy);
                  base_x=e.pageX;
                  base_y=e.pageY;
                  return false;
          };
 
     mu = function(e) {
-             $("#CanvasArea").unbind('mousemove', mm);
-             $("#CanvasArea").unbind('mouseup', mu);
+             $("#"+DivName).unbind('mousemove', mm);
+             $("#"+DivName).unbind('mouseup', mu);
              return false;
          };
     md = function (e) {
              base_x = e.pageX;
              base_y = e.pageY;
-             $("#CanvasArea").bind('mousemove', mm);
-             $("#CanvasArea").bind('mouseup', mu);
+             $("#"+DivName).bind('mousemove', mm);
+             $("#"+DivName).bind('mouseup', mu);
              return false;
          };
 
-    $("#CanvasArea").mousedown(md);
+    $("#"+DivName).mousedown(md);
 }
 
 //移動終了
@@ -239,7 +246,7 @@ function stop_move(){
     $("canvas#"+CanvasName).css("cursor","auto");
 
     bbobj.jcanvas.start(CanvasName, true);
-    $("#CanvasArea").unbind('mousedown');
+    $("#"+DivName).unbind('mousedown');
 
 }
 
