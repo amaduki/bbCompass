@@ -177,7 +177,6 @@ var BB = function (canvasID){
         var posx = jc.layer(this.id)._transformdx,
             posy = jc.layer(this.id)._transformdy;
         jc.layer(this.id).translate(posx*scale-posx, posy*scale-posy);
-//        jc.layer(this.id).translate(posx*scale-posx-_x*scale, posy*scale-posy-_y*scale);
         this.redraw();
     };
 
@@ -1005,9 +1004,9 @@ BB.prototype.pixel_to_meter = function(pixel) {
 //(画像ファイル, Dot per Meter, 画像縮小比率)
 //
 BB.prototype.setbg = function(file, dpm, imgscale, callback) {
-    var image   = new Image;
-    var jcanvas = this.jcanvas;
-    var id      = this.id;
+    var image   = new Image,
+        jcanvas = this.jcanvas,
+        id      = this.id;
     if (imgscale===undefined) {imgscale=1;};
 
     image.src=file;
@@ -1017,8 +1016,8 @@ BB.prototype.setbg = function(file, dpm, imgscale, callback) {
         canvas.height = image.height*imgscale;
         jc.clear(id);
         jcanvas.image(image,0,0,image.width*imgscale,image.height*imgscale).level(-1).id("bg");
-        jc.start(id,true);
         if (callback !== undefined) callback();
+        jc.start(id,true);
     };
     this.scale=dpm*imgscale;
     this.imgscale=imgscale;
@@ -1033,17 +1032,18 @@ BB.prototype.setbgdiff = function(file) {
     var imgscale = this.imgscale;
 
     if (file) {
-        //ファイル指定があれば差分を再表示
+        //ファイル指定があれば差分を出力し、即時再描画
         image.src=file;
         image.onload=function() {
             jcanvas("#bgdiff").del();
             jcanvas.imgdiff(image,0,0,image.width*imgscale,image.height*imgscale)
-                   .level(0).id("bgdiff");
-        jc.start(id,true);
+                  .level(0).id("bgdiff");
+            jc.canvas(id).frame();
         };
     } else {
-        //空だったら差分を消す
+        //空だったら差分を消し、即時再描画
         jcanvas("#bgdiff").del();
+        jc.canvas(id).frame();
     }
 };
 
@@ -1129,9 +1129,10 @@ BB.prototype.add_freehand = function (color) {
 BB.prototype.zoom = function (scale, _x, _y) {
     if (scale===undefined) return (this.zoomScale);
 
-    var cnvWidth  = jc.canvas(this.id).width(),
-        cnvHeight = jc.canvas(this.id).height(),
-        baseLayer = jc.canvas(this.id).layers[0],
+    var cnv       = jc.canvas(this.id),
+        cnvWidth  = cnv.width(),
+        cnvHeight = cnv.height(),
+        baseLayer = cnv.layers[0],
         posx      = baseLayer._transformdx,
         posy      = baseLayer._transformdy;
 
@@ -1163,6 +1164,8 @@ BB.prototype.zoom = function (scale, _x, _y) {
         this.object(objid).applyZoom(scale, _x, _y);
     }
 
+    jc.canvas(this.id).frame();
+    this.chgScroll();
     if (this.mode == 1) this.startMove();
     return this;
 };
