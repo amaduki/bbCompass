@@ -64,7 +64,7 @@ function initialize(){
 
     var cnvArea = document.getElementById(DivName);
     scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
-    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight;
+    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight+6;
     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                     .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
