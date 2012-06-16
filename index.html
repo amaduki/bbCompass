@@ -110,7 +110,7 @@
     <div class="thead" id="head_graph">画像
         <ul>
             <li id="menu01" data-target="menu_1" class="graphtab active">偵察</a></li>
-            <li id="menu02" data-target="menu_2" class="graphtab">砲撃</a></li>
+            <li id="menu02" data-target="menu_2" class="graphtab">攻撃</a></li>
             <li id="menu03" data-target="menu_3" class="graphtab">図形</a></li>
             <li id="menu04" data-target="menu_4" class="graphtab">表示</a></li>
         </ul>
@@ -187,6 +187,12 @@
             <div class="name">名前：</div>
             <div class="form"><input id="name_howitzer" type="text" size="15" class="formtext"></div>
             <div class="submitbtn"><button id="submit_howitzer">設置</button></div>
+        </form></div>
+        <div class=item><form name="bunker" action="javascript:set_bunker()"><!--バンカー-->
+            <div class="title">サテライトバンカー</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_bunker" type="text" size="15" class="formtext" value="SB"></div>
+            <div class="submitbtn"><button id="submit_bunker">設置</button></div>
         </form></div>
         <div class="reset"></div>
     </div>

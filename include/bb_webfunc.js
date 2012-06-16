@@ -125,6 +125,16 @@ function set_howitzer(){
 }
 
 
+//サテライトバンカー
+function set_bunker() {
+    if(! $("#name_bunker").val()) {return;}
+
+    var obj = bbobj.add_bunker($("#name_bunker").val());
+    add_object(obj.id, $("#name_bunker").val());
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
+
 //円
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}

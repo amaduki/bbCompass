@@ -736,6 +736,40 @@ var BB = function (canvasID){
     };
 
   //
+  //BB_bunkerオブジェクト
+  //
+    this.BB_bunker = function (_text, _color) {
+        if (_color===undefined) {_color='rgb(255, 0, 165)';}
+        this.id=UUID.genV1().toString();
+
+        this.type="bunker";
+        this._text=_text;
+        this._rad1=28;  //攻撃範囲28m
+        this._rad2=40;  //爆風範囲40m
+        this._color=_color;
+        //描画して登録。初期座標は半径分ずらす
+        this.draw();
+        var px_rad = bbobj.meter_to_pixel(this._rad2);
+        this.move(px_rad, px_rad);
+        this.regist();
+    };
+    this.BB_bunker.prototype=new this.BB_base();
+
+    this.BB_bunker.prototype.draw = function () {
+        var px_rad1 = bbobj.meter_to_pixel(this._rad1);
+        var px_rad2 = bbobj.meter_to_pixel(this._rad2);
+        jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.3).layer(this.id);
+        jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
+        jcanvas.circle(0, 0, px_rad2, this._color, true).opacity(0.2).layer(this.id);
+        jcanvas.circle(0, 0, px_rad2, this._color, false).opacity(1).layer(this.id);
+        jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
+        jcanvas.text(this._text, 0, -10)
+               .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
+        jcanvas.layer(this.id).draggable();
+        return this;
+    };
+
+  //
   //BB_freehandオブジェクト
   //
     this.BB_freehand = function ( _color) {
@@ -1115,6 +1149,10 @@ BB.prototype.add_radar = function (string, radius, angle, color) {
 
 BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) {
     return new this.BB_howitzer(string, radius1, radius2, radius3, color);
+};
+
+BB.prototype.add_bunker = function (string, color) {
+    return new this.BB_bunker(string, color);
 };
 
 BB.prototype.add_freehand = function (color) {
