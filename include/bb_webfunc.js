@@ -1,5 +1,8 @@
 //初期化
-var CanvasName="BBCompass";
+var CanvasName = "BBCompass";
+var DivName    = "CanvasArea";
+var scrollBarWidth=0;
+var scrollBarHeight=0;
 var bbobj="";
 
 $(document).ready(function(){
@@ -59,8 +62,14 @@ function initialize(){
     }
     bbobj=new BB(CanvasName);
 
-    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
+    var cnvArea = document.getElementById(DivName);
+    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
+    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight+6;
+    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
+                    .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
+    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
+    $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 }
 
 //マップ変更
@@ -71,7 +80,12 @@ function chg_map() {
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
     var salt  = "?" + new Date().getTime();
-    bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1]);
+    bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1],
+                function(){
+                    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
+                                  .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
+                });
+
 
     $("#lst_layer").children().remove();
     $("#lst_layer").append($('<option value=""></option>').text("通常"));
@@ -89,6 +103,7 @@ function set_scout() {
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2]);
     add_object(obj.id, $("#name_scout").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -99,6 +114,7 @@ function set_sensor() {
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val());
     add_object(obj.id, $("#name_sensor").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -110,6 +126,7 @@ function set_radar() {
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1]);
     add_object(obj.id, $("#name_radar").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -121,6 +138,7 @@ function set_howitzer(){
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2]);
     add_object(obj.id, $("#name_howitzer").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -142,6 +160,7 @@ function set_circle(){
 
     var obj = bbobj.add_circle($("#name_circle").val(),$("#rad_circle").val());
     add_object(obj.id, $("#name_circle").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -152,6 +171,7 @@ function set_line(){
 
     var obj = bbobj.add_line($("#name_line").val(),$("#len_line").val());
     add_object(obj.id, $("#name_line").val());
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -182,17 +202,13 @@ function zoom_cnv(){
         canvas = document.getElementById(CanvasName),
         chgScale = scale/bbobj.zoomScale;
 
-    if (bbobj.zoomScale == scale) {
-        //変化しない場合そのまま戻る
-        bbobj.cancelZoom();
-    } else if (bbobj.zoomScale < scale) {
-        //倍率が上がる場合は範囲選択
-        bbobj.zoomSelect(chgScale);
-    } else {
-        //その他の場合は中心を維持
-        bbobj.cancelZoom();
-        bbobj.zoom(chgScale, (chgScale-1)*canvas.width/2 , (chgScale-1)*canvas.height/2);
+    if (bbobj.zoomScale != scale) {
+        //倍率が変化する場合は左上維持して拡大処理
+        bbobj.zoom(chgScale);
+        $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()*chgScale)
+                      .scrollTop($("#"+DivName).scrollTop()*chgScale);
     }
+
 }
 
 //移動開始
@@ -202,7 +218,33 @@ function start_move(){
     $("#stop_move").attr("disabled", false);
     $("canvas#"+CanvasName).css("cursor","move");
 
-    bbobj.startMove();
+    bbobj.jcanvas.pause(CanvasName);
+    var md,mm,mu,
+        base_x,base_y;
+
+    mm = function(e) {
+                 var dx = e.pageX-base_x, dy = e.pageY-base_y;
+                 $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()-dx);
+                 $("#"+DivName).scrollTop($("#"+DivName).scrollTop()-dy);
+                 base_x=e.pageX;
+                 base_y=e.pageY;
+                 return false;
+         };
+
+    mu = function(e) {
+             $("#"+DivName).unbind('mousemove', mm);
+             $("#"+DivName).unbind('mouseup', mu);
+             return false;
+         };
+    md = function (e) {
+             base_x = e.pageX;
+             base_y = e.pageY;
+             $("#"+DivName).bind('mousemove', mm);
+             $("#"+DivName).bind('mouseup', mu);
+             return false;
+         };
+
+    $("#"+DivName).mousedown(md);
 }
 
 //移動終了
@@ -211,7 +253,9 @@ function stop_move(){
     $("#stop_move").attr("disabled", true);
     $("canvas#"+CanvasName).css("cursor","auto");
 
-    bbobj.stopMove();
+    bbobj.jcanvas.start(CanvasName, true);
+    $("#"+DivName).unbind('mousedown');
+
 }
 
 //lst_objectへの追加

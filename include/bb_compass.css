@@ -164,7 +164,13 @@ div.map_selector{
 
 #CanvasArea{
     text-align:center;
-    padding:10px;
+    overflow:scroll;
+    margin:10px auto;
+}
+
+#Copyright{
+    text-align:center;
+    margin:0px auto;
 }
 
 #WorkArea{
