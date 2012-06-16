@@ -192,15 +192,13 @@ function zoom_cnv(){
         canvas = document.getElementById(CanvasName),
         chgScale = scale/bbobj.zoomScale;
 
-    if (bbobj.zoomScale == scale) {
-        //変化しない場合そのまま戻る
-        bbobj.cancelZoom();
-    } else {
-        //その他の場合は左上維持
+    if (bbobj.zoomScale != scale) {
+        //倍率が変化する場合は左上維持して拡大処理
         bbobj.zoom(chgScale);
         $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()*chgScale)
                       .scrollTop($("#"+DivName).scrollTop()*chgScale);
     }
+
 }
 
 //移動開始

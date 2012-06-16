@@ -148,7 +148,6 @@ var BB = function (canvasID){
     this.scale=1;
     this.zoomScale=1;
     this.imgscale=1;
-    this.mode=0;    //0:通常  1:移動
     var bbobj=this,
         jcanvas=this.jcanvas,
         canvas = document.getElementById(this.id);
@@ -1126,157 +1125,29 @@ BB.prototype.add_freehand = function (color) {
 //
 //拡大縮小
 //
-BB.prototype.zoom = function (scale, _x, _y) {
+BB.prototype.zoom = function (scale) {
     if (scale===undefined) return (this.zoomScale);
 
-    var cnv       = jc.canvas(this.id),
-        cnvWidth  = cnv.width(),
-        cnvHeight = cnv.height(),
-        baseLayer = cnv.layers[0],
-        posx      = baseLayer._transformdx,
-        posy      = baseLayer._transformdy;
+    var canvas    = jc.canvas(this.id).cnv,
+        baseLayer = jc.canvas(this.id).layers[0];
 
-    //初期値と画面端の処理
-    if (_x ===undefined) _x=0;
-    if (_y ===undefined) _y=0;
-    if (_x - posx < 0) { _x=posx; }
-    else if(_x - posx + cnvWidth/scale > cnvWidth*this.zoomScale) {
-         _x=posx+cnvWidth*this.zoomScale-cnvWidth/scale;
-    }
-    if (_y - posy < 0) { _y=posy; }
-    else if(_y - posy + cnvHeight/scale > cnvHeight*this.zoomScale) {
-         _y=posy+cnvHeight*this.zoomScale-cnvHeight/scale;
-    }
-
-    //拡大・縮小倍率を書き換え
+    //倍率書き換えて、背景レイヤと各オブジェクトの拡大を実施
     this.zoomScale=this.zoomScale * scale;
+    baseLayer.scale(scale);
 
-    //背景(基準レイヤ)の移動
-    baseLayer//.translate((posx-_x)*scale-posx, (posy-_y)*scale-posy)
-             .scale(scale);
-
-    var canvas = document.getElementById(this.id);
-    canvas.width  = jc("#bg").getRect().width;
-    canvas.height  = jc("#bg").getRect().height;
-
-    //各画像オブジェクトはオブジェクトごとの拡大動作を実施
     for (var objid in (this.member)) {
-        this.object(objid).applyZoom(scale, _x, _y);
+        this.object(objid).applyZoom(scale);
     }
+
+    //キャンバスの大きさを合わせる
+    canvas.width  = jc("#bg").getRect().width;
+    canvas.height = jc("#bg").getRect().height;
+    this.chgScroll();
 
     jc.canvas(this.id).frame();
-    this.chgScroll();
-    if (this.mode == 1) this.startMove();
     return this;
 };
 
-BB.prototype.zoomSelect = function (scale) {
-    var bbobj       = this,
-        cnvWidth  = jc.canvas(this.id).width(),
-        cnvHeight = jc.canvas(this.id).height(),
-        xOffset   = cnvWidth/scale,
-        yOffset   = cnvHeight/scale;
-
-    var objs = jc.layer('zoom').objs;
-    for (i=0;i<objs.length;i++) {
-        objs[i].del();
-    }
-
-    // ガイドとマウスイベントフック用の四角形を最前面に展開
-    var rect   = jc.rect(0, 0, xOffset, yOffset, true).color('rgba(255, 255, 0, 0.3)').layer('zoom');
-    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)').layer('zoom');
-    jc.layer('zoom').level('top');
-
-    hooker.mousemove(function (pt) {
-                         var x = pt.x - 10,
-                             y = pt.y - 10;
-                         if (x < 0) {x=0;}
-                         else if(pt.x+xOffset>cnvWidth) {x=(1-1/scale)*cnvWidth;}
-                         if (y < 0) {y=0;}
-                         else if(pt.y+yOffset>cnvHeight) {y=(1-1/scale)*cnvHeight;}
-                         rect.translateTo(x, y);
-                         return false;
-                     });
-    hooker.mousedown(function (pos) {
-                         var pt = rect.position();
-                         bbobj.zoom(scale, pt.x, pt.y);
-
-                         rect.del();
-                         hooker.del();
-                         return false;
-                     });
-
-    return this;
-};
-
-BB.prototype.cancelZoom = function () {
-    var objs = jc.layer('zoom').objs;
-    for (var i=0;i<objs.length;i++) {
-        objs[i].del();
-    }
-}
-
-//
-//移動
-//
-BB.prototype.startMove = function () {
-    var bbobj     = this,
-        objs      = jc.layer('move').objs,
-        jcanvas   = jc.canvas(this.id),
-        cnvWidth  = jc.canvas(this.id).width(),
-        cnvHeight = jc.canvas(this.id).height(),
-        maxWidth  = cnvWidth*this.zoomScale,
-        maxHeight = cnvHeight*this.zoomScale,
-        baseLayer = jcanvas.layers[0];
-
-    for (i=0;i<objs.length;i++) {
-        objs[i].del();
-    }
-
-    // マウスイベントフック用の四角形を最前面に展開
-    var hooker = jc.rect(0, 0, cnvWidth, cnvHeight, 'rgba(0, 0, 0, 0)').layer('move');
-    jc.layer('move').level('top');
-
-    hooker.mousedown(function (basepos) {
-                         var base_x = basepos.x,
-                             base_y = basepos.y;
-                         hooker.mousemove(function(pos){
-                                              var dx = pos.x-base_x, dy = pos.y-base_y,
-                                                  x  = baseLayer._transformdx,
-                                                  y  = baseLayer._transformdy;
-                                              if (x + dx > 0) {dx = (-1)*x;}
-                                              else if(x + dx < cnvWidth-maxWidth)
-                                                  {dx = maxWidth-cnvWidth+x;}
-                                              if (y + dy > 0) {dy = (-1)*y;}
-                                              else if(y + dy < cnvHeight-maxHeight)
-                                                  {dy = maxHeight-cnvHeight+y;}
-                                              baseLayer.translate(dx,dy);
-                                              for (var objid in (bbobj.member)) {
-                                                  bbobj.object(objid).move(dx,dy);
-                                              }
-                                              base_x=pos.x;
-                                              base_y=pos.y;
-                                              return false;
-                                          });
-
-                         hooker.mouseup(function(){
-                                              hooker.mousemove(function(){});
-                                              return false;
-                                        });
-                         return false;
-                     });
-    this.mode=1;
-    return this;
-};
-
-BB.prototype.stopMove = function () {
-    var objs = jc.layer('move').objs;
-    for (var i=0;i<objs.length;i++) {
-        objs[i].del();
-    }
-    this.mode=0;
-    return this;
-}
 
 BB.prototype.chgScroll = function () {
     jc.canvas(this.id).recalculateOffset();
