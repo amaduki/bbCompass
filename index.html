@@ -6,8 +6,10 @@
 <meta name="description" content="セガのゲーム「ボーダーブレイク」用のコンパスツールもどき">
 <title>BBコンパスもどき</title>
 <link rel=stylesheet type="text/css" href="./include/bb_compass.css">
+<link rel="stylesheet" type="text/css" href="include/scp/jquery.simple-color-picker.css">
 <script type="text/javascript" src="./include/uuid/uuid.js"></script>
 <script type="text/javascript" src="./include/jquery/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="./include/scp/jquery.simple-color-picker.js"></script>
 <script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.18.min.js"></script>
 <script type="text/javascript" src="./include/bb_object.min.js"></script>
 <script type="text/javascript" src="./include/bb_webfunc.js"></script>
@@ -120,9 +122,13 @@
     <div id="menu_1" class="graphmenu">
         <div class=item><form name="scout" action="javascript:set_scout();"> <!--偵察機-->
             <div class="title">偵察機</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_scout" type="text" size="15" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_scout" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
             <div class="type">種別：</div>
             <div class="form">
-                <select id="lst_scout" size="6" class="formlst">
+                <select id="lst_scout" size="4" class="formlst">
                 <!--valueは [偵察範囲,進む距離,進む時間] -->
                 <option label="ラーク偵察機" value="[80,200,5.5]">ラーク</option>
                 <option label="ファルコン偵察機" value="[50,500,8]">ファルコン</option>
@@ -130,16 +136,18 @@
                 <option label="ロビン偵察機" value="[250,20,0.6]">ロビン</option>
                 </select>
             </div>
-            <div class="name">名前：</div>
-            <div class="form"><input id="name_scout" type="text" size="15" class="formtext"></div>
             <div class="submitbtn"><button id="submit_scout">設置</button></div>
         </form></div>
 
         <div class=item><form name="sensor" action="javascript:set_sensor();"> <!--センサー-->
             <div class="title">センサー</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_sensor" type="text" size="15" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_sensor" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
             <div class="type">種別：</div>
             <div class="form">
-                <select id="lst_sensor" size="6" class="formlst">
+                <select id="lst_sensor" size="4" class="formlst">
                     <!--valueは 索敵半径を指定 -->
                     <option label="索敵センサー" value="60">初期センサー</option>
                     <option label="小型索敵センサー" value="45">小型センサー</option>
@@ -147,23 +155,23 @@
                     <option label="軽量索敵センサー" value="55">軽量センサー</option>
                 </select>
             </div>
-            <div class="name">名前：</div>
-            <div class="form"><input id="name_sensor" type="text" size="15" class="formtext"></div>
             <div class="submitbtn"><button id="submit_sensor">設置</button></div>
         </form></div>
 
         <div class=item><form name="sensor" action="javascript:set_radar();"> <!--レーダー-->
             <div class="title">レーダー</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_radar" type="text" size="15" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_radar" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
             <div class="type">種別：</div>
             <div class="form">
-                <select id="lst_radar" size="6" class="formlst">
+                <select id="lst_radar" size="4" class="formlst">
                     <!--valueは 索敵半径を指定 -->
                     <option label="レーダー" value="[180,60]">レーダー</option>
                     <option label="レーダーII" value="[140,120]">レーダーII</option>
                 </select>
             </div>
-            <div class="name">名前：</div>
-            <div class="form"><input id="name_radar" type="text" size="15" class="formtext"></div>
             <div class="submitbtn"><button id="submit_radar">設置</button></div>
         </form></div>
         <div class="reset"></div>
@@ -171,9 +179,13 @@
     <div id="menu_2" class="graphmenu">
         <div class=item><form name="howitzer" action="javascript:set_howitzer()"><!--榴弾-->
             <div class="title">榴弾</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_howitzer" type="text" size="15" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_howitzer" type="text" size="10" value="#f1c232" class="formtext colorpick"></div>
             <div class="type">種別：</div>
             <div class="form">
-                <select id="lst_howitzer" size="6" class="formlst">
+                <select id="lst_howitzer" size="4" class="formlst">
                     <!--valueは [射程,爆発半径,着弾誤差半径] -->
                     <option label="タイタン榴弾砲" value="[300,25,15]">タイタン</option>
                     <option label="コロッサス榴弾砲" value="[250,24,25]">コロッサス</option>
@@ -185,14 +197,14 @@
                     <option label="エアバスターT30" value="[450,38,10]">T30</option>
                 </select>
             </div>
-            <div class="name">名前：</div>
-            <div class="form"><input id="name_howitzer" type="text" size="15" class="formtext"></div>
             <div class="submitbtn"><button id="submit_howitzer">設置</button></div>
         </form></div>
         <div class=item><form name="bunker" action="javascript:set_bunker()"><!--バンカー-->
             <div class="title">サテライトバンカー</div>
             <div class="name">名前：</div>
             <div class="form"><input id="name_bunker" type="text" size="15" class="formtext" value="SB"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_bunker" type="text" size="10" value="#ff00ff" class="formtext colorpick"></div>
             <div class="submitbtn"><button id="submit_bunker">設置</button></div>
         </form></div>
         <div class="reset"></div>
@@ -200,26 +212,30 @@
     <div id="menu_3" class="graphmenu">
         <div class=item><form name="circle" action="javascript:set_circle();"> <!--円-->
             <div class="title">円</div>
-            <div class="type">半径：</div>
-            <div class="form"><input id="rad_circle" type="text" size="5" value="100" form="circle" class="formtext">m</div>
             <div class="name">名前：</div>
             <div class="form"><input id="name_circle" type="text" size="15" value="円" form="circle" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_circle" type="text" size="10" value="#0000ff" class="formtext colorpick"></div>
+            <div class="type">半径：</div>
+            <div class="form"><input id="rad_circle" type="text" size="5" value="100" form="circle" class="formtext">m</div>
             <div class="submitbtn"><button id="submit_circle">設置</button></div>
         </form></div>
         <div class=item><form name="line" action="javascript:set_line();"> <!--直線-->
             <div class="title">直線</div>
-            <div class="type">長さ：</div>
-            <div class="form"><input id="len_line" type="text" size="5" value="100" class="formtext">m</div>
             <div class="name">名前：</div>
             <div class="form"><input id="name_line" type="text" size="15" value="ライン" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_line" type="text" size="10" value="#6aa84f" class="formtext colorpick"></div>
+            <div class="type">長さ：</div>
+            <div class="form"><input id="len_line" type="text" size="5" value="100" class="formtext">m</div>
             <div class="submitbtn"><button id="submit_line">設置</button></div>
         </form></div>
         <div class=item><form name="freehand" action="javascript:set_freehand();"> <!--フリーハンド-->
             <div class="title">フリーハンド</div>
-            <div class="type">色：</div>
-            <div class="form"><input id="col_freehand" type="text" size="10" value="#FFFFFF" class="formtext"></div>
             <div class="name">名前：</div>
             <div class="form"><input id="name_freehand" type="text" size="15" value="フリーハンド" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_freehand" type="text" size="10" value="#ffffff" class="formtext colorpick"></div>
             <div class="submitbtn"><button id="submit_freehand">開始</button>
                                    <button id="stop_freehand" type="button" class="disable" disabled>終了</button></div>
         </form></div>
@@ -304,11 +320,12 @@ ZIP配布版については、開発室経由でお持ちください。
 ツールを作成された方にこの場を借りて御礼申し上げます</p>
 <p>本ツールの地図データはセガが公開しているデータを利用しています。<br>
 自由度の高い規約で地図データを公開してくださってありがとうございます。</p>
-<p>本ツールの作成には、以下の各ライブラリを利用しております。<br>
-ライブラリを開発された方々に御礼申し上げます。</p>
+<p>そして本ツールでは、以下の各ライブラリを利用しております。<br>
+ライブラリを開発された方々にも御礼申し上げます。</p>
 <ul>
 <li><a href="http://jcscript.com/" target="_blank">jCanvaScript</a>
 <li><a href="http://jquery.com/" target="_blank">jQuery</a>
+<li><a href="http://rachel-carvalho.github.com/simple-color-picker/" target="_blank">simpleColorPicker jQuery plugin</a>
 <li><a href="https://github.com/LiosK/UUID.js" target="_blank">UUID.js</a>
 </ul>
 </div>

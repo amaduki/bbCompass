@@ -10,6 +10,16 @@ $(document).ready(function(){
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
+    $('input.colorpick').simpleColorPicker({onChangeColor:function (color){
+                                                              this.css('background-color', color)
+                                                                  .css('color', get_fgColor(color));
+                                                          }
+                                           });
+
+    $('input.colorpick').each(function(){
+                                  $(this).css('background-color', $(this).val())
+                                         .css('color', get_fgColor($(this).val()));
+                              });
 
     var mapobj=$("#map").children().get();
     $("#stage").change(function (){
@@ -99,9 +109,10 @@ function chg_map() {
 function set_scout() {
     if(! $("#lst_scout").val()) {return;}
     if(! $("#name_scout").val()) {return;}
+    if(! $("#col_scout").val()) {return;}
 
     var param = eval($("#lst_scout").val());
-    var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2]);
+    var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
     add_object(obj.id, $("#name_scout").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -111,8 +122,9 @@ function set_scout() {
 function set_sensor() {
     if(! $("#lst_sensor").val()) {return;}
     if(! $("#name_sensor").val()) {return;}
+    if(! $("#col_sensor").val()) {return;}
 
-    var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val());
+    var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
     add_object(obj.id, $("#name_sensor").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -122,9 +134,10 @@ function set_sensor() {
 function set_radar() {
     if(! $("#lst_radar").val()) {return;}
     if(! $("#name_radar").val()) {return;}
+    if(! $("#col_radar").val()) {return;}
 
     var param = eval($("#lst_radar").val());
-    var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1]);
+    var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
     add_object(obj.id, $("#name_radar").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -134,9 +147,10 @@ function set_radar() {
 function set_howitzer(){
     if(! $("#lst_howitzer").val()) {return;}
     if(! $("#name_howitzer").val()) {return;}
+    if(! $("#col_howitzer").val()) {return;}
 
     var param = eval($("#lst_howitzer").val());
-    var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2]);
+    var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
     add_object(obj.id, $("#name_howitzer").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -146,8 +160,9 @@ function set_howitzer(){
 //サテライトバンカー
 function set_bunker() {
     if(! $("#name_bunker").val()) {return;}
+    if(! $("#col_bunker").val()) {return;}
 
-    var obj = bbobj.add_bunker($("#name_bunker").val());
+    var obj = bbobj.add_bunker($("#name_bunker").val(),$("#col_bunker").val());
     add_object(obj.id, $("#name_bunker").val());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -157,8 +172,9 @@ function set_bunker() {
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}
     if(! $("#name_circle").val()) {return;}
+    if(! $("#col_circle").val()) {return;}
 
-    var obj = bbobj.add_circle($("#name_circle").val(),$("#rad_circle").val());
+    var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
     add_object(obj.id, $("#name_circle").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -168,8 +184,9 @@ function set_circle(){
 function set_line(){
     if(! $("#len_line").val()) {return;}
     if(! $("#name_line").val()) {return;}
+    if(! $("#col_line").val()) {return;}
 
-    var obj = bbobj.add_line($("#name_line").val(),$("#len_line").val());
+    var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
     add_object(obj.id, $("#name_line").val());
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
@@ -184,13 +201,13 @@ function set_freehand(){
     $("#stop_freehand").attr("disabled", false)
                        .click(function(){
                                   obj.end();
-                                  $("#col_freehand").change(function(){});
+                                  $("#col_freehand").blur(function(){});
                                   $("button:not(.disable)").attr("disabled",false);
                                   $("#stop_freehand").attr("disabled", true).unbind("click");
                                   $("#col_freehand").unbind("change");
                               });
 
-    $("#col_freehand").change(function(){
+    $("#col_freehand").blur(function(){
                                   obj.color($(this).val());
                               });
 
@@ -299,4 +316,20 @@ function del_object() {
 function save() {
     $("#WorkArea").append($("<img id=DownloadImg src='"+bbobj.save()+"'>"));
     window.open("./image.html","test");
+}
+
+
+//前景色を得る
+function get_fgColor($bgcol) {
+   if ($bgcol.search(/#[0-9a-fA-F]{6}/) == -1) return ("#000000") ;
+
+    $r = parseInt($bgcol.substr(1, 2),16);
+    $g = parseInt($bgcol.substr(3, 2),16);
+    $b = parseInt($bgcol.substr(5, 2),16);
+
+    $bright = (($r*299)+($g*587)+($b*114))/1000;
+    if( $bright < 127.5 ) {
+        return ("#FFFFFF");
+    }
+    return ("#000000");
 }

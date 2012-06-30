@@ -7,7 +7,7 @@ h1,h3{
 }
 
 div.table{
-    width:910px;
+    width:940px;
     height:250px;
     margin-left:auto;
     margin-right:auto;
@@ -31,7 +31,7 @@ div#head_map,div#head_cont{
 }
 
 div#head_graph{
-    width: 540px;
+    width: 570px;
     line-height: 25px;
 }
 
@@ -73,7 +73,7 @@ div.title{
 }
 
 div.item{
-    width:170px;
+    width:180px;
     margin:5px;
     background-color:#FFFFCC;
     float:left;
