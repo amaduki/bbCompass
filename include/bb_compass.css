@@ -174,17 +174,22 @@ div.map_selector{
 }
 
 #WorkArea{
-   display:none;
+    display:none;
 }
 
 #Changes{
-   width:420px;
-   float:right;
+    float:right;
+    margin-left:-28em;
+    width:28em;
 }
 
-#Thanks{
-   width:580px;
-   float:left;
+#Thanks_Attention{
+    float:left;
+    width:100%;
+}
+
+#Thanks,#Attention{
+    margin-right:30em;
 }
 
 #address{
