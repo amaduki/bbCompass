@@ -24,6 +24,11 @@
     │       jquery-1.7.1.min.js
     │       MIT-LICENSE.txt
     │      
+    ├─scp/
+    │       jquery.simple-color-picker.cs
+    │       jquery.simple-color-picker.js
+    │       LICENSE
+    │      
     └─uuid/
              License.txt
              uuid.js
@@ -39,7 +44,7 @@
   Web表示では最小化版だけ使っていて元ファイルを同梱する必要はないものですが、
   改造する場合は読めるものでないと困るので、あえて同梱しています。
 
-  また、下の方にあるjcanvas/jquery/uuidの各ディレクトリは外部ライブラリです。
+  また、下の方にあるjcanvas/jquery/uuid/scpの各ディレクトリは外部ライブラリです。
   基本的には配布されているものをそのまま利用しているのですが、
   jCanvaScriptはgithubから取得した物を自前でminimizeして利用しているため、
   一応元ファイルとminimizeしたファイルの双方を同梱しています。
