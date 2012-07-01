@@ -15,6 +15,7 @@
     │   bb_object.js            描画処理などを記述してある本体
     │   bb_object.min.js        bb_object.jsをYUI Compressorで縮小したもの
     │   bb_webfunc.js           Webのボタン動作などを記述したJavascript
+    │   bb_webfunc.min.js       bb_webfunc.jsをYUI Compressorで縮小したもの
     │  
     ├─jcanvas/
     │       jCanvaScript.1.5.18.min.js
@@ -36,13 +37,14 @@
 
   このツールのディレクトリ構造はこんな感じです。
   bb_object.min.jsがツールのコア部分で、描画などの機能が作りこんであります。
-  index.htmlとbb_compass.cssとbb_webfunc.jsはWeb画面用で、
-  これを通じてbb_object.min.jsの各機能を呼び出しています。
+  フォーム制御などインターフェース側のプログラムはbb_webfunc.min.jsが担います。
+  index.htmlとbb_compass.cssはごく普通のHTMLとCSSファイルですね。
 
-  bbobject.min.jsはWeb表示用に最小化(minimize)したもので、
-  そのもととなったファイルがbbobject.jsです。
-  Web表示では最小化版だけ使っていて元ファイルを同梱する必要はないものですが、
-  改造する場合は読めるものでないと困るので、あえて同梱しています。
+  bbobject.min.jsとbb_webfunc.min.jsは
+  それぞれの元ファイルをWeb表示用に最小化(minimize)したものです。
+  Webで公開する時には最小化版しか使わないのですが、
+  改造する場合は人が読めないと困るので、元ファイルも同梱しています。
+  (つまり、そのまま使うだけであれば.min.jsだけをアップロードすればOKです)
 
   また、下の方にあるjcanvas/jquery/uuid/scpの各ディレクトリは外部ライブラリです。
   基本的には配布されているものをそのまま利用しているのですが、
@@ -53,7 +55,7 @@
 【この文書で説明する範囲について】
   ファイル階層でも書いた通り、BBコンパスもどきは主に3階層でできています。
     Web関連の見栄えを決めるHTMLとCSS
-    Webのボタンなどの動きを決めるbb_webfunc.js
+    Webのボタンなどの動きを決めるbb_webfunc.min.js
     画像処理などを定義するbb_object.min.js
 
   本文書はコンパスもどきのコアであるbb_webfunc.jsについての説明がメインです。
@@ -519,7 +521,7 @@
   返値：obj      画像オブジェクト
 
   フリーハンド描画で最後に記入した線を消します。
-　undoは何段階でも実行できますが、redoはありません（お粗末……）
+  undoは何段階でも実行できますが、redoはありません（お粗末……）
 
 
 ・end()
