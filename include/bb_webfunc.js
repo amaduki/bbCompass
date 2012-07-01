@@ -10,17 +10,14 @@ $(document).ready(function(){
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
-    $('input.colorpick').simpleColorPicker({onChangeColor:function (color){
-                                                              this.css('background-color', color)
-                                                                  .css('color', get_fgColor(color));
-                                                          }
-                                           });
 
+    var onChgCol=function(){
+                     $(this).css('background-color', $(this).val())
+                            .css('color', get_fgColor($(this).val()));
+                 };
+    $('input.colorpick').simpleColorPicker({onChangeColor:onChgCol});
     $('input.colorpick').each(function(){
-                                  $(this).change(function(){
-                                                     $(this).css('background-color', $(this).val())
-                                                            .css('color', get_fgColor($(this).val()));
-                                                 });
+                                  $(this).bind('change',onChgCol);
                               });
     $('input.colorpick').change();
 
@@ -201,18 +198,18 @@ function set_freehand(){
     add_object(obj.id, $("#name_freehand").val());
     $("button").attr("disabled",true);
     obj.start();
+    var colChg =function(){
+                    obj.color($(this).val());
+                }
     $("#stop_freehand").attr("disabled", false)
                        .click(function(){
                                   obj.end();
-                                  $("#col_freehand").blur(function(){});
+                                  $("#col_freehand").unbind('blur',colChg);
                                   $("button:not(.disable)").attr("disabled",false);
                                   $("#stop_freehand").attr("disabled", true).unbind("click");
-                                  $("#col_freehand").unbind("change");
                               });
 
-    $("#col_freehand").blur(function(){
-                                  obj.color($(this).val());
-                              });
+    $("#col_freehand").bind('blur',colChg);
 
 }
 
