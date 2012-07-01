@@ -17,9 +17,12 @@ $(document).ready(function(){
                                            });
 
     $('input.colorpick').each(function(){
-                                  $(this).css('background-color', $(this).val())
-                                         .css('color', get_fgColor($(this).val()));
+                                  $(this).change(function(){
+                                                     $(this).css('background-color', $(this).val())
+                                                            .css('color', get_fgColor($(this).val()));
+                                                 });
                               });
+    $('input.colorpick').change();
 
     var mapobj=$("#map").children().get();
     $("#stage").change(function (){
