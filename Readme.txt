@@ -64,6 +64,9 @@ BBコンパスもどき
     ・jQuery  http://jquery.com/
       MIT License or the GNU General Public License (GPL) Version 2.
 
+    ・simpleColorPicker jQuery plugin  http://rachel-carvalho.github.com/simple-color-picker/
+      MIT License
+
     ・UUID.js  https://github.com/LiosK/UUID.js
       MIT License
 
