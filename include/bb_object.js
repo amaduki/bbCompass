@@ -214,6 +214,11 @@ var BB = function (canvasID){
         return this;
     };
 
+    this.BB_base.prototype.rotateTo = function (_angle) {
+        jcanvas.layer(this.id).rotateTo(_angle);
+        return this;
+    };
+
     this.BB_base.prototype.moveTo = function (_x,_y) {
         //translateToはどこが原点かわからないので、
         //現在までの変位をもとに相対的に移動させる
@@ -628,13 +633,13 @@ var BB = function (canvasID){
     };
 
   //
-  //BB_hewitzerオブジェクト
+  //BB_howitzerオブジェクト
   //
     this.BB_howitzer = function (_text, _radius1, _radius2, _radius3, _color) {
         if (_color===undefined) {_color='#FFA500';}
         this.id=UUID.genV1().toString();
 
-        this.type="hewitzer";
+        this.type="howitzer";
         this._text=_text;
         this._radius1=_radius1;
         this._radius2=_radius2;
