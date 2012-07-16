@@ -34,10 +34,11 @@ var toBase64 = function(view){
         b64 = b64+sub_toBase64(view,i);
     }
 
-    if (!padlen) return b64;
     b64 = b64.substr(0, b64.length - padlen);
-    while(padlen--) b64 += '=';
-    return b64;
+
+    return b64.replace(/[+\/]/g, function(m0){
+                                     return m0 == '+' ? '-' : '_';
+                                 });
 };
 
 var sub_fromBase64 = function(m, Offset){
@@ -55,7 +56,10 @@ var sub_fromBase64 = function(m, Offset){
 };
 
 var fromBase64 = function(b64){
-    b64 = b64.replace(/[^A-Za-z0-9\+\/]/g, '');
+    b64 = b64.replace(/[-_]/g, function(m0){
+                                   return m0 == '-' ? '+' : '/';
+                               })
+             .replace(/[^A-Za-z0-9\+\/]/g, '');
     var padlen = 0;
     var data = new Array();
     var i;
@@ -69,9 +73,7 @@ var fromBase64 = function(b64){
         data=data.concat(sub_fromBase64(b64,i));
     }
 
-    if (padlen >= 2)
-        data = data.slice(0, data.length - [0,0,2,1][padlen]);
-
+    data = data.slice(0, data.length - [0,1,2,3][padlen]);
     return data;
 };
 
@@ -82,26 +84,6 @@ var fromBase64 = function(b64){
 //     http://github.com/vjeux/jDataView
 //
 
-
-var re_bytes_nonascii
-    = /[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF7][\x80-\xBF]{3}/g;
-
-var sub_bytes_nonascii = function(m){
-    var c0 = m.charCodeAt(0);
-    var c1 = m.charCodeAt(1);
-    if(c0 < 0xe0){
-        return String.fromCharCode(((c0 & 0x1f) << 6) | (c1 & 0x3f));
-    }else{
-        var c2 = m.charCodeAt(2);
-        return String.fromCharCode(
-            ((c0 & 0x0f) << 12) | ((c1 & 0x3f) <<  6) | (c2 & 0x3f)
-        );
-    }
-};
-    
-var btou = function(bin){
-    return bin.replace(re_bytes_nonascii, sub_bytes_nonascii);
-};
 
 var compatibility = {
 	ArrayBuffer: typeof ArrayBuffer !== 'undefined',
@@ -337,12 +319,12 @@ jDataView.prototype = {
 
 	getString: function (length, byteOffset) {
 		var value;
+		var byteLength=0;;
 
 		// Handle the lack of byteOffset
 		if (byteOffset === undefined) {
 			byteOffset = this._offset;
 		}
-
 		// Error Checking
 		if (typeof byteOffset !== 'number') {
 			throw new TypeError('jDataView byteOffset is not a number');
@@ -352,18 +334,26 @@ jDataView.prototype = {
 		}
 
 		if (this._isNodeBuffer) {
-			value = this.buffer.toString('ascii', this._start + byteOffset, this._start + byteOffset + length);
+			value = this.buffer.toString('ucs2', this._start + byteOffset, this._start + byteOffset + length);
 		}
 		else {
 			value = '';
-			for (var i = 0; i < length; ++i) {
-				var char = this.getUint8(byteOffset + i);
-				value += String.fromCharCode(char);
+			for (var i = 0; i < length; i++) {
+				var char = this.getUint16(byteOffset + byteLength);
+				byteLength += 2;
+
+				if ((0xD800 <= char) && (char <= 0xD8FF)) {
+					var char2 = this.getUint16(byteOffset + byteLength);
+					byteLength += 2;
+					value += String.fromCharCode((char2 << 16) | char)
+				} else {
+					value += String.fromCharCode(char);
+				}
 			}
 		}
 
-		this._offset = byteOffset + length;
-		return btou(value);
+		this._offset = byteOffset + byteLength;
+		return value;
 	},
 
 	getChar: function (byteOffset) {

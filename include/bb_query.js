@@ -1,38 +1,35 @@
 (function (global) {
-    var re_char_nonascii = /[^\x00-\x7F]/g;
-
-    var sub_char_nonascii = function(m){
-        var n = m.charCodeAt(0);
-        return n < 0x800 ? String.fromCharCode(0xc0 | (n >>>  6))
-                         + String.fromCharCode(0x80 | (n & 0x3f))
-            :              String.fromCharCode(0xe0 | ((n >>> 12) & 0x0f))
-                         + String.fromCharCode(0x80 | ((n >>>  6) & 0x3f))
-                         + String.fromCharCode(0x80 |  (n         & 0x3f))
-        ;
-    };
-
     var setStr = function (text){
         var ret = Array();
+        var code;
 
-        text.replace(re_char_nonascii, sub_char_nonascii);
+        ret[0]=text.length;
         for (i=0;i<text.length;i++) {
-            ret[i]=text.charCodeAt(i);
+            code=text.charCodeAt(i);
+            if (code & 0xffff0000) {
+                ret.push((code & 0xff000000) >> 24,
+                         (code & 0x00ff0000) >> 16,
+                         (code & 0x0000ff00) >>  8,
+                         (code & 0x000000ff)       );
+            } else {
+                ret.push((code & 0x0000ff00) >> 8,
+                         (code & 0x000000ff)      );
+            }
         }
-        ret.unshift(ret.length);
         return ret;
 
     };
 
-    var setInt8 = function (int){
+    var setInt8 = function (value){
         var ret = Array();
-        ret[0] = int & 0x00ff
+        ret[0] = value & 0x00ff
         return ret;
     };
 
-    var setInt16 = function (int){
+    var setInt16 = function (value){
         var ret = Array();
-        ret[0] = int & 0x00ff
-        ret[1] = (int>>8) & 0x00ff
+        ret[1] = value & 0x00ff
+        ret[0] = (value>>8) & 0x00ff
         return ret;
     };
 
@@ -95,11 +92,16 @@
         return ret;
     };
 
-    var setPos = function (x,y) {
+    var setPos = function (pos) {
         var ret = new Array(3);
-        ret[0] = (x & 0x0FF0) >> 4;
-        ret[1] = ((x & 0x000F) << 4) | ((y & 0xF000) >> 8);
-        ret[2] = (y & 0x00FF);
+        var xsign = (pos.x < 0) ? 0x80 : 0,
+            ysign = (pos.y < 0) ? 0x08 : 0,
+            absx  = Math.abs(pos.x),
+            absy  = Math.abs(pos.y);
+
+        ret[0] = ((absx & 0x07F0) >> 4) | xsign;
+        ret[1] = ((absx & 0x000F) << 4) | ysign | ((absy & 0x0700) >> 8);
+        ret[2] = (absy & 0x00FF);
         return ret;
     };
 
@@ -114,6 +116,7 @@
         ret[0] = r;
         ret[1] = g;
         ret[2] = b;
+        return ret;
     };
 
     var getStr = function (view) {
@@ -126,13 +129,15 @@
     var getPos = function (view) {
         var a = view.getUint8(),
             b = view.getUint8(),
-            c = view.getUint8(),
-            ret;
+            c = view.getUint8();
 
-        ret.x = (a << 4) | ((b & 0xF0) >> 4);
-        ret.y = ((b & 0x0F) << 8) | c;
+        var xsign = (a & 0x80) ? (-1) : 1;
+        var ysign = (b & 0x08) ? (-1) : 1;
 
-        return ret;
+console.log(xsign * (((a & 0x7F) << 4) | ((b & 0xF0) >> 4)));
+console.log(ysign * (((b & 0x07) << 8) | c));
+        return {x:xsign * (((a & 0x7F) << 4) | ((b & 0xF0) >> 4)),
+                y:ysign * (((b & 0x07) << 8) | c)};
     };
 
     var getCol = function (view) {
@@ -147,22 +152,20 @@
         return ret;
     }
 
-    var setQueryString = function (bbobj, data, callback) {
+    var setQueryString = function (bbobj, str, callback) {
         var objs     = new Array();
-        var view     = new jDataView(data);
+        var view     = jDataView.fromBase64(str);
         var map      = getStr(view);
         var dpm      = view.getFloat32();
-        var scale    = view.getFloat32();
-
-        $("#map option:selected").val();
+        var imgscale = view.getFloat32();
 
         bbobj.setbg(map, dpm, imgscale, callback);
 
         var objtype,objname,objlen;
         while (view.tell() < view.byteLength) {
+            objname = getStr(view);
             objlen  = view.getUint16();
             objtype = view.getUint8();
-            objname = getStr(view);
 
             switch ( objtype ) {
             case 0x01:  //circle
@@ -182,10 +185,10 @@
                     pos   = getPos(view);
 
                 obj=bbobj.add_line(objname, len, color);
+                obj.moveTo(pos.x, pos.y);
                 obj._pt1pos = getPos(view);
                 obj._pt2pos = getPos(view);
-                obj.moveTo(pos.x, pos.y)
-                   .redraw();
+                obj.redraw();
                 break;
 
             case 0x03:  //freehand
@@ -229,7 +232,7 @@
                    .redraw();
                 break;
 
-            case 0x21:  //hewitzer
+            case 0x21:  //howitzer
                 var color   = getCol(view),
                     rad1    = view.getUint16(),
                     rad2    = view.getUint16(),
@@ -237,7 +240,7 @@
                     pos     = getPos(view),
                     markpos = getPos(view);
 
-                obj=bbobj.add_hewitzer(objname, rad1, rad2, rad3, color);
+                obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color);
 
                 obj._markerx = markpos.x;
                 obj._markery = markpos.y;
@@ -257,11 +260,12 @@
 
             default:
                 obj=undefined;
-                console.log("object not supported");
-                view.seek(view.tell()+objlen);
+                console.error("object not supported");
+                view.seek(view.tell()+objlen-1);
                 break;
             }
-            if (obj !== undefined) objs.push(obj);
+            if (obj === undefined) break;
+            objs.push(obj);
         }
 
         return {map :map,
@@ -274,50 +278,97 @@
         data = data.concat(setStr(map));
         data = data.concat(setFloat32(bbobj.scale/bbobj.imgscale));
         data = data.concat(setFloat32(bbobj.imgscale));
-        for (i=0;i<objs.length;i++) {
+        for (var i=0;i<objs.length;i++) {
             var obj     = bbobj.object(objs[i]);
             var objdata = new Array();
-
-            objdata.concat(setStr(obj._text));
 
             switch ( obj.type ) {
             case 'circle':
                 objdata.unshift(0x01);
-                objdata.concat(setCol(obj._color));
-                objdata.concat(setInt16(obj._radius));
-                objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                       y:jc.layer(obj.id)._transformdy}));
-                objdata.concat(setPos(obj._ptpos));
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius));
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj._ptpos));
                 break;
 
             case 'line':
+                objdata.unshift(0x02);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._length));
+console.log("layer x: " + jc.layer(obj.id)._transformdx + "   y: " + jc.layer(obj.id)._transformdy);
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
+console.log("pt1 x: " + obj._pt1pos.x + "   y: " + obj._pt1pos.y);
+console.log("pt2 x: " + obj._pt2pos.x + "   y: " + obj._pt2pos.y);
+                objdata = objdata.concat(setPos(obj._pt1pos));
+                objdata = objdata.concat(setPos(obj._pt2pos));
                 break;
 
             case 'freehand':
                 break;
 
             case 'scout':
+                objdata.unshift(0x11);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius));
+                objdata = objdata.concat(setInt16(obj._length));
+                objdata = objdata.concat(setInt16(obj._duration));
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
                 break;
 
             case 'sensor':
+                objdata.unshift(0x12);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius));
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
                 break;
 
             case 'radar':
+                objdata.unshift(0x13);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius));
+                objdata = objdata.concat(setInt16(obj._angle));
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
                 break;
 
-            case 'hewitzer':
+            case 'howitzer':
+                objdata.unshift(0x21);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius1));
+                objdata = objdata.concat(setInt16(obj._radius2));
+                objdata = objdata.concat(setInt16(obj._radius3));
+
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos({x:obj._markerx,
+                                                 y:obj._markery}));
                 break;
 
             case 'bunker':
+                objdata.unshift(0x22);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
+                                                 y:jc.layer(obj.id)._transformdy}));
                 break;
 
             default:
-                console.log("object not supported");
+                objdata=undefined;
+                console.error("object not supported");
                 break;
             }
+            if (objdata === undefined) break;
+            objdata.unshift.apply(objdata, setInt16(objdata.length));
+            objdata.unshift.apply(objdata, setStr(obj._text));
+            data = data.concat(objdata);
         }
+
         var buf  = jDataView.createBuffer.apply(undefined, data);
-        console.log(buf);
         var view = new jDataView(buf);
         console.log(view.toBase64());
         return view.toBase64();

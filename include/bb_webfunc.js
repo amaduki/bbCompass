@@ -611,11 +611,11 @@ function getURL() {
     var file  = $("#map option:selected").val();
     var objs  = new Array();
 
-    $($("#lst_object option").get()).each(function(){
+    $($("#lst_object option").get().reverse()).each(function(){
         objs.push($(this).val());
     });
 
-    BBQuery.getQueryString(bbobj, file, objs);
+    BBQuery.getQueryString(bbobj, file + '.jpg', objs);
 }
 
 //前景色を得る
