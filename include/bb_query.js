@@ -1,4 +1,4 @@
-function(global) {
+(function (global) {
     var re_char_nonascii = /[^\x00-\x7F]/g;
 
     var sub_char_nonascii = function(m){
@@ -84,6 +84,7 @@ function(global) {
     }
 
     var setFloat32 = function (f){
+        var ret = new Array();
         var bits = floatToIntBits(f);
 
         ret[0] = (bits >> 24) & 0x000000ff;
@@ -117,7 +118,7 @@ function(global) {
 
     var getStr = function (view) {
         var len = view.getUint8(),
-            ret = view.getString(len),
+            ret = view.getString(len);
 
         return ret;
     };
@@ -270,10 +271,9 @@ function(global) {
 
     var getQueryString = function (bbobj, map, objs) {
         var data    = new Array();
-        data.concat(setStr(map));
-        data.concat(setFloat32(bbobj.scale/bbobj.imgscale));
-        data.concat(setFloat32(bbobj.imgscale));
-
+        data = data.concat(setStr(map));
+        data = data.concat(setFloat32(bbobj.scale/bbobj.imgscale));
+        data = data.concat(setFloat32(bbobj.imgscale));
         for (i=0;i<objs.length;i++) {
             var obj     = bbobj.object(objs[i]);
             var objdata = new Array();
@@ -316,6 +316,11 @@ function(global) {
                 break;
             }
         }
+        var buf  = jDataView.createBuffer.apply(undefined, data);
+        console.log(buf);
+        var view = new jDataView(buf);
+        console.log(view.toBase64());
+        return view.toBase64();
     }
 
     global.BBQuery= {
@@ -323,4 +328,4 @@ function(global) {
         getQueryString:getQueryString
     };
 
-}(this);
+})(this);

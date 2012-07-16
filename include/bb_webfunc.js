@@ -606,6 +606,17 @@ function saveImg() {
     window.open("./image.html","test");
 }
 
+//画像保存
+function getURL() {
+    var file  = $("#map option:selected").val();
+    var objs  = new Array();
+
+    $($("#lst_object option").get()).each(function(){
+        objs.push($(this).val());
+    });
+
+    BBQuery.getQueryString(bbobj, file, objs);
+}
 
 //前景色を得る
 function get_fgColor($bgcol) {
