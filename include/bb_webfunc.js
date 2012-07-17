@@ -92,7 +92,7 @@ $(document).ready(function(){
         //どこかクリックしたらメニューを消す
         $(document).one('click', function() {
             $("div.ContextMenu,div.ContextMenu div.ContextChild").hide();
-        });
+    });
 
     });
 
@@ -192,7 +192,7 @@ function chg_map() {
                                                 }
                                             },
                             error         : function(){}
-                    });
+                });
                 });
 
 
@@ -340,7 +340,7 @@ function set_misc() {
     if (obj) {
         add_object(obj.id, name);
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
 }
 
@@ -428,7 +428,7 @@ function set_point(){
 
 //フリーハンド
 function set_freehand(){
-    var obj = bbobj.add_freehand($("#col_freehand").val());
+    var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
 
     if (($("#name_freehand").val()).length == 0) {
         name = "(フリーハンド)";

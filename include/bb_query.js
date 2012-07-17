@@ -134,8 +134,6 @@
         var xsign = (a & 0x80) ? (-1) : 1;
         var ysign = (b & 0x08) ? (-1) : 1;
 
-console.log(xsign * (((a & 0x7F) << 4) | ((b & 0xF0) >> 4)));
-console.log(ysign * (((b & 0x07) << 8) | c));
         return {x:xsign * (((a & 0x7F) << 4) | ((b & 0xF0) >> 4)),
                 y:ysign * (((b & 0x07) << 8) | c)};
     };
@@ -192,7 +190,19 @@ console.log(ysign * (((b & 0x07) << 8) | c));
                 break;
 
             case 0x03:  //freehand
-                console.log("freehandŽÀ‘•’†");
+                obj=bbobj.add_freehand();
+                obj._step = view.getUint8();
+                for (i=1;i<=obj._step;i++) {
+                    obj._stepcol[i] = getCol(view);
+                    var length = view.getUint16(),
+                        points = new Array();
+                    for (j=0; j<length; j++) {
+                         var point = getPos(view);
+                         points.push([point.x, point.y]);
+                    }
+                    jc.line(points, obj._stepcol[i])
+                      .layer(obj.id).id(i).lineStyle({lineWidth:3});
+                }
                 break;
 
             case 0x11:  //scout
@@ -296,16 +306,24 @@ console.log(ysign * (((b & 0x07) << 8) | c));
                 objdata.unshift(0x02);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setInt16(obj._length));
-console.log("layer x: " + jc.layer(obj.id)._transformdx + "   y: " + jc.layer(obj.id)._transformdy);
                 objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
                                                  y:jc.layer(obj.id)._transformdy}));
-console.log("pt1 x: " + obj._pt1pos.x + "   y: " + obj._pt1pos.y);
-console.log("pt2 x: " + obj._pt2pos.x + "   y: " + obj._pt2pos.y);
                 objdata = objdata.concat(setPos(obj._pt1pos));
                 objdata = objdata.concat(setPos(obj._pt2pos));
                 break;
 
             case 'freehand':
+                objdata.unshift(0x03);
+                objdata = objdata.concat(setInt8(obj._step));
+                for (i=1;i<=obj._step;i++) {
+                    objdata = objdata.concat(setCol(obj._stepcol[i]));
+                    var points = jc("#" + i, {canvas:bbobj.id, layer:obj.id}).points();
+                    objdata = objdata.concat(setInt16(points.length));
+                    for (j=0; j<points.length; j++) {
+                         objdata = objdata.concat(setPos({x:(points[j])[0],
+                                                          y:(points[j])[1]}));
+                    }
+                }
                 break;
 
             case 'scout':
@@ -367,7 +385,6 @@ console.log("pt2 x: " + obj._pt2pos.x + "   y: " + obj._pt2pos.y);
             objdata.unshift.apply(objdata, setStr(obj._text));
             data = data.concat(objdata);
         }
-
         var buf  = jDataView.createBuffer.apply(undefined, data);
         var view = new jDataView(buf);
         console.log(view.toBase64());

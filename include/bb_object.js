@@ -979,57 +979,57 @@ var BB = function (canvasID){
         jcanvas.layer(this.id).draggable();
 
         var dragfunc = function (cursor) {
-                           var followflag = true,
+                                var followflag = true,
                                pos   = this.position(),
-                               base  = range.position(),
-                               layer = jcanvas.layer(obj.id),
-                               dx    = cursor.x-base.x,
-                               dy    = cursor.y-base.y;
-                           if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) > px_rad1) {
-                               //はみだし禁止！
-                               followflag=false;
-                           } else {
-                               followflag=true;
-                           }
+                                    base  = range.position(),
+                                    layer = jcanvas.layer(obj.id),
+                                    dx    = cursor.x-base.x,
+                                    dy    = cursor.y-base.y;
+                                if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) > px_rad1) {
+                                    //はみだし禁止！
+                                    followflag=false;
+                                } else {
+                                    followflag=true;
+                                }
 
-                           if (followflag) {
+                                if (followflag) {
                                tgt.translateTo(pos.x,pos.y);
-                               tgtline.translateTo(pos.x,pos.y);
-                               cross.translateTo(pos.x,pos.y);
-                               area.translateTo(pos.x,pos.y);
-                           } else {
-                               var rad = Math.atan2((cursor.y-base.y),(cursor.x-base.x));
-                               var x = base.x+px_rad1*Math.cos(rad);
-                               var y = base.y+px_rad1*Math.sin(rad);
-                               tgt.translateTo(x,y);
-                               tgtline.translateTo(x,y);
-                               cross.translateTo(x,y);
-                               area.translateTo(x,y);
-                           }
-                           obj._markerx=area._x+area._transformdx;
-                           obj._markery=area._y+area._transformdy;
+                                    tgtline.translateTo(pos.x,pos.y);
+                                    cross.translateTo(pos.x,pos.y);
+                                    area.translateTo(pos.x,pos.y);
+                                } else {
+                                    var rad = Math.atan2((cursor.y-base.y),(cursor.x-base.x));
+                                    var x = base.x+px_rad1*Math.cos(rad);
+                                    var y = base.y+px_rad1*Math.sin(rad);
+                                    tgt.translateTo(x,y);
+                                    tgtline.translateTo(x,y);
+                                    cross.translateTo(x,y);
+                                    area.translateTo(x,y);
+                                }
+                                obj._markerx=area._x+area._transformdx;
+                                obj._markery=area._y+area._transformdy;
                        };
 
         var tgtdrag = function () {
-                          jcanvas.layer(obj.id).optns.drag.val=false;
+                        jcanvas.layer(obj.id).optns.drag.val=false;
                           this.optns.drag.val=true;
                       };
 
         var tgtundrag = function () {
-                            jcanvas.layer(obj.id).optns.drag.val=true;
+                       jcanvas.layer(obj.id).optns.drag.val=true;
                             this.optns.drag.val=false;
                         };
 
         var resetfunc = function () {
-                            // 最初の位置に戻す
-                            var base  = range.position();
-                            tgt.translateTo(base.x,base.y);
-                            tgtline.translateTo(base.x,base.y);
-                            cross.translateTo(base.x,base.y);
-                            area.translateTo(base.x,base.y);
-                            obj._markerx=area._x+area._transformdx;
-                            obj._markery=area._y+area._transformdy;
-                            return false;
+                        // 最初の位置に戻す
+                        var base  = range.position();
+                        tgt.translateTo(base.x,base.y);
+                        tgtline.translateTo(base.x,base.y);
+                        cross.translateTo(base.x,base.y);
+                        area.translateTo(base.x,base.y);
+                        obj._markerx=area._x+area._transformdx;
+                        obj._markery=area._y+area._transformdy;
+                        return false;
                         };
 
         //砲撃地点の処理
@@ -1438,15 +1438,16 @@ var BB = function (canvasID){
   //
   //BB_freehandオブジェクト
   //
-    this.BB_freehand = function ( _color) {
+    this.BB_freehand = function ( _text, _color) {
         if (_color===undefined) {_color='rgb(255, 255, 255)';}
         this.id=UUID.genV1().toString();
-        this.type       = "freehand";
-        this._color     = _color;
-        this._step      = 0;
+        this.type    = "freehand";
+        this._text   = _text;
+        this._color  = _color;
+        this._step   = 0;
         this._stepcol   = new Array;
         this._undoCache = new Array;
-        this._hooker    = undefined;
+        this._hooker = undefined;
 
         //layerを確保するためのダミー画像を設置するのみ
         jcanvas.rect(0, 0, 1, 1, 'rgba(0, 0, 0, 0)').layer(this.id);
