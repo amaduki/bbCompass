@@ -114,12 +114,13 @@
     <div class="reset"></div>
   </div>
   <div class="menucell">
-    <div class="thead" id="head_graph">画像
+    <div class="thead" id="head_graph">メニュー
         <ul>
             <li id="menu01" data-target="menu_1" class="graphtab active">偵察</a></li>
             <li id="menu02" data-target="menu_2" class="graphtab">攻撃</a></li>
             <li id="menu03" data-target="menu_3" class="graphtab">図形</a></li>
-            <li id="menu04" data-target="menu_4" class="graphtab">表示</a></li>
+            <li id="menu04" data-target="menu_4" class="graphtab">その他</a></li>
+            <li id="menu05" data-target="menu_5" class="graphtab">表示</a></li>
         </ul>
     </div>
     <div class="reset"></div>
@@ -234,6 +235,32 @@
             <div class="form"><input id="len_line" type="text" size="5" value="100" class="formtext">m</div>
             <div class="submitbtn"><button id="submit_line">設置</button></div>
         </form></div>
+        <div class=item><form name="point" action="javascript:set_point();"> <!-- 点 -->
+            <div class="title">点</div>
+            <div class="ptname">名前：</div>
+            <div class="form"><input id="name_point" type="text" size="10" value="" class="formtext"></div>
+            <div class="pttype">色：</div>
+            <div class="form"><input id="col_point" type="text" size="10" value="#ffff00" class="formtext colorpick"></div>
+            <div class="pttype">サイズ：</div>
+            <div class="form">
+                <select id="size_point" class="formlst">
+                    <option label="大" value="10">大</option>
+                    <option label="中" value="5" selected>中</option>
+                    <option label="小" value="3">小</option>
+                </select>
+            </div>
+            <div class="pttype">文字位置：</div>
+            <div class="form">
+                <select id="align_point" class="formlst">
+                    <option label="右" value="0">右</option>
+                    <option label="左" value="1">左</option>
+                </select>
+            </div>
+            <div class="submitbtn"><button id="submit_point">設置</button></div>
+        </form></div>
+        <div class="reset"></div>
+    </div>
+    <div id="menu_4" class="graphmenu">
         <div class=item><form name="freehand" action="javascript:set_freehand();"> <!--フリーハンド-->
             <div class="title">フリーハンド</div>
             <div class="name">名前：</div>
@@ -245,7 +272,7 @@
         </form></div>
         <div class="reset"></div>
     </div>
-    <div id="menu_4" class="graphmenu">
+    <div id="menu_5" class="graphmenu">
         <div class=item><form name="zoom" action="javascript:zoom_cnv();"><!--拡縮-->
             <div class="title">拡大縮小</div>
             <div class="type">倍率：</div>

@@ -466,6 +466,42 @@ var BB = function (canvasID){
     };
 
   //
+  //BB_pointオブジェクト
+  //
+    this.BB_point = function (_text, _size, _color, _align) {
+        if (_color===undefined) {_color='rgb(0, 0, 0)';}
+        if (_align===undefined) {_align=0;}
+        this.id=UUID.genV1().toString();
+
+        this.type="point";
+        this._text=_text;
+        this._size=parseInt(_size);
+        this._align=_align;
+        this._color=_color;
+        this.draw();
+        this.move(100, 100);
+        this.regist();
+    };
+    this.BB_point.prototype=new this.BB_base();
+
+    this.BB_point.prototype.draw = function () {
+        jcanvas.circle(0, 0, this._size, this._color, true).opacity(1).layer(this.id);
+        if (this._align == 1) {
+            // 左側
+            var text = jcanvas.text(this._text, (-1) * (this._size + 5) , 0)
+                              .layer(this.id).color('#FFFFFF').font('15px sans-serif')
+                              .align('right').baseline('middle');
+        } else {
+            // 右側
+            var text = jcanvas.text(this._text, this._size + 5 , 0)
+                              .layer(this.id).color('#FFFFFF').font('15px sans-serif')
+                              .align('left').baseline('middle');
+        }
+        jcanvas.layer(this.id).draggable();
+        return this;
+    };
+
+  //
   //BB_scoutオブジェクト
   //
     this.BB_scout = function (_text, _radius, _length, _duration, _color) {
@@ -1133,14 +1169,6 @@ BB.prototype.save = function() {
 //
 //オブジェクト描画
 //
-BB.prototype.add_circle = function (string, radius, color) {
-    return new this.BB_circle(string, radius, color);
-};
-
-BB.prototype.add_line = function (string, length, color) {
-    return new this.BB_line(string, length, color);
-};
-
 BB.prototype.add_scout = function (string, radius, length, duration, color) {
     return new this.BB_scout(string, radius, length, duration, color);
 };
@@ -1159,6 +1187,18 @@ BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) 
 
 BB.prototype.add_bunker = function (string, color) {
     return new this.BB_bunker(string, color);
+};
+
+BB.prototype.add_circle = function (string, radius, color) {
+    return new this.BB_circle(string, radius, color);
+};
+
+BB.prototype.add_line = function (string, length, color) {
+    return new this.BB_line(string, length, color);
+};
+
+BB.prototype.add_point = function (string, length, color, align) {
+    return new this.BB_point(string, length, color, align);
 };
 
 BB.prototype.add_freehand = function (color) {

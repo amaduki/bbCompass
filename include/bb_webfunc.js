@@ -192,6 +192,21 @@ function set_line(){
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
+//点
+function set_point(){
+    var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
+
+    if (($("#name_point").val()).length == 0) {
+        name = "(点)";
+    } else {
+        name = $("#name_point").val();
+    }
+
+    add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
 //フリーハンド
 function set_freehand(){
     var obj = bbobj.add_freehand($("#col_freehand").val());
