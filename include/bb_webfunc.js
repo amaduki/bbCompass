@@ -108,12 +108,16 @@ function chg_map() {
 //偵察機
 function set_scout() {
     if(! $("#lst_scout").val()) {return;}
-    if(! $("#name_scout").val()) {return;}
+    if (($("#name_scout").val()).length == 0) {
+        name = "(" + $("#lst_scout option:selected").text() + ")";
+    } else {
+        name = $("#name_sensor").val();
+    }
     if(! $("#col_scout").val()) {return;}
 
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
-    add_object(obj.id, $("#name_scout").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -121,11 +125,15 @@ function set_scout() {
 //センサー
 function set_sensor() {
     if(! $("#lst_sensor").val()) {return;}
-    if(! $("#name_sensor").val()) {return;}
+    if (($("#name_sensor").val()).length == 0) {
+        name = "(" + $("#lst_sensor option:selected").text() + ")";
+    } else {
+        name = $("#name_sensor").val();
+    }
     if(! $("#col_sensor").val()) {return;}
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
-    add_object(obj.id, $("#name_sensor").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -133,12 +141,17 @@ function set_sensor() {
 //レーダー
 function set_radar() {
     if(! $("#lst_radar").val()) {return;}
-    if(! $("#name_radar").val()) {return;}
+    if (($("#name_radar").val()).length == 0) {
+        name = "(" + $("#lst_radar option:selected").text() + ")";
+    } else {
+        name = $("#name_radar").val();
+    }
+
     if(! $("#col_radar").val()) {return;}
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
-    add_object(obj.id, $("#name_radar").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -146,12 +159,16 @@ function set_radar() {
 //砲撃
 function set_howitzer(){
     if(! $("#lst_howitzer").val()) {return;}
-    if(! $("#name_howitzer").val()) {return;}
+    if (($("#name_howitzer").val()).length == 0) {
+        name = "(" + $("#lst_howitzer option:selected").text() + ")";
+    } else {
+        name = $("#name_howitzer").val();
+    }
     if(! $("#col_howitzer").val()) {return;}
 
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
-    add_object(obj.id, $("#name_howitzer").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -159,11 +176,15 @@ function set_howitzer(){
 
 //サテライトバンカー
 function set_bunker() {
-    if(! $("#name_bunker").val()) {return;}
+    if (($("#name_bunker").val()).length == 0) {
+        name = "(バンカー)";
+    } else {
+        name = $("#name_bunker").val();
+    }
     if(! $("#col_bunker").val()) {return;}
 
     var obj = bbobj.add_bunker($("#name_bunker").val(),$("#col_bunker").val());
-    add_object(obj.id, $("#name_bunker").val());
+    add_object(obj.id, name);
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -171,11 +192,15 @@ function set_bunker() {
 //円
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}
-    if(! $("#name_circle").val()) {return;}
+    if (($("#name_circle").val()).length == 0) {
+        name = "(円)";
+    } else {
+        name = $("#name_circle").val();
+    }
     if(! $("#col_circle").val()) {return;}
 
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
-    add_object(obj.id, $("#name_circle").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -183,11 +208,15 @@ function set_circle(){
 //直線
 function set_line(){
     if(! $("#len_line").val()) {return;}
-    if(! $("#name_line").val()) {return;}
+    if (($("#name_line").val()).length == 0) {
+        name = "(直線)";
+    } else {
+        name = $("#name_line").val();
+    }
     if(! $("#col_line").val()) {return;}
 
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
-    add_object(obj.id, $("#name_line").val());
+    add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -210,7 +239,14 @@ function set_point(){
 //フリーハンド
 function set_freehand(){
     var obj = bbobj.add_freehand($("#col_freehand").val());
-    add_object(obj.id, $("#name_freehand").val());
+
+    if (($("#name_freehand").val()).length == 0) {
+        name = "(フリーハンド)";
+    } else {
+        name = $("#name_freehand").val();
+    }
+
+    add_object(obj.id, name);
     $("button").attr("disabled",true);
     obj.start();
     var colChg =function(){
