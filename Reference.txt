@@ -218,6 +218,17 @@
   下にある画像オブジェクトのリファレンスを見てください。
   画像の基準点は線を構成する二点の中心が利用されます。
 
+・add_point (string text, num radius, [, string color [, num align]])
+  引数：text     オブジェクトの名前
+        radius   点の半径(pixel単位)
+        color    表示色  省略時は黄色
+        align    0なら文字を点の左に、1なら右に表示させる。省略時は右
+  返値：obj      画像オブジェクト(直線)
+
+  点オブジェクトをcanvasに追加します
+  返されるオブジェクトが持つメソッドについては、
+  下にある画像オブジェクトのリファレンスを見てください。
+  画像の基準点は点を表現する円の中心が利用されます。
 
 ・add_scout (string text, num radius, num length, num duration [, string color])
   引数：text     オブジェクトの名前
