@@ -385,6 +385,9 @@
             objdata.unshift.apply(objdata, setStr(obj._text));
             data = data.concat(objdata);
         }
+console.log("before:" + data.length);
+        data=RawDeflate.deflate(data);
+console.log("after:" + data.length);
         var buf  = jDataView.createBuffer.apply(undefined, data);
         var view = new jDataView(buf);
         console.log(view.toBase64());

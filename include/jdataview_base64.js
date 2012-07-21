@@ -305,7 +305,9 @@ if (compatibility.NodeBuffer) {
 }
 
 jDataView.fromBase64 = function (str) {
-	return new jDataView(this.createBuffer.apply(undefined, fromBase64(str)));
+	var data = fromBase64(str);
+	data = RawDeflate.inflate(data);
+	return new jDataView(this.createBuffer.apply(undefined, data));
 };
 
 jDataView.prototype = {
