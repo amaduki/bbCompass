@@ -111,7 +111,7 @@ function set_scout() {
     if (($("#name_scout").val()).length == 0) {
         name = "(" + $("#lst_scout option:selected").text() + ")";
     } else {
-        name = $("#name_sensor").val();
+        name = $("#name_scout").val();
     }
     if(! $("#col_scout").val()) {return;}
 
