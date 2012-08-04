@@ -42,7 +42,7 @@
 
     //CanvaSciprtに偵察機用オブジェクト追加
     jc.addObject('scout',
-        {x:0, y:0, radius:0, length:0, color:'rgb(255, 0, 0)', fill:true},
+        {x:0, y:0, radius:0, length:0, color:'rgb(255, 0, 0)', fill:false},
         function(ctx) {
             var x=this._x,
                 y=this._y,
@@ -529,7 +529,8 @@ var BB = function (canvasID){
 
         var frame = jcanvas.circle(0, 0, px_rad, this._color, false).layer(this.id).opacity(1),
             scout = jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.3).layer(this.id),
-            area  = jcanvas.scout(0, 0, px_rad, px_len, this._color).opacity(0.2).layer(this.id),
+            area  = jcanvas.scout(0, 0, px_rad, px_len, this._color, true).opacity(0.2).layer(this.id),
+            areaf = jcanvas.scout(0, 0, px_rad, px_len, this._color, false).opacity(1).layer(this.id),
             mask  = jcanvas.scout_mask(0, 0, px_rad, px_len).layer(this.id);
         jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
         jcanvas.text(this._text, 0, -10)
