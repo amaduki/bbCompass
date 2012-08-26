@@ -225,6 +225,7 @@ var BB = function (canvasID){
         var posx = jcanvas.layer(this.id)._transformdx;
         var posy = jcanvas.layer(this.id)._transformdy;
         jcanvas.layer(this.id).translate(_x-posx,_y-posy);
+//        jcanvas.layer(this.id).translateTo(_x,_y);
         return this;
     };
 
@@ -253,6 +254,7 @@ var BB = function (canvasID){
         if (nextobj["id"] !== undefined) {
             jcanvas.layer(nextobj["id"]).level(level);
             jcanvas.layer(this.id).level(nextobj["level"]);
+            this._level = nextobj["level"];
             return true;
         } else {
             return false;
@@ -266,10 +268,19 @@ var BB = function (canvasID){
         if (prevobj["id"] !== undefined) {
             jcanvas.layer(prevobj["id"]).level(level);
             jcanvas.layer(this.id).level(prevobj["level"]);
+            this._level = nextobj["level"];
             return true;
         } else {
             return false;
         }
+    };
+
+    this.BB_base.prototype.focus = function () {
+        jcanvas.layer(this.id).level('top');
+    };
+
+    this.BB_base.prototype.unFocus = function () {
+        jcanvas.layer(this.id).level(this._level);
     };
 
     this.BB_base.prototype.del = function () {
@@ -296,6 +307,7 @@ var BB = function (canvasID){
 
         this.draw();
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_circle.prototype=new this.BB_base();
 
@@ -378,6 +390,7 @@ var BB = function (canvasID){
         this.draw();
         this.move(100+px_len/2, 100);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_line.prototype=new this.BB_base();
 
@@ -481,6 +494,7 @@ var BB = function (canvasID){
         this.draw();
         this.move(100, 100);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_point.prototype=new this.BB_base();
 
@@ -519,6 +533,7 @@ var BB = function (canvasID){
         var px_rad  = bbobj.meter_to_pixel(this._radius);
         this.move(px_rad, px_rad);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_scout.prototype=new this.BB_base();
 
@@ -540,17 +555,26 @@ var BB = function (canvasID){
 
         //角度変更処理
         mask.mousedown(function(point){
+                           var tmpmask  = jcanvas.scout_mask(0, 0, px_rad, px_len).layer("tmp_" + obj.id),
+                               layer    = jcanvas.layer(obj.id),
+                               tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                           tmpLayer.translateTo(layer._transformdx, layer._transformdy)
+                                   .rotateTo(layer.getAngle()*180/Math.PI)
+                                   .level('top');
                            var pos_sct  = scout.position();
                            var startrad = Math.atan2((point.y-pos_sct.y), (point.x-pos_sct.x)),
-                               baserad  = jcanvas.layer(obj.id).getAngle();
-                           mask.mousemove(function (pos) {
-                                              var nowrad = Math.atan2((pos.y-pos_sct.y), (pos.x-pos_sct.x));
-                                              var rad    = baserad + (nowrad - startrad);
-                                              jcanvas.layer(obj.id).rotateTo((rad*180/Math.PI), 0, 0);
-                                          });
-                       });
-        mask.mouseup(function (point) {
-                            mask.mousemove(function () {});
+                               baserad  = layer.getAngle();
+                           tmpmask.mousemove(function (pos) {
+                                                 var nowrad = Math.atan2((pos.y-pos_sct.y), (pos.x-pos_sct.x));
+                                                 var rad    = baserad + (nowrad - startrad);
+                                                 layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                                 tmpLayer.rotateTo((rad*180/Math.PI), 0, 0);
+                                             });
+                           tmpmask.mouseup(function (point) {
+                                               jcanvas.layer("tmp_" + obj.id).objects().del();
+                                               //jCanvaScriptバグのため使用不可
+                                               //jcanvas.layer("tmp_" + obj.id).del();
+                                           });
                        });
 
         mask.mouseover(function () {
@@ -595,6 +619,7 @@ var BB = function (canvasID){
         var px_rad = bbobj.meter_to_pixel(this._radius);
         this.move(px_rad, px_rad);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_sensor.prototype=new this.BB_base();
 
@@ -626,6 +651,7 @@ var BB = function (canvasID){
         var px_rad = bbobj.meter_to_pixel(this._radius);
         this.move(px_rad, px_rad);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_radar.prototype=new this.BB_base();
 
@@ -640,31 +666,34 @@ var BB = function (canvasID){
                    .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
 
         //移動処理(draggableでは回転できないため、独自定義)
-        var baserad, startrad, radius;
-        var mmEvent = function (pos) {
-                          var pos_area = area.position(),
-                              nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
-                              rad      = baserad+(nowrad - startrad);
-                           jcanvas.layer(obj.id).rotateTo((rad*180/Math.PI), 0, 0);
-                           obj.moveTo(pos.x-radius*Math.cos(nowrad), pos.y-radius*Math.sin(nowrad));};
-
         var mdEvent = function(point){
                           var pos_base = area.position(),
                               px_rad   = bbobj.meter_to_pixel(obj._radius);
-                          radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2));
-                          startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x));
-                          baserad  = jcanvas.layer(obj.id).getAngle();
-                          area.mousemove(mmEvent);
-                          text.mousemove(mmEvent);};
-
-        var muEvent = function(){
-                           area.mousemove(function () {});
-                           text.mousemove(function () {});};
+                              radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2)),
+                              startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
+                              baserad  = jcanvas.layer(obj.id).getAngle();
+                              tmpmask  = jcanvas.radar(0, 0, px_rad, this._angle, 'rgba(0,0,0,0)', true).layer("tmp_" + obj.id),
+                              layer    = jcanvas.layer(obj.id),
+                              tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                          tmpLayer.translateTo(layer._transformdx, layer._transformdy)
+                                  .rotateTo(layer.getAngle()*180/Math.PI)
+                                  .level('top');
+                          tmpmask.mousemove(function (pos) {
+                                                var pos_area = area.position(),
+                                                    nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    rad      = baserad+(nowrad - startrad);
+                                                 layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                                 tmpLayer.rotateTo((rad*180/Math.PI), 0, 0);
+                                                 obj.moveTo(pos.x-radius*Math.cos(nowrad), pos.y-radius*Math.sin(nowrad));
+                                                 tmpLayer.translateTo(pos.x-radius*Math.cos(nowrad), pos.y-radius*Math.sin(nowrad));
+                                            });
+                          tmpmask.mouseup(function() {
+                                              jcanvas.layer("tmp_" + obj.id).objects().del();
+                                          });
+                      };
 
         area.mousedown(mdEvent);
         text.mousedown(mdEvent);
-        area.mouseup(muEvent);
-        text.mouseup(muEvent);
 
         return this;
     };
@@ -689,6 +718,7 @@ var BB = function (canvasID){
         var px_rad1 = bbobj.meter_to_pixel(this._radius1);
         this.move(px_rad1, px_rad1);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_howitzer.prototype=new this.BB_base();
 
@@ -793,6 +823,7 @@ var BB = function (canvasID){
         var px_rad = bbobj.meter_to_pixel(this._rad2);
         this.move(px_rad, px_rad);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
     this.BB_bunker.prototype=new this.BB_base();
 
@@ -825,6 +856,7 @@ var BB = function (canvasID){
         //layerを確保するためのダミー画像を設置するのみ
         jcanvas.rect(0, 0, 1, 1, 'rgba(0, 0, 0, 0)').layer(this.id);
         this.regist();
+        this._level = jcanvas.layer(this.id).level();
     };
 
     this.BB_freehand.prototype.color = function (_color) {
@@ -841,6 +873,8 @@ var BB = function (canvasID){
     this.BB_freehand.prototype.del      = this.BB_base.prototype.del;
     this.BB_freehand.prototype.move     = this.BB_base.prototype.move;
     this.BB_freehand.prototype.moveTo   = this.BB_base.prototype.moveTo;
+    this.BB_freehand.prototype.focus    = this.BB_base.prototype.focus;
+    this.BB_freehand.prototype.unFocus  = this.BB_base.prototype.unFocus;
 
     this.BB_freehand.prototype.redraw = function () {
         for (i=1;i<=this._step;i++) {
