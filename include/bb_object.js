@@ -842,6 +842,81 @@ var BB = function (canvasID){
     };
 
   //
+  //BB_waftオブジェクト
+  //
+    this.BB_waft = function (_text, _file, _color) {
+        if (_color===undefined) {_color='rgb(0, 255, 255)';}
+        this.id=UUID.genV1().toString();
+
+        this.type   = "waft";
+        this._text  = _text;
+        this._rad   = 20;  //大ざっぱに全長40m程度?
+        this._color = _color;
+
+        //描画して登録。初期座標は半径分ずらす
+        this._image    = new Image;
+        this._image.src=_file;
+        var obj        = this,
+            px_rad     = bbobj.meter_to_pixel(this._rad);
+        this._image.onload= function () {
+            obj.draw();
+            obj.move(px_rad, px_rad);
+            obj.regist();
+            obj._level = jcanvas.layer(this.id).level();
+        };
+    };
+    this.BB_waft.prototype=new this.BB_base();
+
+    this.BB_waft.prototype.draw = function () {
+        var px_rad = bbobj.meter_to_pixel(this._rad),
+            img_width  = this._image.width,
+            img_height = this._image.height,
+            img_rate   = px_rad *2 / ((img_width>=img_height)?img_width:img_height);
+
+        img_width  = img_width  * img_rate;
+        img_height = img_height * img_rate;
+
+        var handle = jcanvas.circle(0, 0, px_rad + (10 * bbobj.zoomScale), this._color, true).opacity(0.3).layer(this.id);
+        jcanvas.circle(0, 0, px_rad, this._color, true).opacity(1).layer(this.id);
+        jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
+        jcanvas.layer(this.id).draggable();
+
+        //角度変更処理
+        var obj   = this,
+            layer = jc.layer(this.id),
+            canvas = jc.canvas(bbobj.id);
+
+        handle.mousedown(function(point){
+                             var pos_hdl  = handle.position();
+                             // マウスイベントフック用の四角形を最前面に展開
+                             var tmpmask = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
+                                                  .layer("tmp_" + obj.id).level('top');
+
+                             var startrad = Math.atan2((point.y-pos_hdl.y), (point.x-pos_hdl.x)),
+                                 baserad  = layer.getAngle();
+                             tmpmask.mousemove(function (pos) {
+                                                   var nowrad = Math.atan2((pos.y-pos_hdl.y), (pos.x-pos_hdl.x));
+                                                   var rad    = baserad + (nowrad - startrad);
+                                                   layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                               });
+                             tmpmask.mouseup(function (point) {
+                                                 jcanvas.layer("tmp_" + obj.id).objects().del();
+                                                 //jCanvaScriptバグのため使用不可
+                                                 //jcanvas.layer("tmp_" + obj.id).del();
+                                             });
+                         });
+
+        handle.mouseover(function () {
+                             layer.optns.drag.val=false;  // ドラッグ無効
+                       });
+        handle.mouseout(function () {
+                            layer.optns.drag.val=true;    // ドラッグ有効
+                      });
+
+        return this;
+    };
+
+  //
   //BB_freehandオブジェクト
   //
     this.BB_freehand = function ( _color) {
@@ -1234,6 +1309,10 @@ BB.prototype.add_line = function (string, length, color) {
 
 BB.prototype.add_point = function (string, length, color, align) {
     return new this.BB_point(string, length, color, align);
+};
+
+BB.prototype.add_waft = function (string, file, color) {
+    return new this.BB_waft(string, file, color);
 };
 
 BB.prototype.add_freehand = function (color) {

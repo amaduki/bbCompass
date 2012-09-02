@@ -189,6 +189,22 @@ function set_bunker() {
 }
 
 
+//ワフトローダー
+function set_waft(file) {
+    if(! file) {return;}
+    if (($("#name_waft").val()).length == 0) {
+        name = "(ワフトローダー)";
+    } else {
+        name = $("#name_waft").val();
+    }
+    if(! $("#col_bunker").val()) {return;}
+
+    var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
+    add_object(obj.id, name);
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
+
 //円
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}
