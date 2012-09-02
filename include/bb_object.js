@@ -890,7 +890,8 @@ var BB = function (canvasID){
                              var pos_hdl  = handle.position();
                              // マウスイベントフック用の四角形を最前面に展開
                              var tmpmask = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
-                                                  .layer("tmp_" + obj.id).level('top');
+                                                  .layer("tmp_" + obj.id);
+                             jc.layer("tmp_" + obj.id).level('top');
 
                              var startrad = Math.atan2((point.y-pos_hdl.y), (point.x-pos_hdl.x)),
                                  baserad  = layer.getAngle();
