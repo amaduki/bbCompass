@@ -185,6 +185,7 @@ function set_bunker() {
 
     var obj = bbobj.add_bunker($("#name_bunker").val(),$("#col_bunker").val());
     add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
@@ -201,6 +202,7 @@ function set_waft(file) {
 
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
     add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
