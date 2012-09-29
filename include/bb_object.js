@@ -1248,6 +1248,47 @@ BB.prototype.save = function() {
     return(jc.canvas(this.id).toDataURL('image/png'));
 };
 
+
+//
+//ターレット配置
+//
+BB.prototype.put_turret = function (x, y, rot, radius, angle, color, test) {
+    if (x===undefined) {x=0;}
+    if (y===undefined) {y=0;}
+    if (rot===undefined) {rot=0;}
+    if (radius===undefined) {radius=250;}
+    if (angle===undefined) {angle=180;}
+    if (color===undefined) {color='rgb(255, 153, 0)';}
+    if (test===undefined) {test=false;}
+
+    var visible = false,
+        px_rad = bbobj.meter_to_pixel(radius),
+        area   = this.jcanvas.sector(x, y, px_rad, angle, color, true)
+                             .rotateTo(rot-90, x, y).opacity(0.3).visible(visible),
+        line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false)
+                             .rotateTo(rot-90, x, y).opacity(1).visible(visible),
+        hooker = this.jcanvas.circle(x, y, 7, 'rgba(0,0,0,0)', true)
+                             .rotateTo(rot-90, x, y);
+
+    if (test) {
+        this.jcanvas.line([[x, y], [x, y-20]], 'rgba(255,255,255,1)')
+                    .rotateTo(rot, x, y).lineStyle({lineWidth:3});
+        hooker.color('rgba(255,255,255,1)').level('top');
+    }
+
+    hooker.mouseover(function(){
+                         area.visible(true);
+                         line.visible(true);
+                     });
+    hooker.mouseout(function(){
+                         area.visible(visible);
+                         line.visible(visible);
+                     });
+    hooker.click(function(){
+                         visible = ! (visible);
+                     });
+};
+
 //
 //オブジェクト描画
 //

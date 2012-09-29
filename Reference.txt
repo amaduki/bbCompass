@@ -197,6 +197,24 @@
   変換の倍率はset_bgで背景を設定したときの値が利用されます。
 
 
+・put_turret (num x, num y, num rot, num radius, num angle[, string color, boolean test])
+  引数：x        ターレットを配置するx座標(画像ベース)
+        y        ターレットを配置するx座標(画像ベース)
+        rot      ターレットの角度（0で上向きです）
+        radius   ターレットの射程半径
+        angle    ターレットの回転角度
+        color    表示色  省略時は橙色
+        test     テストフラグ
+  返値：なし
+
+  マップ上にターレットアイテムを配置します
+  ターレットアイテムは指定座標を中心とした半径7dotの円が設定され、
+  そこにマウスを置いたときに扇形の射撃範囲表示が出ます。
+  射撃範囲表示中にクリックすると、表示のON/OFF切り替えもできます。
+  testフラグをtrueにした場合は、場所・角度の調節用として
+  マウス位置判定の円と、ターレットの向きが白く表示されます。
+
+
 ・add_circle (string text, num radius[, string color])
   引数：text     オブジェクトの名前
         radius   円の初期半径(m単位)
