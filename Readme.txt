@@ -13,16 +13,19 @@ BBコンパスもどき
     FirefoxとかChromeとかIEの9以上とかならたぶん動きます。
     操作はおおむねRangeCheckerやABCと同じなので、適宜触って覚えてください。
 
-    ただし、自分のPCにダウンロードしたファイルを開いている場合、
+    ただし、自分のPCにダウンロードしたファイルをそのまま開いている場合、
     セキュリティ警告の都合で画像保存機能が使えない場合があるようです。
+    また、chromeに限ってはガンタレ表示機能も使えなくなります。
+    これはPC内部でのデータやり取りについて、制限がかかっているためです。
+
     下記の方法で回避できるらしいですが、セキュリティレベルが低下します。
     実施する場合は自己責任でお願いいたします。
 
     IEの場合
-        画像を保存する際セキュリティ警告が出るので、許可する。
+      起動時と画像を保存する際にセキュリティ警告が出るので、許可する。
 
     Firefoxの場合 
-        about:config から、security.fileuri.strict_origin_policy を false に設定する
+      about:config から、security.fileuri.strict_origin_policy を false に設定する
 
     Google Chromeの場合 
       起動オプションに「--allow-file-access-from-files」を付加する

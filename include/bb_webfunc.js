@@ -5,6 +5,11 @@ var scrollBarWidth=0;
 var scrollBarHeight=0;
 var bbobj="";
 
+//ターレット関連データ
+var turretSpec={"R":[200,180],
+                "G":[250,180],
+                "M":[250,180]}
+
 $(document).ready(function(){
     $("#lst_scout").change(function(){$("#name_scout").val($("#lst_scout option:selected").text());});
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
@@ -94,6 +99,20 @@ function chg_map() {
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
+                    $.ajax({url      : "./data/" + file + ".txt",
+                            cache    : false,
+                            dataType : 'json',
+                            success  : function(data,status){
+                                           var turretData = data["turret"];
+                                           for(i=0;i<turretData.length;i++) {
+                                               bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
+                                                                turretSpec[turretData[i][3]][0],
+                                                                turretSpec[turretData[i][3]][1],
+                                                                undefined,turretData[i][4]);
+                                           }
+                                       },
+                            error    : function(){}
+                    });
                 });
 
 
