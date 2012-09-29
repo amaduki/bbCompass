@@ -83,8 +83,8 @@
                          };
         });
 
-    //CanvaSciprtにレーダー用オブジェクト追加
-    jc.addObject('radar',
+    //CanvaSciprtに扇形オブジェクト追加
+    jc.addObject('sector',
         {x:0, y:0, radius:0, angle:0, color:'rgb(255, 0, 0)', fill:false},
         function(ctx) {
             var x      = this._x,
@@ -641,7 +641,7 @@ var BB = function (canvasID){
             obj    = this;
 
         jcanvas.radar(0, 0, px_rad, this._angle, this._color, false).opacity(1).layer(this.id);
-        var area = jcanvas.radar(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
+        var area = jcanvas.sector(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
         jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
         var text = jcanvas.text(this._text, 60, 0)
                    .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
