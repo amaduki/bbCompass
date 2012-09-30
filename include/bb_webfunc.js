@@ -62,6 +62,7 @@ $(document).ready(function(){
 
   //changelog
     $.ajax({url     : "./Changelog.txt",
+            dataType : 'text',
             cache   : false,
             success : function(txt,status){$("#changelog").val(txt);},
             error   : function(){$("#changelog").val("更新履歴の取得に失敗しました");}
