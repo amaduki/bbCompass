@@ -8,7 +8,8 @@ var bbobj="";
 //ターレット関連データ
 var turretSpec={"R":[200,180],
                 "G":[250,180],
-                "M":[250,180]}
+                "M":[250,180]};
+var turretCircle=8;
 
 $(document).ready(function(){
     $("#lst_scout").change(function(){$("#name_scout").val($("#lst_scout option:selected").text());});
@@ -108,6 +109,7 @@ function chg_map() {
                                                bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
                                                                 turretSpec[turretData[i][3]][0],
                                                                 turretSpec[turretData[i][3]][1],
+                                                                turretCircle,
                                                                 undefined,turretData[i][4]);
                                            }
                                        },

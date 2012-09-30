@@ -1252,12 +1252,13 @@ BB.prototype.save = function() {
 //
 //ターレット配置
 //
-BB.prototype.put_turret = function (x, y, rot, radius, angle, color, test) {
-    if (x===undefined) {x=0;}
-    if (y===undefined) {y=0;}
-    if (rot===undefined) {rot=0;}
-    if (radius===undefined) {radius=250;}
-    if (angle===undefined) {angle=180;}
+BB.prototype.put_turret = function (x, y, rot, radius, angle, hookrad, color, test) {
+    if (x===undefined) {return undefined;}
+    if (y===undefined) {return undefined;}
+    if (rot===undefined) {return undefined;}
+    if (radius===undefined) {return undefined;}
+    if (angle===undefined) {return undefined;}
+    if (hookrad===undefined) {hookrad=8;}
     if (color===undefined) {color='rgb(255, 153, 0)';}
     if (test===undefined) {test=false;}
 
@@ -1267,12 +1268,12 @@ BB.prototype.put_turret = function (x, y, rot, radius, angle, color, test) {
                              .rotateTo(rot-90, x, y).opacity(0.3).visible(visible),
         line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false)
                              .rotateTo(rot-90, x, y).opacity(1).visible(visible),
-        hooker = this.jcanvas.circle(x, y, 7, 'rgba(0,0,0,0)', true)
+        hooker = this.jcanvas.circle(x, y, hookrad, 'rgba(0,0,0,0)', true)
                              .rotateTo(rot-90, x, y);
 
     if (test) {
         this.jcanvas.line([[x, y], [x, y-20]], 'rgba(255,255,255,1)')
-                    .rotateTo(rot, x, y).lineStyle({lineWidth:3});
+                    .rotateTo(rot, x, y).lineStyle({lineWidth:2});
         hooker.color('rgba(255,255,255,1)').level('top');
     }
 
