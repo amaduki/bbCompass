@@ -640,7 +640,6 @@ var BB = function (canvasID){
         var px_rad = bbobj.meter_to_pixel(this._radius),
             obj    = this;
 
-        jcanvas.radar(0, 0, px_rad, this._angle, this._color, false).opacity(1).layer(this.id);
         jcanvas.sector(0, 0, px_rad, this._angle, this._color, false).opacity(1).layer(this.id);
         var area = jcanvas.sector(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
         jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');

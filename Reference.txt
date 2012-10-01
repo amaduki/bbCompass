@@ -250,7 +250,7 @@
   この扇形は半径radius、中心角angle度、扇形の中心が上からrot度を向きます。
   なお、testフラグをtrueにした場合は、場所・角度の調節用として
   マウス位置判定の円と、ターレットの向きが白く表示されます。
-  
+
 
 ・add_circle (string text, num radius[, string color])
   引数：text     オブジェクトの名前
