@@ -30,18 +30,19 @@
                 (Javascriptで解釈するので、数式を書いてもOKです)
                 オマケ機能として[pixel/メートル, 倍率]と書いておくと、
                 画像を指定倍率で縮小し、距離の縮尺も倍率にあわせて補正します -->
-            <option value="map"     data-scale="[160/100*0.7]" selected>スカービ渓谷</option>
-            <option value="blouer"  data-scale="[53/45*0.7]">旧ブロア市街地</option>
-            <option value="island"  data-scale="[54/39*0.7]">第三採掘島</option>
-            <option value="tlaza"   data-scale="[160/100*0.7]">トラザ山岳基地</option>
-            <option value="darya"   data-scale="[107/63*0.7]">ダリーヤ遺跡</option>
-            <option value="d51"     data-scale="[154/100*0.7]">放棄区画D51</option>
-            <option value="wuhai"   data-scale="[154/114*0.7]">ウーハイ産業港</option>
-            <option value="valerio" data-scale="[103/94*0.7]">城塞都市バレリオ</option>
-            <option value="belsk"   data-scale="[154/100*0.7]">極洋基地ベルスク</option>
-            <option value="adora"   data-scale="[163/146*0.7]">アドラ火山連峰</option>
-            <option value="algren"  data-scale="[1.138*0.7]">オルグレン湖水基地</option>
-            <option value="denebra"  data-scale="[0.946*0.7]">デ・ネブラ大落片</option>
+            <option value="map"        data-scale="[160/100*0.7]" selected>スカービ渓谷</option>
+            <option value="blouer"     data-scale="[53/45*0.7]">旧ブロア市街地</option>
+            <option value="island"     data-scale="[54/39*0.7]">第三採掘島</option>
+            <option value="tlaza"      data-scale="[160/100*0.7]">トラザ山岳基地</option>
+            <option value="darya"      data-scale="[107/63*0.7]">ダリーヤ遺跡</option>
+            <option value="d51"        data-scale="[154/100*0.7]">放棄区画D51</option>
+            <option value="wuhai"      data-scale="[154/114*0.7]">ウーハイ産業港</option>
+            <option value="valerio"    data-scale="[103/94*0.7]">城塞都市バレリオ</option>
+            <option value="belsk"      data-scale="[154/100*0.7]">極洋基地ベルスク</option>
+            <option value="adora"      data-scale="[163/146*0.7]">アドラ火山連峰</option>
+            <option value="algren"     data-scale="[1.138*0.7]">オルグレン湖水基地</option>
+            <option value="denebra"    data-scale="[0.946*0.7]">デ・ネブラ大落片</option>
+            <option value="highrisesite" data-scale="[1.194*0.7]">第19号高層サイト</option>
         </select></div>
         <div class="map_selector"><select id="map">
             <!-- 絞り込み用にマップのvalueをclass属性として指定する -->
@@ -105,6 +106,7 @@
             <option class="denebra" value="denebra_a" data-layer="['通路A','通路B','全通路']">雨下応酬</option>
             <option class="denebra" value="denebra_b" data-layer="['通路A','通路B','全通路']">塔上接敵</option>
             <option class="denebra" value="denebra_c" data-layer="['通路A','通路B','全通路']">天翔る双龍</option>
+            <option class="highrisesite" value="highrisesite_a" data-layer="['1F','2F','3F','全表示']">天柱の兵火</option>
         </select></div>
         <div class="submitbtn"><button id="change_map">選択</button></div>
         </form>
@@ -176,8 +178,8 @@
             <div class="form">
                 <select id="lst_radar" size="4" class="formlst">
                     <!--valueは 索敵半径を指定 -->
-                    <option label="レーダー" value="[180,60]">レーダー</option>
-                    <option label="レーダーII" value="[140,120]">レーダーII</option>
+                    <option label="レーダー" value="[200,60]">レーダー</option>
+                    <option label="レーダーII" value="[160,120]">レーダーII</option>
                 </select>
             </div>
             <div class="submitbtn"><button id="submit_radar">設置</button></div>
