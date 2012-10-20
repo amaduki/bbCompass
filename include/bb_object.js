@@ -1267,11 +1267,11 @@ BB.prototype.put_turret = function (x, y, rot, radius, angle, hookrad, color, te
     var visible = false,
         px_rad = bbobj.meter_to_pixel(radius),
         area   = this.jcanvas.sector(x, y, px_rad, angle, color, true)
-                             .rotateTo(rot-90, x, y).opacity(0.3).visible(visible),
-        line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false)
+                             .rotateTo(rot-90, x, y).opacity(0.3).visible(visible).level(1),
+        line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false).level(1)
                              .rotateTo(rot-90, x, y).opacity(1).visible(visible),
         hooker = this.jcanvas.circle(x, y, hookrad, 'rgba(0,0,0,0)', true)
-                             .rotateTo(rot-90, x, y);
+                             .rotateTo(rot-90, x, y).level(3);
 
     if (test) {
         this.jcanvas.line([[x, y], [x, y-20]], 'rgba(255,255,255,1)')
