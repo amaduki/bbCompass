@@ -16,6 +16,7 @@ $(document).ready(function(){
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
+    $("#lst_icon").change(function(){$("#name_icon").val($("#lst_icon option:selected").text());});
 
     var onChgCol=function(){
                      $(this).css('background-color', $(this).val())
@@ -206,6 +207,23 @@ function set_bunker() {
     if(! $("#col_bunker").val()) {return;}
 
     var obj = bbobj.add_bunker($("#name_bunker").val(),$("#col_bunker").val());
+    add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
+
+//アイコン
+function set_icon(){
+    if(! $("#lst_icon").val()) {return;}
+    if (($("#name_icon").val()).length == 0) {
+        name = "(" + $("#lst_icon option:selected").text() + "アイコン)";
+    } else {
+        name = $("#name_icon").val();
+    }
+    if(! $("#col_icon").val()) {return;}
+
+    var obj = bbobj.add_icon($("#name_icon").val(), $("#lst_icon").val(), $("#col_icon").val());
     add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});

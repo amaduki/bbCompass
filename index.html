@@ -269,6 +269,24 @@
         <div class="reset"></div>
     </div>
     <div id="menu_4" class="graphmenu">
+        <div class=item><form name="waft" action="javascript:set_icon()"><!--アイコンー-->
+            <div class="title">アイコン</div>
+            <div class="name">名前：</div>
+            <div class="form"><input id="name_icon" type="text" size="15" class="formtext"></div>
+            <div class="type">色：</div>
+            <div class="form"><input id="col_icon" type="text" size="10" value="#00ffff" class="formtext colorpick"></div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_icon" size="4" class="formlst">
+                    <option label="強襲" value="image/assault.png">強襲</option>
+                    <option label="重火力" value="image/heavy.png">重火力</option>
+                    <option label="狙撃" value="image/snipe.png">狙撃</option>
+                    <option label="支援" value="image/support.png">支援</option>
+                    <option label="マイン" value="image/mine.png">マイン</option>
+                </select>
+            </div>
+            <div class="submitbtn"><button id="submit_waft">設置</button></div>
+        </form></div>
         <div class=item><form name="waft" action="javascript:set_waft('image/waft.png')"><!--ワフトローダー-->
             <div class="title">ワフトローダー</div>
             <div class="name">名前：</div>

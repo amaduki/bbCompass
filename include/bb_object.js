@@ -818,6 +818,45 @@ var BB = function (canvasID){
         return this;
     };
 
+
+  //
+  //BB_iconオブジェクト
+  //
+    this.BB_icon = function (_text, _file, _color) {
+        if (_color===undefined) {_color='rgb(0, 255, 255)';}
+        this.id=UUID.genV1().toString();
+
+        this.type   = "icon";
+        this._text  = _text;
+        this._color = _color;
+
+        //描画して登録。初期座標は半径分ずらす
+        this._image    = new Image;
+        this._image.src=_file;
+        var obj        = this;
+        this._image.onload= function () {
+            var px_dia = Math.sqrt(Math.pow(obj._image.width,2) + Math.pow(obj._image.height,2));
+            obj.draw();
+            obj.move(px_dia, px_dia);
+            obj.regist();
+        };
+    };
+    this.BB_icon.prototype=new this.BB_base();
+
+    this.BB_icon.prototype.draw = function () {
+        var img_width  = this._image.width,
+            img_height = this._image.height,
+            px_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
+        jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.9).layer(this.id);
+        jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
+        jcanvas.text(this._text, img_width * 0.5 + 5 , 0)
+               .layer(this.id).color('#FFFFFF').font('15px sans-serif')
+               .align('left').baseline('middle');
+        jcanvas.layer(this.id).draggable();
+
+        return this;
+    };
+
   //
   //BB_waftオブジェクト
   //
@@ -1325,6 +1364,10 @@ BB.prototype.add_line = function (string, length, color) {
 
 BB.prototype.add_point = function (string, length, color, align) {
     return new this.BB_point(string, length, color, align);
+};
+
+BB.prototype.add_icon = function (string, file, color) {
+    return new this.BB_icon(string, file, color);
 };
 
 BB.prototype.add_waft = function (string, file, color) {
