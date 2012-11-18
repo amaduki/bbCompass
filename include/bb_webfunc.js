@@ -97,7 +97,7 @@ function chg_map() {
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
     var salt  = "?" + new Date().getTime();
-    bbobj.setbg("./image/"+file+".jpg" + salt, scale[0], scale[1],
+    bbobj.setbg("./map/"+file+".jpg" + salt, scale[0], scale[1],
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
