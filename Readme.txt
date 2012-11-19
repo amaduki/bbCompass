@@ -2,7 +2,8 @@
 BBコンパスもどき
 
 製作者：暇人@BB
-配布元：http://bbcompass.web.fc2.com/
+サイト：http://bbcompass.web.fc2.com/
+配布元：http://ux.getuploader.com/bbcompass/
 開発室：http://bbcompass.blog.fc2.com/
 ----
 
