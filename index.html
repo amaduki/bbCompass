@@ -217,13 +217,21 @@
             </div>
             <div class="submitbtn"><button id="submit_howitzer">設置</button></div>
         </form></div>
-        <div class=item><form name="bunker" action="javascript:set_bunker()"><!--バンカー-->
-            <div class="title">サテライトバンカー</div>
+        <div class=item><form name="misc" action="javascript:set_misc()"><!--色々-->
+            <div class="title">各種武器</div>
             <div class="name">名前：</div>
-            <div class="form"><input id="name_bunker" type="text" size="15" class="formtext" value="SB"></div>
+            <div class="form"><input id="name_misc" type="text" size="15" class="formtext"></div>
             <div class="type">色：</div>
-            <div class="form"><input id="col_bunker" type="text" size="10" value="#ff00ff" class="formtext colorpick"></div>
-            <div class="submitbtn"><button id="submit_bunker">設置</button></div>
+            <div class="form"><input id="col_misc" type="text" size="10" value="#ff00ff" class="formtext colorpick"></div>
+            <div class="type">種別：</div>
+            <div class="form">
+                <select id="lst_misc" size="4" class="formlst">
+                    <!--value経由で種類を指定する -->
+                    <option label="サテライトバンカー" value="bunker">バンカー</option>
+                    <option label="セントリーガン"     value="sentry">セントリー</option>
+                </select>
+            </div>
+            <div class="submitbtn"><button id="submit_misc">設置</button></div>
         </form></div>
         <div class="reset"></div>
     </div>
@@ -283,11 +291,12 @@
             <div class="type">種別：</div>
             <div class="form">
                 <select id="lst_icon" size="4" class="formlst">
-                    <option label="強襲" value="image/assault.png">強襲</option>
-                    <option label="重火力" value="image/heavy.png">重火力</option>
-                    <option label="狙撃" value="image/snipe.png">狙撃</option>
-                    <option label="支援" value="image/support.png">支援</option>
-                    <option label="マイン" value="image/mine.png">マイン</option>
+                    <option label="強襲"       value="image/assault.png">強襲</option>
+                    <option label="重火力"     value="image/heavy.png">重火力</option>
+                    <option label="狙撃"       value="image/snipe.png">狙撃</option>
+                    <option label="支援"       value="image/support.png">支援</option>
+                    <option label="マイン"     value="image/mine.png">マイン</option>
+                    <option label="セントリー" value="image/sentry.png">セントリー</option>
                 </select>
             </div>
             <div class="submitbtn"><button id="submit_waft">設置</button></div>

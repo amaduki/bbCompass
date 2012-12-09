@@ -849,6 +849,96 @@ var BB = function (canvasID){
 
 
   //
+  //BB_sentryオブジェクト
+  //
+    this.BB_sentry = function (_text, _color) {
+        if (_color===undefined) {_color='rgb(255, 0, 0)';}
+        this.id=UUID.genV1().toString();
+
+        this.type="sentry";
+        this._text=_text;
+        this._radius=80; //固定値
+        this._angle=120; //固定値
+        this._color=_color;
+        //描画して登録。初期座標は偵察半径分ずらす
+        //マークはファイル依存させないため手打ち。
+        this._image    = new Image;
+        this._image.src= 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAIAAAC0tAIdAAAABnR'
+                       + 'STlMA/wD/AP83WBt9AAAAYUlEQVR42pWRUQ7AIAhD13txN7gbB2PLWMxUROSrJq8NVJjZVR4M'
+                       + 'NAAXYUpHP2h7/nVHt7xk3PkFrAyq6oKIgk1cMLOIZHtv0biTM7ra4NaAOOM1ZPRc4ln2bFv+T'
+                       + 'vXKZG6yP1bjQ2hwBAAAAABJRU5ErkJggg==';
+        var obj        = this;
+        this._image.onload= function () {
+            obj.draw();
+            var px_rad = bbobj.meter_to_pixel(obj._radius);
+            obj.move(px_rad, px_rad);
+            obj.regist();
+        };
+    };
+    this.BB_sentry.prototype=new this.BB_base();
+
+    this.BB_sentry.prototype.draw = function () {
+        var px_rad = bbobj.meter_to_pixel(this._radius),
+            obj    = this,
+            img_width  = this._image.width,
+            img_height = this._image.height,
+            img_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
+
+        jcanvas.sector(0, 0, px_rad, this._angle, this._color, false).opacity(1).layer(this.id);
+        var area = jcanvas.sector(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
+        jcanvas.circle(0, 0, img_rad, this._color, true).opacity(0.9).layer(this.id);
+        jcanvas.circle(0, 0, img_rad-2, '#ffffff', true).layer(this.id);
+        jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
+        var text = jcanvas.text(this._text, 50, 0)
+                   .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
+        jcanvas.layer(this.id).draggable();
+
+        //移動処理(draggableでは回転できないため、独自定義)
+        var mdEvent = function(point){
+                          var pos_base = area.position(),
+                              canvas   = jc.canvas(bbobj.id);
+                              px_rad   = bbobj.meter_to_pixel(obj._radius),
+                              radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2)),
+                              startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
+                              baserad  = jcanvas.layer(obj.id).getAngle(),
+                              tmpmask  = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
+                                                .layer("tmp_" + obj.id),
+                              layer    = jcanvas.layer(obj.id),
+                              tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                          tmpLayer.level('top');
+                          tmpmask.mousemove(function (pos) {
+                                                var pos_area = area.position(),
+                                                    nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    rad      = baserad+(nowrad - startrad);
+                                                 layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                            });
+                          tmpmask.mouseup(function() {
+                                              tmpLayer.del();
+                                          });
+                      };
+
+        //扇形部分は角度変更
+        area.mousedown(mdEvent);
+        area.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        area.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+        //文字列部分も角度変更
+        text.mousedown(mdEvent);
+        text.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        text.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+
+        return this;
+    };
+
+
+  //
   //BB_iconオブジェクト
   //
     this.BB_icon = function (_text, _file, _color) {
@@ -1381,6 +1471,10 @@ BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) 
 
 BB.prototype.add_bunker = function (string, color) {
     return new this.BB_bunker(string, color);
+};
+
+BB.prototype.add_sentry = function (string, color) {
+    return new this.BB_sentry(string, color);
 };
 
 BB.prototype.add_circle = function (string, radius, color) {

@@ -16,6 +16,7 @@ $(document).ready(function(){
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
+    $("#lst_misc").change(function(){$("#name_misc").val($("#lst_misc option:selected").text());});
     $("#lst_icon").change(function(){$("#name_icon").val($("#lst_icon option:selected").text());});
 
     var onChgCol=function(){
@@ -197,19 +198,32 @@ function set_howitzer(){
 }
 
 
-//サテライトバンカー
-function set_bunker() {
-    if (($("#name_bunker").val()).length == 0) {
-        name = "(バンカー)";
+//その他攻撃関連
+function set_misc() {
+    if(! $("#lst_misc").val()) {return;}
+    if (($("#name_misc").val()).length == 0) {
+        name = "(" + $("#lst_misc option:selected").text() + ")";
     } else {
-        name = $("#name_bunker").val();
+        name = $("#name_misc").val();
     }
-    if(! $("#col_bunker").val()) {return;}
+    if(! $("#col_misc").val()) {return;}
 
-    var obj = bbobj.add_bunker($("#name_bunker").val(),$("#col_bunker").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    var obj;
+    switch($("#lst_misc").val()) {
+        case "bunker":  //サテライトバンカー
+            obj = bbobj.add_bunker($("#name_misc").val(),$("#col_misc").val());
+            break;
+
+        case "sentry":  //先生
+            obj = bbobj.add_sentry($("#name_misc").val(),$("#col_misc").val());
+            break;
+    }
+
+    if (obj) {
+        add_object(obj.id, name);
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
