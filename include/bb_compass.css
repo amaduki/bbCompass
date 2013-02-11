@@ -136,11 +136,15 @@ div.map_selector{
     margin-top:5px;
 }
 
-option.union{
+select#map option{
+    background-color:white;
+}
+
+select#map option.union,select#map.union{
     background-color:gold;
 }
 
-option.event{
+select#map option.event,select#map.event{
     background-color:turquoise ;
 }
 

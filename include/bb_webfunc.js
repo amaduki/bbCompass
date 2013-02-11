@@ -30,13 +30,20 @@ $(document).ready(function(){
     $('input.colorpick').change();
 
     var mapobj=$("#map").children().get();
-    $("#stage").change(function (){
+    $("#stage").change(function (e){
                            var stage=$("#stage option:selected").val();
                            $("#map").children().remove();
                            $("#map").append(mapobj);
-                           $("#map").children(":not([class~='"+stage+"'])").remove();
+                           $("#map").children("[data-stage!='"+stage+"']").remove();
                        });
     $("#stage").change();
+
+    $("#map").change(function (){
+                           $("#map").removeClass("union event");
+                           if ($("#map option:selected").attr("class") !== undefined) {
+                               $("#map").addClass($("#map option:selected").attr("class"));
+                           }
+                       });
 
   //タブメニュー
     $("li.graphtab").click(function () {
@@ -95,7 +102,7 @@ function initialize(){
 function chg_map() {
     $("#lst_object").children().remove();
     var file  = $("#map option:selected").val();
-    var stage = $("#map option:selected").attr("class");
+    var stage = $("#map option:selected").attr("data-stage");
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
     var salt  = "?" + new Date().getTime();
