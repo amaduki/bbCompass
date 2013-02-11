@@ -136,6 +136,14 @@ div.map_selector{
     margin-top:5px;
 }
 
+option.union{
+    background-color:gold;
+}
+
+option.event{
+    background-color:turquoise ;
+}
+
 #lst_layer{
     width:90px;
     white-space: nowrap;

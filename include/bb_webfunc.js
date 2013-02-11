@@ -34,7 +34,7 @@ $(document).ready(function(){
                            var stage=$("#stage option:selected").val();
                            $("#map").children().remove();
                            $("#map").append(mapobj);
-                           $("#map").children("[class!='"+stage+"']").remove();
+                           $("#map").children(":not([class~='"+stage+"'])").remove();
                        });
     $("#stage").change();
 
