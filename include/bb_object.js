@@ -970,6 +970,7 @@ var BB = function (canvasID){
             img_height = this._image.height,
             px_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
         jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.9).layer(this.id);
+        jcanvas.circle(0, 0, px_rad-2, '#FFFFFF', true).layer(this.id);
         jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
         jcanvas.text(this._text, img_width * 0.5 + 5 , 0)
                .layer(this.id).color('#FFFFFF').font('15px sans-serif')
