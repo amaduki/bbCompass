@@ -180,6 +180,7 @@ select#map option.event,select#map.event{
 
 #BBCompass{
     border:1px solid black;
+    -ms-touch-action: double-tap-zoom;
 }
 
 #CanvasArea{
