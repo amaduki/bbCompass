@@ -1176,7 +1176,6 @@ BB.prototype.touchToMouse = function(canvas) {
             case "touchstart":
                 touch   = ev.touches[0];
                 touchid = touch.identifier;
-                touchx=touch.clientX;touchy=touch.clientY;
                 break
             case "touchmove":
                 for (i=0;i<ev.changedTouches.length;i++) {
@@ -1227,6 +1226,17 @@ BB.prototype.touchToMouse = function(canvas) {
             }
             if (result) {break;}
         }
+
+        //ターレットは個別のオブジェクトとして扱われていないため
+        //nameを利用したグループで別途チェックを行う
+        if (! result) {
+            var targets = jc(".turrets").elements;
+            for (var i=0; i<targets.length; i++) {
+                result = targets[i].isPointIn(x,y);
+                if (result) {break;}
+            }
+        }
+
         return result;
     }
 
@@ -1433,7 +1443,7 @@ BB.prototype.put_turret = function (x, y, rot, radius, angle, hookrad, color, te
         line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false).level(1)
                              .rotateTo(rot-90, x, y).opacity(1).visible(visible),
         hooker = this.jcanvas.circle(x, y, hookrad, 'rgba(0,0,0,0)', true)
-                             .rotateTo(rot-90, x, y).level(3);
+                             .rotateTo(rot-90, x, y).level(3).name("turrets");
 
     if (test) {
         this.jcanvas.line([[x, y], [x, y-20]], 'rgba(255,255,255,1)')
