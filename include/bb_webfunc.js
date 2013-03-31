@@ -110,20 +110,23 @@ function chg_map() {
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
-                    $.ajax({url      : "./data/" + file + ".txt",
-                            cache    : false,
-                            dataType : 'json',
-                            success  : function(data,status){
-                                           var turretData = data["turret"];
-                                           for(i=0;i<turretData.length;i++) {
-                                               bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
-                                                                turretSpec[turretData[i][3]][0],
-                                                                turretSpec[turretData[i][3]][1],
-                                                                turretCircle,
-                                                                undefined,turretData[i][4]);
-                                           }
-                                       },
-                            error    : function(){}
+                    $.ajax({url           : "./data/" + file + ".txt",
+                            dataType      : "jsonp",
+                            crossDomain   : true,
+                            cache         : false,
+                            jsonp         : false,
+                            jsonpCallback : "stageData",
+                            success       : function(data,status){
+                                                var turretData = data["turret"];
+                                                for(i=0;i<turretData.length;i++) {
+                                                    bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
+                                                                     turretSpec[turretData[i][3]][0],
+                                                                     turretSpec[turretData[i][3]][1],
+                                                                     turretCircle,
+                                                                     undefined,turretData[i][4]);
+                                                }
+                                            },
+                            error         : function(){}
                     });
                 });
 

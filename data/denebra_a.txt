@@ -1,5 +1,5 @@
-{
+stageData( {
   "turret":[
     [439, 248, 180, "G", false]
   ]
-}
+});
