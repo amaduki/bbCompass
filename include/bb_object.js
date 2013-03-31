@@ -1461,6 +1461,8 @@ BB.prototype.put_turret = function (x, y, rot, radius, angle, hookrad, color, te
                      });
     hooker.click(function(){
                          visible = ! (visible);
+                         area.visible(visible);
+                         line.visible(visible);
                      });
 };
 
