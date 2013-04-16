@@ -262,7 +262,7 @@ function set_waft(file) {
     } else {
         name = $("#name_waft").val();
     }
-    if(! $("#col_bunker").val()) {return;}
+    if(! $("#col_waft").val()) {return;}
 
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
     add_object(obj.id, name);
