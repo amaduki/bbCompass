@@ -189,6 +189,25 @@ select#map option.event,select#map.event{
     margin:10px auto;
 }
 
+div#LoadArea{
+    position:relative;
+}
+
+div#Loading{
+    text-align:center;
+    position:absolute;
+    border:1px solid black;
+    background-color:white;
+    width:120px;
+    height:80px;
+    margin-top:-40px;
+    margin-left:-60px;
+    padding:5px;
+    top:50%;
+    left:50%;
+    display:none;
+}
+
 #Copyright{
     text-align:center;
     margin:0px auto;

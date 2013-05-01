@@ -100,6 +100,7 @@ function initialize(){
 
 //マップ変更
 function chg_map() {
+    $("div#loading").show();
     $("#lst_object").children().remove();
     var file  = $("#map option:selected").val();
     var stage = $("#map option:selected").attr("data-stage");
@@ -110,6 +111,7 @@ function chg_map() {
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
+                    $("div#loading").hide();
                     $.ajax({url           : "./data/" + file + ".txt",
                             dataType      : "jsonp",
                             crossDomain   : true,
