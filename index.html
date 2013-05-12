@@ -330,12 +330,12 @@
     </div>
     <div id="menu_5" class="graphmenu">
         <div class=item><form name="zoom" action="javascript:zoom_cnv();"><!--拡縮-->
-            <div class="title">拡大縮小</div>
+            <div class="title">ズーム</div>
             <div class="type">倍率：</div>
             <div class="form">
                 <select id="lst_scale" class="formzoom">
                     <option value="1" selected>100%</option>
-                    <option value="1.50">150%</option>
+                    <option value="1.5">150%</option>
                     <option value="2">200%</option>
                     <option value="4">400%</option>
                 </select>
@@ -365,7 +365,7 @@
         </div>
     </div>
     <div id="save_area">
-        <form name="save" action="javascript:save()">
+        <form name="save" action="javascript:saveImg()">
         <div class="submitbtn">
             <button id="save_img">画像を保存</button>
         </div></form>
@@ -376,6 +376,26 @@
   <div id="CanvasArea">
      <canvas width="800" height="700" id="BBCompass"></canvas>
   </div>
+  <div class="ContextMenu">
+     <div class="Spacer"><!-- --></div>
+     <ul>
+       <li id="contextSelectMode" class="checked" onclick="javascript:stop_move()">選択モード</li>
+       <li id="contextMoveMode" onclick="javascript:start_move()">移動モード</li>
+       <div class="hrdiv"><hr></div>
+       <li class="hasChild">ズーム
+         <div class="ContextChild">
+           <div class="Spacer"><!-- --></div>
+           <ul id="contextZoom">
+             <li id="contextZoom_1" class="checked" onclick="javascript:zoom_cnv(1)">100%</li>
+             <li id="contextZoom_1_5" onclick="javascript:zoom_cnv(1.5)">150%</li>
+             <li id="contextZoom_2" onclick="javascript:zoom_cnv(2)">200%</li>
+             <li id="contextZoom_4" onclick="javascript:zoom_cnv(4)">400%</li>
+         </div>
+       </li>
+       <div class="hrdiv"><hr></div>
+       <li onclick="javascript:saveImg()">画像を保存</li>
+     </ul>
+   </div>
   <div id="Loading"><img src="./image/loading.gif"><br>読込中...</div>
 </div>
 <div id="Copyright">

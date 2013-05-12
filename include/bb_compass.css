@@ -39,6 +39,7 @@ div#head_graph{
 div#head_graph ul{
     margin:0px;
     padding:0px;
+    list-style-type:none; 
 }
 
 div#head_graph ul li{
@@ -181,9 +182,114 @@ select#map option.event,select#map.event{
 }
 
 #CanvasArea{
+    position:relative;
     text-align:center;
     overflow:scroll;
     margin:10px auto;
+}
+
+div.ContextMenu{
+    position:absolute;
+    border:1px solid gray;
+    background-color:#F0F0F0;
+    box-shadow:2px 2px 3px gray;
+    cursor:default;
+    width:12em;
+    display:none;
+    z-index:1;
+}
+
+div.ContextChild{
+    position:absolute;
+    border:1px solid gray;
+    background-color:#F0F0F0;
+    box-shadow:2px 2px 3px gray;
+    width:12em;
+    display:none;
+    z-index:2;
+}
+
+div.ContextMenu ul{
+    position:relative;
+    margin:2px;
+    padding:0px;
+    border:none;
+    list-style-type: none; 
+}
+
+div.ContextMenu div.Spacer{
+    position:absolute;
+    left:30px;
+    width:1px;
+    height:100%;
+    border-left:1px solid gainsboro;
+    border-right:1px solid white;
+    color:transparent;
+    padding-top:2px;
+    padding-bottom:2px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+
+div.ContextMenu div.hrdiv{
+    position:relative;
+    margin-left:30px;
+    border:none;
+}
+
+div.ContextMenu div.hrdiv hr{
+    clear:both;
+    margin-top:5px;
+    margin-bottom:5px;
+    border:none;
+    border-top:1px solid gainsboro;
+    border-bottom:1px solid white;
+}
+
+div.ContextMenu ul li{
+    position:relative;
+    margin:0px;
+    margin-left:3px;
+    margin-right:3px;
+    padding:2px;
+    border: 1px solid transparent;
+}
+
+div.ContextMenu ul li:hover{
+    background-color:rgba(224,255,255,0.2);
+    border:1px solid lightskyblue;
+    border-radius:3px;
+}
+
+div.ContextMenu ul li:before{
+    float:left;
+    width:30px;
+    display:block;
+    border:none;
+    content:".";
+    visibility:hidden;
+}
+
+div.ContextMenu ul li.checked:before{
+    float:left;
+    width:30px;
+    display:table-cell;
+    vertical-align: middle;
+    visibility:visible;
+    content:url("../image/checked.gif");
+}
+
+div.ContextMenu ul li.hasChild:after{
+    float:right;
+    width:1em;
+    display: table-cell;
+    vertical-align: middle;
+    content:url("../image/haschild.gif");
+}
+
+div.ContextMenu ul li.disabled{
+    color:gray;
 }
 
 div#LoadArea{
