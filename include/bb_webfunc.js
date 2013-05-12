@@ -155,7 +155,7 @@ function initialize(){
 
 //マップ変更
 function chg_map() {
-    $("div#loading").show();
+    $("div#Loading").show();
     $("#lst_object").children().remove();
     var file  = $("#map option:selected").val();
     var stage = $("#map option:selected").attr("data-stage");
@@ -169,7 +169,7 @@ function chg_map() {
                     $("#lst_scale").val(1);
                     $("ul#contextZoom").children("li").removeClass("checked");
                     $("li#contextZoom_1").addClass("checked");
-                    $("div#loading").hide();
+                    $("div#Loading").hide();
                     $.ajax({url           : "./data/" + file + ".txt",
                             dataType      : "jsonp",
                             crossDomain   : true,
