@@ -69,6 +69,61 @@ $(document).ready(function(){
         $(this).removeClass("hover");
     });
 
+  //コンテキストメニュー
+    $("div.ContextMenu").bind('contextmenu', function(ev){ev.preventDefault()});
+    $("div.ContextMenu li.hasChild").bind('click', function(ev){
+        if (ev.target == ev.currentTarget) {ev.stopPropagation()}
+    });
+    $("div#CanvasArea").bind('contextmenu', function(ev) {
+        ev.preventDefault();
+        var offset   = {top:  ev.pageY,
+                        left: ev.pageX};
+
+        //はみ出しそうなら収める
+        if (ev.clientY + $("div.ContextMenu").height() > $(window).height() - 3) {
+            offset.top = $(window).height() - $("div.ContextMenu").height() + $(window).scrollTop() - 3;
+        }
+
+        if (ev.clientX + $("div.ContextMenu").width() > $(window).width() - 3) {
+            offset.left = $(window).width() - $("div.ContextMenu").width() + $(window).scrollLeft() - 3;
+        }
+
+        $("div.ContextMenu").show()
+                            .offset(offset);
+
+        //どこかクリックしたらメニューを消す
+        $(document).one('click', function() {
+            $("div.ContextMenu,div.ContextMenu div.ContextChild").hide();
+        });
+
+    });
+
+    //子メニュー表示部
+    $("div.ContextMenu li.hasChild").hover(
+        function(ev) {
+            var offset = {top:  $(this).offset().top,
+                          left: $(this).offset().left + $(this).width() * 0.99};
+
+            if ($(this).offset().top - $(window).scrollTop()
+                                      + $(this).children(".ContextChild").height() > $(window).height()) {
+
+                offset.top = $(window).scrollTop() + $(window).height() - $(this).children(".ContextChild").height() - 3;
+            }
+
+            if ($(this).offset().left - $(window).scrollLeft()
+                                      + $(this).width() * 0.99
+                                      + $(this).children(".ContextChild").width() > $(window).width()) {
+                offset.left = $(this).offset().left - $(this).children(".ContextChild").width() * 0.99;
+            }
+
+            $(this).children(".ContextChild").show()
+                                             .offset(offset);
+        },
+        function(ev) {
+            $(this).children(".ContextChild").hide();
+        }
+    );
+
   //changelog
     $.ajax({url     : "./Changelog.txt",
             dataType : 'text',
@@ -100,6 +155,7 @@ function initialize(){
 
 //マップ変更
 function chg_map() {
+    $("div#loading").show();
     $("#lst_object").children().remove();
     var file  = $("#map option:selected").val();
     var stage = $("#map option:selected").attr("data-stage");
@@ -110,6 +166,10 @@ function chg_map() {
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
+                    $("#lst_scale").val(1);
+                    $("ul#contextZoom").children("li").removeClass("checked");
+                    $("li#contextZoom_1").addClass("checked");
+                    $("div#loading").hide();
                     $.ajax({url           : "./data/" + file + ".txt",
                             dataType      : "jsonp",
                             crossDomain   : true,
@@ -346,24 +406,36 @@ function set_freehand(){
 
 }
 
-//拡大縮小
-function zoom_cnv(){
-    var scale    = $("#lst_scale option:selected").val(),
-        canvas = document.getElementById(CanvasName),
-        chgScale = scale/bbobj.zoomScale;
+//ズーム
+function zoom_cnv(scale){
+    var newScale,chgScale,
+        canvas = document.getElementById(CanvasName);
 
-    if (bbobj.zoomScale != scale) {
+    if (scale !== undefined) {
+        newScale = scale;
+        $("#lst_scale").val(newScale);
+    } else {
+        newScale = $("#lst_scale option:selected").val();
+    }
+
+    liid=newScale.toString().replace(".","_");
+    $("ul#contextZoom").children("li").removeClass("checked");
+    $("li#contextZoom_" + liid).addClass("checked");
+
+    var chgScale = newScale/bbobj.zoomScale;
+    if (bbobj.zoomScale != newScale) {
         //倍率が変化する場合は左上維持して拡大処理
         bbobj.zoom(chgScale);
         $("#"+DivName).scrollLeft($("#"+DivName).scrollLeft()*chgScale)
                       .scrollTop($("#"+DivName).scrollTop()*chgScale);
     }
-
 }
 
 //移動開始
 function start_move(){
     $("button").attr("disabled",true);
+    $("li#contextSelectMode").removeClass("checked");
+    $("li#contextMoveMode").addClass("checked");
     $("button#zoom").attr("disabled",false);
     $("#stop_move").attr("disabled", false);
     $("canvas#"+CanvasName).css("cursor","move");
@@ -400,6 +472,8 @@ function start_move(){
 //移動終了
 function stop_move(){
     $("button:not(.disable)").attr("disabled",false);
+    $("li#contextSelectMode").addClass("checked");
+    $("li#contextMoveMode").removeClass("checked");
     $("#stop_move").attr("disabled", true);
     $("canvas#"+CanvasName).css("cursor","auto");
 
@@ -446,7 +520,7 @@ function del_object() {
 }
 
 //画像保存
-function save() {
+function saveImg() {
     $("#WorkArea").append($("<img id=DownloadImg src='"+bbobj.save()+"'>"));
     window.open("./image.html","test");
 }
