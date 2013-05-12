@@ -23,6 +23,7 @@ div.thead{
     text-align:center;
     background-color:#CCEEFF;
     height: 50px;
+    overflow: hidden;
 }
 
 div#head_map,div#head_cont{
@@ -125,10 +126,6 @@ div.submitbtn{
     padding:5px;
     clear:both;
     text-align:center;
-}
-
-div.reset{
-    clear:both;
 }
 
 div.map_selector{
