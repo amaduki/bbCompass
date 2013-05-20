@@ -45,28 +45,19 @@ $(document).ready(function(){
                            }
                        });
 
-  //タブメニュー
-    $("li.graphtab").click(function () {
-        if ($(this).hasClass("active")) {
+  //メニュー
+    $("div#objselector").children("div.object").click(function () {
+        if ($(this).hasClass("selected")) {
             return false;
+        } else {
+            $("div#objselector").children("div.selected").removeClass("selected");
+            $(this).addClass("selected");
         }
-        $("li.active").removeClass("active");
-        $(this).addClass("active").removeClass("hover");
         var openid=$(this).attr("data-target");
-        $("div.graphmenu:visible").fadeOut("fast",
+        $("div.setobj:visible").fadeOut("fast",
                                   function() {
-                                       $("#"+openid).fadeIn("fast");
+                                       $("div.setobj#"+openid).fadeIn("fast");
                                    });
-    });
-    $("li.graphtab").mouseover(function () {
-        if ($(this).hasClass("active")) {
-            return false;
-        }
-        $(this).addClass("hover");
-    });
-
-    $("li.graphtab").mouseout(function () {
-        $(this).removeClass("hover");
     });
 
   //コンテキストメニュー

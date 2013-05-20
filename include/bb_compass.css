@@ -6,71 +6,110 @@ h1,h3{
     background-color:#CCCCCC;
 }
 
-div.table{
-    width:940px;
-    height:250px;
+div.menutitle{
+    width:980px;
     margin-left:auto;
     margin-right:auto;
+    height:30px;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    font-size:26px;
+    background-color:#000066;
+    color:white;
+    box-shadow:0px 2px 4px gray;
+}
+
+div.menutable{
+    width:980px;
+    margin-left:auto;
+    margin-right:auto;
+    overflow:hidden;
+    margin-bottom:30px;
+    box-shadow:0px 2px 4px gray;
+
+    background:linear-gradient(to bottom, #FFFFFF, #F0F0F0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#F0F0F0', GradientType=0)";
 }
 
 div.menucell{
     float:left;
-    margin:5px;
+    height:250px;
+    position:relative;
+    display:table-cell;
+    vertical-align: top;
     overflow: hidden;
+    border-right:1px solid gainsboro;
+    border-left:1px solid white;
+}
+
+div.menucell:hover{
+    background:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
+                                       white 0%, rgba(0, 0, 0, 0) 100%);
+    background:radial-gradient(ellipse farthest-corner at bottom center,
+                               white 0%, rgba(224,224,224,0) 100%);
+}
+
+div.menutable div.menucell:first-child{
+    border-left:none;
+}
+
+div.menutable div.menucell:last-child{
+    border-right:none;
+}
+
+div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
+    width: 170px;
+}
+
+div.menucell#menu_graph{
+    max-width: 470px;
 }
 
 div.thead{
+    position:absolute;
+    top:250px;
+    width:100%;
+    height: 1.5em;
+    margin-top: -1.5em;
     text-align:center;
-    background-color:#CCEEFF;
-    height: 50px;
-    overflow: hidden;
 }
 
-div#head_map,div#head_cont{
-    width: 160px;
-    line-height: 50px;
-}
-
-div#head_graph{
-    width: 570px;
-    line-height: 25px;
-}
-
-div#head_graph ul{
-    margin:0px;
-    padding:0px;
-    list-style-type:none; 
-}
-
-div#head_graph ul li{
+div#objselector {
     float:left;
-    background-color:#99CCFF;
-    display:block;
-    border:solid 1px;
-    border-color:#3399FF;
-    color:#000000;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    text-decoration:none;
-    width: 80px;
-    height: 25px;
-    line-height: 25px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    background-color:#FFFFFF;
+    border:1px solid gainsboro;
+    margin:5px;
+    width:250px;
+    height:180px;
+    cursor:default;
+}
+
+div#objselector div.object{
+    float:left;
+    width:50px;
+    height:50px;
+    border:3px solid #FFFFFF;
+    border-radius:5px;
     text-align:center;
-    margin:0px;
-    padding:0px;
+    font-size:9pt;
 }
 
-div#head_graph ul li.hover{
-    background-color:#FFFFFF;
+div#objselector div.selected{
+    border-color:#FFCC33;
 }
 
-div#head_graph ul li.active{
-    background-color:#FFFFFF;
+div.setobj{
+    float:left;
+    margin:5px;
+}
+
+div.setobj.hidden{
+    display:none;
 }
 
 div.title{
-    background-color:#CCFFCC;
-    text-align:center;
     font-weight:bold;
 }
 
@@ -90,10 +129,6 @@ div.item{
     margin:0px;
     max-width:120px;
     white-space: nowrap;
-}
-
-div#menu_2,div#menu_3,div#menu_4,div#menu_5{
-    display:none;
 }
 
 div.type, div.name{
