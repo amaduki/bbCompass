@@ -3,7 +3,12 @@ body{
 }
 
 h1,h3{
-    background-color:#CCCCCC;
+    background:linear-gradient(to right, rgba(204,204,204,1), rgba(204,204,204,0.9));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFCCCCCC', endColorstr='#E0CCCCCC', GradientType=1)";
+}
+
+div.caption {
+    background:url("../image/bbtexture.png");
 }
 
 /* ÉÅÉjÉÖÅ[ïî */
@@ -71,6 +76,7 @@ div.menucell#menu_graph{
 }
 
 div.menucell:hover{
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyYWRpYWxHcmFkaWVudCBpZD0iZyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyMjQsIDIyNCwgMjI0LCAwKSIvPjwvcmFkaWFsR3JhZGllbnQ+PHJlY3QgeD0iMCUiIHk9IjAlIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDIyNCwgMjI0LCAyMjQsIDApIiAvPjxyZWN0IHg9Ii0yMC43MTA3JSIgeT0iLTQxLjQyMTQlIiB3aWR0aD0iMTQxLjQyMTQlIiBoZWlnaHQ9IjI4Mi44NDI3JSIgZmlsbD0idXJsKCNnKSIgLz48L3N2Zz4=);
     background:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
                                        white 0%, rgba(224, 224,224, 0) 100%);
     background:radial-gradient(ellipse farthest-corner at bottom center,
