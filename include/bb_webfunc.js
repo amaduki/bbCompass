@@ -115,6 +115,11 @@ $(document).ready(function(){
         }
     );
 
+  //ズーム
+  $("#lst_scale").change(function() {
+                             zoom_cnv($(this).val());
+                         });
+
   //changelog
     $.ajax({url     : "./Changelog.txt",
             dataType : 'text',
@@ -402,12 +407,8 @@ function zoom_cnv(scale){
     var newScale,chgScale,
         canvas = document.getElementById(CanvasName);
 
-    if (scale !== undefined) {
-        newScale = scale;
-        $("#lst_scale").val(newScale);
-    } else {
-        newScale = $("#lst_scale option:selected").val();
-    }
+    newScale = scale;
+    $("#lst_scale").val(newScale);
 
     liid=newScale.toString().replace(".","_");
     $("ul#contextZoom").children("li").removeClass("checked");

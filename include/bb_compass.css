@@ -6,8 +6,11 @@ h1,h3{
     background-color:#CCCCCC;
 }
 
+/* メニュー部 */
 div.menutitle{
-    width:980px;
+    width:95%;
+    max-width:980px;
+    min-width:800px;
     margin-left:auto;
     margin-right:auto;
     height:30px;
@@ -20,7 +23,9 @@ div.menutitle{
 }
 
 div.menutable{
-    width:980px;
+    width:95%;
+    max-width:980px;
+    min-width:800px;
     margin-left:auto;
     margin-right:auto;
     overflow:hidden;
@@ -33,27 +38,26 @@ div.menutable{
 
 div.menucell{
     float:left;
-    height:250px;
+    height:230px;
     position:relative;
-    display:table-cell;
     vertical-align: top;
     overflow: hidden;
     border-right:1px solid gainsboro;
     border-left:1px solid white;
 }
 
-div.menucell:hover{
-    background:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
-                                       white 0%, rgba(0, 0, 0, 0) 100%);
-    background:radial-gradient(ellipse farthest-corner at bottom center,
-                               white 0%, rgba(224,224,224,0) 100%);
+div.menusubcell#subcell_graph{
+    float:left;
+    width: 100%;
+    margin-left: -171px;
+    margin-right: -343px;
 }
 
-div.menutable div.menucell:first-child{
+div.menutable > div.menucell:first-child{
     border-left:none;
 }
 
-div.menutable div.menucell:last-child{
+div.menutable > div.menucell:last-child{
     border-right:none;
 }
 
@@ -62,26 +66,40 @@ div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
 }
 
 div.menucell#menu_graph{
-    max-width: 470px;
+    margin-left:171px;
+    margin-right:343px;
+}
+
+div.menucell:hover{
+    background:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
+                                       white 0%, rgba(224, 224,224, 0) 100%);
+    background:radial-gradient(ellipse farthest-corner at bottom center,
+                               white 0%, rgba(224,224,224,0) 100%);
 }
 
 div.thead{
     position:absolute;
-    top:250px;
+    top:100%;
     width:100%;
     height: 1.5em;
     margin-top: -1.5em;
     text-align:center;
 }
 
-div#objselector {
+/* 設置部 */
+div#objsel_area {
     float:left;
+    width:100%;
+    margin-right:-190px;
+}
+
+div#objselector {
     overflow-x:hidden;
     overflow-y:scroll;
     background-color:#FFFFFF;
     border:1px solid gainsboro;
     margin:5px;
-    width:250px;
+    margin-right:190px;
     height:180px;
     cursor:default;
 }
@@ -114,18 +132,18 @@ div.title{
 }
 
 div.item{
-    width:180px;
     margin:5px;
-    background-color:#FFFFCC;
-    float:left;
+    clear:both;
+    overflow:hidden;
 }
+
 
 .formtext,.formmap{
     margin:0px;
     max-width:140px;
 }
 
-.formtext,.formlst{
+.formlst{
     margin:0px;
     max-width:120px;
     white-space: nowrap;
@@ -164,6 +182,7 @@ div.submitbtn{
     text-align:center;
 }
 
+/* マップ部 */
 div.map_selector{
     text-align:left;
     margin-top:5px;
@@ -199,6 +218,7 @@ select#map option.event,select#map.event{
 
 }
 
+/* 制御部 */
 #obj_area{
     float:left;
     margin-left:5px;
@@ -211,12 +231,18 @@ select#map option.event,select#map.event{
     margin-top:5px;
 }
 
-#BBCompass{
+/* canvasまわり */
+div#LoadArea{
+    position:relative;
+}
+
+canvas#BBCompass{
     border:1px solid black;
+    background-color:rgba(240,240,240,0.8);
     -ms-touch-action: double-tap-zoom;
 }
 
-#CanvasArea{
+div#CanvasArea{
     position:relative;
     text-align:center;
     overflow:scroll;
@@ -327,10 +353,6 @@ div.ContextMenu ul li.disabled{
     color:gray;
 }
 
-div#LoadArea{
-    position:relative;
-}
-
 div#Loading{
     text-align:center;
     position:absolute;
@@ -346,13 +368,15 @@ div#Loading{
     display:none;
 }
 
+/* 作業スペース */
+#WorkArea{
+    display:none;
+}
+
+/* メッセージなど */
 #Copyright{
     text-align:center;
     margin:0px auto;
-}
-
-#WorkArea{
-    display:none;
 }
 
 #Changes{
