@@ -26,7 +26,7 @@
     <div class="item">
       <div id="map_area">
         <form name="map" action="javascript:chg_map();">
-        <div class="map_selector"><select id="stage" class="formmap">
+        <div class="map_selector"><select id="stage" class="formtext">
             <!--絞り込みに利用するので、valueと子供のdata-stageを一致させてください
                 また、data-scale属性として [1メートルあたりのピクセル数]を記載します。
                 (Javascriptで解釈するので、数式を書いてもOKです)
@@ -48,7 +48,7 @@
             <option value="navar"        data-scale="[1.084*0.7]">ナヴァル岩石砂漠</option>
             <option value="madelrond"    data-scale="[1.075*0.7]">マデルロンド大空洞</option>
         </select></div>
-        <div class="map_selector"><select id="map">
+        <div class="map_selector"><select id="map" class="formtext">
             <!-- 絞り込み用にdata-stage属性を指定すること -->
             <!-- class=eventは大攻防戦用、class=unionはユニオンバトル用 -->
             <option data-stage="map" value="map_a" data-layer="[]">戦線突破</option>
@@ -363,7 +363,7 @@
       <div class="title">ズーム</div>
       <div class="type">倍率：</div>
       <div class="form">
-          <select id="lst_scale" class="formzoom">
+          <select id="lst_scale" class="formtext">
               <option value="1" selected>100%</option>
               <option value="1.5">150%</option>
               <option value="2">200%</option>
@@ -374,8 +374,10 @@
 
     <div class="item"><!--移動-->
         <div class="title">カーソルモード</div>
-        <div class="submitbtn"><button id="stop_move" type="button" onclick="stop_move()" class="disable" disabled>オブジェ選択</button></div>
-        <div class="submitbtn"><button id="start_move" onclick="start_move()">画面移動</button></div>
+        <div id="cursorselector">
+          <div id="csr_select" onclick="stop_move()" class="selected"><img src="./image/arrow.png" alt="オブジェ選択">選択</div>
+          <div id="csr_move" onclick="start_move()"><img src="./image/hand.png" alt="移動">移動</div>
+        </div>
     </div>
   </div>
   <div class="menucell" id="menu_cont">

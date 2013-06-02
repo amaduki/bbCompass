@@ -428,8 +428,8 @@ function start_move(){
     $("button").attr("disabled",true);
     $("li#contextSelectMode").removeClass("checked");
     $("li#contextMoveMode").addClass("checked");
-    $("button#zoom").attr("disabled",false);
-    $("#stop_move").attr("disabled", false);
+    $("div#csr_select").removeClass("selected");
+    $("div#csr_move").addClass("selected");
     $("canvas#"+CanvasName).css("cursor","move");
 
     bbobj.jcanvas.pause(CanvasName);
@@ -466,7 +466,8 @@ function stop_move(){
     $("button:not(.disable)").attr("disabled",false);
     $("li#contextSelectMode").addClass("checked");
     $("li#contextMoveMode").removeClass("checked");
-    $("#stop_move").attr("disabled", true);
+    $("div#csr_select").addClass("selected");
+    $("div#csr_move").removeClass("selected");
     $("canvas#"+CanvasName).css("cursor","auto");
 
     bbobj.jcanvas.start(CanvasName, true);

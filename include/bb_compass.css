@@ -12,7 +12,7 @@ div.caption {
     background:url("../image/bbtexture.png");
 }
 
-/* メニュー部 */
+/* メニュー共通 */
 div.menutitle{
     width:95%;
     max-width:980px;
@@ -44,7 +44,7 @@ div.menutable{
 
 div.menucell{
     float:left;
-    height:230px;
+    height:240px;
     position:relative;
     vertical-align: top;
     overflow: hidden;
@@ -139,13 +139,13 @@ div.title{
 }
 
 div.item{
-    margin:5px;
+    padding:5px;
     clear:both;
     overflow:hidden;
 }
 
 
-.formtext,.formmap{
+.formtext{
     margin:0px;
     max-width:140px;
 }
@@ -157,6 +157,8 @@ div.item{
 }
 
 div.type, div.name{
+    text-align:right;
+    line-height:22px;
     margin-top:5px;
     margin-left:3px;
     min-width:40px;
@@ -195,15 +197,15 @@ div.map_selector{
     margin-top:5px;
 }
 
-select#map option{
+select#map > option{
     background-color:white;
 }
 
-select#map option.union,select#map.union{
+select#map > option.union,select#map.union{
     background-color:gold;
 }
 
-select#map option.event,select#map.event{
+select#map > option.event,select#map.event{
     background-color:turquoise ;
 }
 
@@ -223,6 +225,35 @@ select#map option.event,select#map.event{
     margin-right:5px;
     margin-bottom:5px;
 
+}
+
+/* 表示部 */
+div#cursorselector > div{
+    margin-top:5px;
+    margin-bottom:5px;
+    text-align:center;
+}
+
+div#cursorselector > div{
+    float:left;
+    width:70px;
+    height:30px;
+    border:1px solid transparent;
+    border-radius:5px;
+    text-align:center;
+    line-height:30px;
+}
+
+div#cursorselector > div:hover{
+    border:1px solid rgb(194,147,58);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjEpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTYsIDEwOCwgMC4zKSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjIpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
+    background-image: linear-gradient(to top, rgba(255, 216, 108, 0.1) 0%, rgba(255, 216, 108, 0.3) 80%, rgba(255, 216, 108, 0.2) 100%);
+}
+
+div#cursorselector > div.selected{
+    border:1px solid rgb(194,147,58);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjUpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTYsIDEwOCwgMC44KSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjYpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
+    background-image: linear-gradient(to top, rgba(255, 216, 108, 0.5) 0%, rgba(255, 216, 108, 0.8) 80%, rgba(255, 216, 108, 0.6) 100%);
 }
 
 /* 制御部 */
