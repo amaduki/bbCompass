@@ -19,7 +19,7 @@
 <div class="caption"><h1>BBコンパスもどき</h1></div>
 </header>
 
-<div class="menutitle">メニュー</div>
+<div class="menutitle"><span id="titletext">メニュー<span></div>
 <div class="menutable">
   <div class="menucell" id="menu_map">
     <div class="thead" id="head_map">マップ</div>
@@ -165,10 +165,10 @@
       <div class="setobj" id="objscout"><form name="scout" action="javascript:set_scout();">
           <div class="title">偵察機</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_scout" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-            <div class="form"><input id="col_scout" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_scout" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+            <div class="form"><input id="col_scout" type="text" value="#ff0000" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_scout" size="4" class="formlst">
               <!--valueは [偵察範囲,進む距離,進む時間] -->
@@ -185,10 +185,10 @@
       <div class="setobj hidden" id="objsensor"><form name="sensor" action="javascript:set_sensor();">
           <div class="title">索敵センサー</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_sensor" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_sensor" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_sensor" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_sensor" type="text" value="#ff0000" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_sensor" size="4" class="formlst">
                   <!--valueは 索敵半径を指定 -->
@@ -205,10 +205,10 @@
       <div class="setobj hidden" id="objradar"><form name="sensor" action="javascript:set_radar();"> <!--レーダー-->
           <div class="title">レーダーユニット</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_radar" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_radar" type="text" size="10" value="#ff0000" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_radar" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_radar" type="text" value="#ff0000" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_radar" size="4" class="formlst">
                   <!--valueは 索敵半径を指定 -->
@@ -223,10 +223,10 @@
       <div class="setobj hidden" id="objhowitzer"><form name="howitzer" action="javascript:set_howitzer()">
           <div class="title">榴弾/重装砲</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_howitzer" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_howitzer" type="text" size="10" value="#f1c232" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_howitzer" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_howitzer" type="text" value="#f1c232" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_howitzer" size="4" class="formlst">
                   <!--valueは [射程,爆発半径,着弾誤差半径] -->
@@ -251,9 +251,9 @@
       <div class="setobj hidden" id="objwaft"><form name="waft" action="javascript:set_waft('image/waft.png')">
           <div class="title">ワフトローダー</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_waft" type="text" size="15" class="formtext" value="ワフトローダー"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_waft" type="text" size="10" value="#00ffff" class="formtext colorpick"></div>
+          <div class="form"><input id="name_waft" type="text" size="20" class="formtext" value="ワフトローダー"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_waft" type="text" value="#00ffff" class="colorpick"></div>
           <div class="submitbtn"><button id="submit_waft">設置</button></div>
       </form></div>
 
@@ -261,10 +261,10 @@
       <div class="setobj hidden" id="objmisc"><form name="misc" action="javascript:set_misc()">
           <div class="title">各種武装</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_misc" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_misc" type="text" size="10" value="#ff00ff" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_misc" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_misc" type="text" value="#ff00ff" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_misc" size="4" class="formlst">
                   <!--value経由で種類を指定する -->
@@ -279,10 +279,10 @@
       <div class="setobj hidden" id="objcircle"><form name="circle" action="javascript:set_circle();">
           <div class="title">円</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_circle" type="text" size="15" value="円" form="circle" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_circle" type="text" size="10" value="#0000ff" class="formtext colorpick"></div>
-            <div class="type">半径：</div>
+          <div class="form"><input id="name_circle" type="text" size="20" value="円" form="circle" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_circle" type="text" value="#0000ff" class="colorpick"></div>
+          <div class="name">半径：</div>
           <div class="form"><input id="rad_circle" type="text" size="5" value="100" form="circle" class="formtext">m</div>
           <div class="submitbtn"><button id="submit_circle">設置</button></div>
       </form></div>
@@ -291,10 +291,10 @@
       <div class="setobj hidden" id="objline"><form name="line" action="javascript:set_line();">
           <div class="title">直線</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_line" type="text" size="15" value="ライン" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_line" type="text" size="10" value="#6aa84f" class="formtext colorpick"></div>
-          <div class="type">長さ：</div>
+          <div class="form"><input id="name_line" type="text" size="20" value="ライン" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_line" type="text" value="#6aa84f" class="colorpick"></div>
+          <div class="name">長さ：</div>
           <div class="form"><input id="len_line" type="text" size="5" value="100" class="formtext">m</div>
           <div class="submitbtn"><button id="submit_line">設置</button></div>
       </form></div>
@@ -304,9 +304,9 @@
           <div class="title">点</div>
           <div class="ptname">名前：</div>
           <div class="form"><input id="name_point" type="text" size="10" value="" class="formtext"></div>
-          <div class="pttype">色：</div>
-          <div class="form"><input id="col_point" type="text" size="10" value="#ffff00" class="formtext colorpick"></div>
-          <div class="pttype">サイズ：</div>
+          <div class="ptname">色：</div>
+          <div class="form"><input id="col_point" type="text" size="10" value="#ffff00" class="colorpick"></div>
+          <div class="ptname">サイズ：</div>
           <div class="form">
               <select id="size_point" class="formlst">
                   <option label="大" value="10">大</option>
@@ -314,7 +314,7 @@
                   <option label="小" value="3">小</option>
               </select>
           </div>
-          <div class="pttype">文字位置：</div>
+          <div class="ptname">文字：</div>
           <div class="form">
               <select id="align_point" class="formlst">
                   <option label="右" value="0">右</option>
@@ -328,10 +328,10 @@
         <div class="setobj hidden" id="objicon"><form name="waft" action="javascript:set_icon()">
           <div class="title">アイコン</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_icon" type="text" size="15" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_icon" type="text" size="10" value="#00ffff" class="formtext colorpick"></div>
-          <div class="type">種別：</div>
+          <div class="form"><input id="name_icon" type="text" size="20" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_icon" type="text" value="#00ffff" class="colorpick"></div>
+          <div class="name">種別：</div>
           <div class="form">
               <select id="lst_icon" size="4" class="formlst">
                   <option label="強襲"       value="image/assault.png">強襲</option>
@@ -349,9 +349,9 @@
       <div class="setobj hidden" id="objfreehand"><form name="freehand" action="javascript:set_freehand();">
           <div class="title">手書き</div>
           <div class="name">名前：</div>
-          <div class="form"><input id="name_freehand" type="text" size="15" value="フリーハンド" class="formtext"></div>
-          <div class="type">色：</div>
-          <div class="form"><input id="col_freehand" type="text" size="10" value="#ffffff" class="formtext colorpick"></div>
+          <div class="form"><input id="name_freehand" type="text" size="20" value="フリーハンド" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_freehand" type="text" value="#ffffff" class="colorpick"></div>
           <div class="submitbtn"><button id="submit_freehand">開始</button>
                                  <button id="stop_freehand" type="button" class="disable" disabled>終了</button></div>
       </form></div>
@@ -361,9 +361,9 @@
     <div class="thead" id="head_view">表示</div>
     <div class="item">
       <div class="title">ズーム</div>
-      <div class="type">倍率：</div>
+      <div class="name">倍率：</div>
       <div class="form">
-          <select id="lst_scale" class="formtext">
+          <select id="lst_scale">
               <option value="1" selected>100%</option>
               <option value="1.5">150%</option>
               <option value="2">200%</option>

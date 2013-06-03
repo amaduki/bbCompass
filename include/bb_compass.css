@@ -15,23 +15,26 @@ div.caption {
 /* ÉÅÉjÉÖÅ[ã§í  */
 div.menutitle{
     width:95%;
-    max-width:980px;
-    min-width:800px;
+    max-width:62em;
+    min-width:50em;
     margin-left:auto;
     margin-right:auto;
     height:30px;
     border-top-left-radius:10px;
     border-top-right-radius:10px;
-    font-size:26px;
     background-color:#000066;
-    color:white;
     box-shadow:0px 2px 4px gray;
+}
+
+div.menutitle span#titletext{
+    color:white;
+    font-size:26px;
 }
 
 div.menutable{
     width:95%;
-    max-width:980px;
-    min-width:800px;
+    max-width:62em;
+    min-width:50em;
     margin-left:auto;
     margin-right:auto;
     overflow:hidden;
@@ -44,7 +47,7 @@ div.menutable{
 
 div.menucell{
     float:left;
-    height:240px;
+    height:15em;
     position:relative;
     vertical-align: top;
     overflow: hidden;
@@ -55,8 +58,8 @@ div.menucell{
 div.menusubcell#subcell_graph{
     float:left;
     width: 100%;
-    margin-left: -171px;
-    margin-right: -343px;
+    margin-left: -10.6em;
+    margin-right: -21.2em;
 }
 
 div.menutable > div.menucell:first-child{
@@ -68,12 +71,12 @@ div.menutable > div.menucell:last-child{
 }
 
 div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
-    width: 170px;
+    width: 10.5em;
 }
 
 div.menucell#menu_graph{
-    margin-left:171px;
-    margin-right:343px;
+    margin-left:10.6em;
+    margin-right:21.2em;
 }
 
 div.menucell:hover{
@@ -97,7 +100,7 @@ div.thead{
 div#objsel_area {
     float:left;
     width:100%;
-    margin-right:-190px;
+    margin-right:-12em;
 }
 
 div#objselector {
@@ -106,8 +109,8 @@ div#objselector {
     background-color:#FFFFFF;
     border:1px solid gainsboro;
     margin:5px;
-    margin-right:190px;
-    height:180px;
+    margin-right:12em;
+    height:12em;
     cursor:default;
 }
 
@@ -147,21 +150,26 @@ div.item{
 
 .formtext{
     margin:0px;
-    max-width:140px;
+    max-width:9.5em;
+}
+
+.colorpick{
+    margin:0px;
+    width:5em;
 }
 
 .formlst{
     margin:0px;
-    max-width:120px;
+    max-width:8em;
     white-space: nowrap;
 }
 
-div.type, div.name{
+div.name{
     text-align:right;
     line-height:22px;
     margin-top:5px;
     margin-left:3px;
-    min-width:40px;
+    min-width:2.5em;
     clear:both;
     float:left;
 }
@@ -172,10 +180,10 @@ div.form{
     float:left;
 }
 
-div.pttype, div.ptname{
+div.ptname{
     margin-top:5px;
     margin-left:3px;
-    min-width:75px;
+    min-width:4em;
     clear:both;
     float:left;
 }
@@ -210,12 +218,7 @@ select#map > option.event,select#map.event{
 }
 
 #lst_layer{
-    width:90px;
-    white-space: nowrap;
-}
-
-#lst_object{
-    width:100px;
+    width:7em;
     white-space: nowrap;
 }
 
@@ -236,7 +239,7 @@ div#cursorselector > div{
 
 div#cursorselector > div{
     float:left;
-    width:70px;
+    min-width:4em;
     height:30px;
     border:1px solid transparent;
     border-radius:5px;
@@ -257,11 +260,17 @@ div#cursorselector > div.selected{
 }
 
 /* êßå‰ïî */
+#lst_object{
+    width:7em;
+    white-space: nowrap;
+}
+
 #obj_area{
     float:left;
     margin-left:5px;
     margin-top:5px;
 }
+
 #obj_cont{
     text-align:center;
     float:left;
