@@ -4,8 +4,9 @@ body{
 }
 
 h1,h3{
-    background:linear-gradient(to right, rgba(204,204,204,1), rgba(204,204,204,0.9));
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFCCCCCC', endColorstr='#E0CCCCCC', GradientType=1)";
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSJyZ2IoMjA0LCAyMDQsIDIwNCkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9InJnYmEoMjA0LCAyMDQsIDIwNCwgMC45KSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNnMSkiIC8+PC9zdmc+);
+    background-image:-webkit-gradient(linear, left center, right center, color-stop(0%, rgb(204, 204, 204)), color-stop(100%, rgba(204, 204, 204, 0.9)));
+    background-image:linear-gradient(to right, rgba(204,204,204,1), rgba(204,204,204,0.9));
 }
 
 div.caption {
@@ -24,6 +25,7 @@ div.menutitle{
     border-top-right-radius:10px;
     background-color:#000066;
     box-shadow:0px 2px 4px gray;
+    -webkit-box-shadow:0px 2px 4px gray;
 }
 
 div.menutitle span#titletext{
@@ -39,10 +41,12 @@ div.menutable{
     margin-right:auto;
     overflow:hidden;
     margin-bottom:30px;
+    -webkit-box-shadow:0px 2px 4px gray;
     box-shadow:0px 2px 4px gray;
 
-    background:linear-gradient(to bottom, #FFFFFF, #F0F0F0);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#F0F0F0', GradientType=0)";
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkZGRkZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRjBGMEYwIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
+    background-image:-webkit-gradient(linear, center top, center bottom, color-stop(0%, #FFFFFF), color-stop(100%, #F0F0F0));
+    background-image:linear-gradient(to bottom, #FFFFFF, #F0F0F0);
 }
 
 div.menucell{
@@ -81,10 +85,10 @@ div.menucell#menu_graph{
 
 div.menucell:hover{
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyYWRpYWxHcmFkaWVudCBpZD0iZyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyMjQsIDIyNCwgMjI0LCAwKSIvPjwvcmFkaWFsR3JhZGllbnQ+PHJlY3QgeD0iMCUiIHk9IjAlIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDIyNCwgMjI0LCAyMjQsIDApIiAvPjxyZWN0IHg9Ii0yMC43MTA3JSIgeT0iLTQxLjQyMTQlIiB3aWR0aD0iMTQxLjQyMTQlIiBoZWlnaHQ9IjI4Mi44NDI3JSIgZmlsbD0idXJsKCNnKSIgLz48L3N2Zz4=);
-    background:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
-                                       white 0%, rgba(224, 224,224, 0) 100%);
-    background:radial-gradient(ellipse farthest-corner at bottom center,
-                               white 0%, rgba(224,224,224,0) 100%);
+    background-image:-webkit-radial-gradient(bottom center, ellipse farthest-corner,
+                                             white 0%, rgba(224, 224,224, 0) 100%);
+    background-image:radial-gradient(ellipse farthest-corner at bottom center,
+                                     white 0%, rgba(224,224,224,0) 100%);
 }
 
 div.thead{
@@ -250,12 +254,14 @@ div#cursorselector > div{
 div#cursorselector > div:hover{
     border:1px solid rgb(194,147,58);
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjEpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTYsIDEwOCwgMC4zKSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjIpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
+    background-image: -webkit-gradient(linear, center bottom, center top, color-stop(0%, rgba(255, 216, 108, 0.1)), color-stop(80%, rgba(255, 216, 108, 0.3)), color-stop(100%, rgba(255, 216, 108, 0.2)));
     background-image: linear-gradient(to top, rgba(255, 216, 108, 0.1) 0%, rgba(255, 216, 108, 0.3) 80%, rgba(255, 216, 108, 0.2) 100%);
 }
 
 div#cursorselector > div.selected{
     border:1px solid rgb(194,147,58);
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjUpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTYsIDEwOCwgMC44KSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNiwgMTA4LCAwLjYpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
+    background-image: -webkit-gradient(linear, center bottom, center top, color-stop(0%, rgba(255, 216, 108, 0.5)), color-stop(80%, rgba(255, 216, 108, 0.8)), color-stop(100%, rgba(255, 216, 108, 0.6)));
     background-image: linear-gradient(to top, rgba(255, 216, 108, 0.5) 0%, rgba(255, 216, 108, 0.8) 80%, rgba(255, 216, 108, 0.6) 100%);
 }
 
@@ -300,6 +306,7 @@ div.ContextMenu{
     position:absolute;
     border:1px solid gray;
     background-color:#F0F0F0;
+    -webkit-box-shadow:2px 2px 3px gray;
     box-shadow:2px 2px 3px gray;
     cursor:default;
     width:12em;
@@ -311,6 +318,7 @@ div.ContextChild{
     position:absolute;
     border:1px solid gray;
     background-color:#F0F0F0;
+    -webkit-box-shadow:2px 2px 3px gray;
     box-shadow:2px 2px 3px gray;
     width:12em;
     display:none;
