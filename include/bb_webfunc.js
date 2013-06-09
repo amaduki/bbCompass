@@ -114,6 +114,7 @@ $(document).ready(function(){
             $(this).children(".ContextChild").hide();
         }
     );
+    $('#objselector').tinyscrollbar({invertscroll:true});
 
   //ズーム
   $("#lst_scale").change(function() {

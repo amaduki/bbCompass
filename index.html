@@ -8,10 +8,12 @@
 <link rel=stylesheet type="text/css" href="./include/ribbonmenu.css">
 <link rel=stylesheet type="text/css" href="./include/bb_compass.css">
 <link rel="stylesheet" type="text/css" href="include/scp/jquery.simple-color-picker.css">
+<link rel="stylesheet" type="text/css" href="include/scroll/jquery.tinyscrollbar.css">
 <script type="text/javascript" src="./include/uuid/uuid.js"></script>
 <script type="text/javascript" src="./include/jquery/jquery-2.0.2.min.js"></script>
 <script type="text/javascript" src="./include/scp/jquery.simple-color-picker.js"></script>
 <script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.18.min.js"></script>
+<script type="text/javascript" src="./include/scroll/jquery.tinyscrollbar.min.js"></script>
 <script type="text/javascript" src="./include/bb_object.min.js"></script>
 <script type="text/javascript" src="./include/bb_webfunc.js"></script>
 </head>
@@ -152,17 +154,20 @@
       <div class="celltitle" id="head_graph">設置</div>
       <div id="objsel_area">
         <div id="objselector" class="selector">
-            <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png"><br>偵察機</div>
-            <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png"><br>センサー</div>
-            <div class="option" data-target="objradar"><img src="./image/menu/radar.png"><br>レーダー</div>
-            <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png"><br>砲撃</div>
-            <div class="option" data-target="objwaft"><img src="./image/menu/waft.png"><br>ワフト</div>
-            <div class="option" data-target="objmisc"><img src="./image/menu/misc.png"><br>各種武器</div>
-            <div class="option" data-target="objicon"><img src="./image/menu/icon.png"><br>アイコン</div>
-            <div class="option" data-target="objcircle"><img src="./image/menu/circle.png"><br>円</div>
-            <div class="option" data-target="objline"><img src="./image/menu/line.png"><br>直線</div>
-            <div class="option" data-target="objpoint"><img src="./image/menu/point.png"><br>点</div>
-            <div class="option" data-target="objfreehand"><img src="./image/menu/freehand.png"><br>手書き</div>
+            <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+            <div class="viewport">
+                <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png"><br>偵察機</div>
+                <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png"><br>センサー</div>
+                <div class="option" data-target="objradar"><img src="./image/menu/radar.png"><br>レーダー</div>
+                <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png"><br>砲撃</div>
+                <div class="option" data-target="objwaft"><img src="./image/menu/waft.png"><br>ワフト</div>
+                <div class="option" data-target="objmisc"><img src="./image/menu/misc.png"><br>各種武器</div>
+                <div class="option" data-target="objicon"><img src="./image/menu/icon.png"><br>アイコン</div>
+                <div class="option" data-target="objcircle"><img src="./image/menu/circle.png"><br>円</div>
+                <div class="option" data-target="objline"><img src="./image/menu/line.png"><br>直線</div>
+                <div class="option" data-target="objpoint"><img src="./image/menu/point.png"><br>点</div>
+                <div class="option" data-target="objfreehand"><img src="./image/menu/freehand.png"><br>手書き</div>
+            </div>
         </div>
       </div>
 
@@ -472,12 +477,13 @@ IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いくだ
 ツールを作成された方にこの場を借りて御礼申し上げます</p>
 <p>また、本ツールの地図データはセガが公開しているデータを利用しています。
 自由度の高い規約で地図データを公開してくださってありがとうございます。</p>
-<p>最後に、本ツールの開発においては下記の各ライブラリを利用しております。
+<p>最後に、本ツールの開発においては下記の各ライブラリ、あるいはその改造版を利用しております。
 ライブラリを開発された方々に御礼申し上げます。</p>
 <ul>
 <li><a href="http://jcscript.com/" target="_blank">jCanvaScript</a>
 <li><a href="http://jquery.com/" target="_blank">jQuery</a>
 <li><a href="http://rachel-carvalho.github.com/simple-color-picker/" target="_blank">simpleColorPicker jQuery plugin</a>
+<li><a href="http://baijs.nl/tinyscrollbar/" target="_blank">Tiny Scrollbar</a>(私家改造版)
 <li><a href="https://github.com/LiosK/UUID.js" target="_blank">UUID.js</a>
 </ul>
 </div>
