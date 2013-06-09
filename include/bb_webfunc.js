@@ -46,11 +46,11 @@ $(document).ready(function(){
                        });
 
   //メニュー
-    $("div#objselector").children("div.option").click(function () {
+    $("div#objselector div.option").click(function () {
         if ($(this).hasClass("selected")) {
             return false;
         } else {
-            $("div#objselector").children("div.selected").removeClass("selected");
+            $("div#objselector div.option.selected").removeClass("selected");
             $(this).addClass("selected");
         }
         var openid=$(this).attr("data-target");
