@@ -28,11 +28,11 @@
     │       jCanvaScript.1.5.18.js
     │      
     ├─jquery/
-    │       jquery-1.7.1.min.js
+    │       jquery-2.0.2.min.js
     │       MIT-LICENSE.txt
     │      
     ├─scp/
-    │       jquery.simple-color-picker.cs
+    │       jquery.simple-color-picker.css
     │       jquery.simple-color-picker.js
     │       LICENSE
     │      
@@ -53,8 +53,9 @@
   (つまり、そのまま使うだけであれば.min.jsだけをアップロードすればOKです)
 
   また、下の方にあるjcanvas/jquery/uuid/scpの各ディレクトリは外部ライブラリです。
-  基本的には配布されているものをそのまま利用しているのですが、
-  jCanvaScriptはgithubから取得した物を自前でminimizeして利用している場合もあり、
+  ほとんどの場合は配布されているものをそのまま利用しているのですが、
+  simple color pickerはjQuery2.0.2に対応していないため、1行だけ書き換えて利用しています。
+  また、jCanvaScriptはgithubから取得した物を自前でminimizeして利用している場合もあり、
   一応元ファイルとminimizeしたファイルの双方を同梱することにしています。
 
 
