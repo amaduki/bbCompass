@@ -505,6 +505,24 @@ function down_object() {
     });
 }
 
+//メニュー隠す
+function hide_menu() {
+    $("div.ribbonmenu").slideUp(
+        function(){
+            $("#menusw_off").hide();
+            $("#menusw_on").show();
+    });
+}
+
+//メニュー出す
+function show_menu() {
+    $("div.ribbonmenu").slideDown(
+        function(){
+            $("#menusw_on").hide();
+            $("#menusw_off").show();
+    });
+}
+
 //lst_objectから要素削除
 function del_object() {
     $("#lst_object option:selected").each(function(){

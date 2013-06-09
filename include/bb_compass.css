@@ -35,6 +35,19 @@ div.menutitle span#titletext{
     margin-left:0.5em;
 }
 
+div.menutitle span#menusw_on,div.menutitle span#menusw_off{
+    float:right;
+    margin-right:0.5em;
+    color:white;
+    font-size:26px;
+    text-decoration:underline;
+    cursor:pointer;
+}
+
+div.menutitle span#menusw_on{
+    display:none;
+}
+
 div.ribbonmenu{
     width:95%;
     max-width:62em;
