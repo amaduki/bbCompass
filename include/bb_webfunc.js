@@ -3,6 +3,7 @@ var CanvasName = "BBCompass";
 var DivName    = "CanvasArea";
 var scrollBarWidth=0;
 var scrollBarHeight=0;
+var freehandOnWrite=undefined;
 var bbobj="";
 
 //ターレット関連データ
@@ -388,11 +389,13 @@ function set_freehand(){
     add_object(obj.id, name);
     $("button").attr("disabled",true);
     obj.start();
+    freehandOnWrite = obj;
     var colChg =function(){
                     obj.color($(this).val());
                 }
     $("#stop_freehand").attr("disabled", false)
                        .click(function(){
+                                  freehandOnWrite=undefined;
                                   obj.end();
                                   $("#col_freehand").unbind('blur',colChg);
                                   $("button:not(.disable)").attr("disabled",false);
@@ -432,6 +435,10 @@ function start_move(){
     $("div#csr_select").removeClass("selected");
     $("div#csr_move").addClass("selected");
     $("canvas#"+CanvasName).css("cursor","move");
+
+    if (freehandOnWrite !== undefined) {
+        freehandOnWrite.end();
+    }
 
     bbobj.jcanvas.pause(CanvasName);
     var md,mm,mu,
@@ -475,6 +482,12 @@ function stop_move(){
     bbobj.jcanvas.start(CanvasName, true);
     $("#"+DivName).unbind('mousedown');
 
+    //力技なのが気になる
+    if (freehandOnWrite !== undefined) {
+        $("button").attr("disabled",true);
+        freehandOnWrite.start();
+        $("#stop_freehand").attr("disabled", false);
+    }
 }
 
 //lst_objectへの追加
