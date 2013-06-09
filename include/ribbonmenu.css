@@ -46,19 +46,19 @@ div.ribbonmenu div.selector {
     cursor:default;
 }
 
-div.ribbonmenu div.selector > div{
+div.ribbonmenu div.selector > div.option{
     border:1px solid transparent;
     border-radius:5px;
 }
 
-div.ribbonmenu div.selector > div:hover{
+div.ribbonmenu div.selector > div.option:hover{
     border:1px solid rgb(255,212,102);
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNSwgMTA0LCAwLjIpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTUsIDEwNCwgMC41KSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNSwgMTA0LCAwLjMpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
     background-image: -webkit-gradient(linear, center bottom, center top, color-stop(0%, rgba(255, 215, 104, 0.2)), color-stop(80%, rgba(255, 215, 104, 0.5)), color-stop(100%, rgba(255, 215, 104, 0.3)));
     background-image: linear-gradient(to top, rgba(255, 215, 104, 0.2) 0%, rgba(255, 215, 104, 0.5) 80%, rgba(255, 215, 104, 0.3) 100%);
 }
 
-div.ribbonmenu div.selector > div.selected{
+div.ribbonmenu div.selector > div.option.selected{
     border:1px solid rgb(228,184,63);
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNSwgOTMsIDAuMykiLz48c3RvcCBvZmZzZXQ9IjAuNyIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIxNSwgOTMsIDAuOCkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMTUsIDkzLCAwLjUpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
     background-image: -webkit-gradient(linear, center bottom, center top, color-stop(0%, rgba(255, 215, 93, 0.3)), color-stop(70%, rgba(255, 215, 93, 0.8)), color-stop(100%, rgba(255, 215, 93, 0.5)));

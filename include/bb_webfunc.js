@@ -46,7 +46,7 @@ $(document).ready(function(){
                        });
 
   //メニュー
-    $("div#objselector").children("div.object").click(function () {
+    $("div#objselector").children("div.option").click(function () {
         if ($(this).hasClass("selected")) {
             return false;
         } else {
@@ -459,6 +459,7 @@ function start_move(){
          };
 
     $("#"+DivName).mousedown(md);
+
 }
 
 //移動終了
