@@ -318,7 +318,7 @@ var BB = function (canvasID){
                .layer(this.id).color('#FFFFFF').font('15px sans-serif').align('center');
 
         var ptcol  = jcanvas.circle(ptx, pty, 7, this._color, true).layer(this.id).opacity(1),
-            pt     = jcanvas.circle(ptx, pty, 5, "#FFFFFF", true).layer(this.id);
+            pt     = jcanvas.circle(ptx, pty, 5, "#FFFFFF", true).layer(this.id),
             radius = jcanvas.text(Math.floor(this._radius)+"m", ptx/2, pty/2).baseline("top")
                             .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
         jcanvas.layer(this.id).draggable();
@@ -410,7 +410,7 @@ var BB = function (canvasID){
             pt1col   = jcanvas.circle(x1, y1, 7, this._color, true).layer(this.id),
             pt1      = jcanvas.circle(x1, y1, 5, "#FFFFFF", true).layer(this.id),
             pt2col   = jcanvas.circle(x2, y2, 7, this._color, true).layer(this.id),
-            pt2      = jcanvas.circle(x2, y2, 5, "#FFFFFF", true).layer(this.id);
+            pt2      = jcanvas.circle(x2, y2, 5, "#FFFFFF", true).layer(this.id),
             linename = jcanvas.text(this._text, centerx, centery+above)
                               .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id),
             linelen  = jcanvas.text(Math.floor(this._length)+"m", centerx, centery-below)

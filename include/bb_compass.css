@@ -348,19 +348,15 @@ div.ContextMenu ul li:hover{
 }
 
 div.ContextMenu ul li:before{
-    float:left;
     width:30px;
-    display:block;
-    border:none;
+    display:inline-block;
     content:".";
     visibility:hidden;
 }
 
 div.ContextMenu ul li.checked:before{
-    float:left;
     width:30px;
-    display:table-cell;
-    vertical-align: middle;
+    display:inline-block;
     visibility:visible;
     content:url("../image/checked.gif");
 }
@@ -368,8 +364,7 @@ div.ContextMenu ul li.checked:before{
 div.ContextMenu ul li.hasChild:after{
     float:right;
     width:1em;
-    display: table-cell;
-    vertical-align: middle;
+    display: inline-block;
     content:url("../image/haschild.gif");
 }
 
