@@ -61,14 +61,11 @@ BBコンパスもどき
 
   (2)本ツールが利用するライブラリとその再配布について
     本ツールは下記のライブラリを利用しており、
-  　それぞれのライセンスに基づいて再配布を行っています。
+    それぞれのライセンスに基づいて再配布を行っています。
     (jQueryとJcanvaScriptはデュアルライセンスですが、MIT Licenseに従います)
 
     ・jQuery  http://jquery.com/
       MIT License or the GNU General Public License (GPL) Version 2.
-
-    ・simpleColorPicker jQuery plugin  http://rachel-carvalho.github.com/simple-color-picker/
-      MIT License
 
     ・UUID.js  https://github.com/LiosK/UUID.js
       MIT License
@@ -78,6 +75,16 @@ BBコンパスもどき
 
     ※一部機能においてJcanvaScriptの内部変数を参照、書き換えしています。
       JcanvaScriptのバージョンを上げるとうまく動かなくなる可能性があります。
+
+    また、下記のライブラリについては私家改造版を利用しています。
+    この場合の著作権の扱いは今一つわかりませんが（改造部分のみ私の著作物？）
+    幸いにしてどちらもMIT Licenseで公開されているものですので、
+    改造部分もMITLicenseを採用し、まとめて配布するものとします。
+
+    ・simpleColorPicker jQuery plugin  http://rachel-carvalho.github.com/simple-color-picker/
+
+    ・Tiny Scrollbar  http://baijs.nl/tinyscrollbar/
+
 
   (3)マップ画像について
     マップ画像の著作権は株式会社 セガが保有しています。
