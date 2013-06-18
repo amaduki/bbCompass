@@ -9,7 +9,8 @@ var bbobj="";
 //ターレット関連データ
 var turretSpec={"R":[200,180],
                 "G":[250,180],
-                "M":[250,180]};
+                "M":[250,180],
+                "L":[230,180]};
 var turretCircle=8;
 
 $(document).ready(function(){
