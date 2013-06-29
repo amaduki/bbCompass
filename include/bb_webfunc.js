@@ -286,6 +286,10 @@ function set_misc() {
         case "sentry":  //先生
             obj = bbobj.add_sentry($("#name_misc").val(),$("#col_misc").val());
             break;
+
+        case "bomber":  //爆撃通信機
+            obj = bbobj.add_bomber($("#name_misc").val(),$("#col_misc").val());
+            break;
     }
 
     if (obj) {

@@ -715,9 +715,9 @@ var BB = function (canvasID){
 
         this.type="howitzer";
         this._text=_text;
-        this._radius1=_radius1;
-        this._radius2=_radius2;
-        this._radius3=_radius3;
+        this._radius1=_radius1;  //射程範囲
+        this._radius2=_radius2;  //爆風範囲
+        this._radius3=_radius3;  //誤差範囲
         this._color=_color;
         this._markerx=0;
         this._markery=0;
@@ -934,6 +934,95 @@ var BB = function (canvasID){
                            jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
                        });
         text.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+
+        return this;
+    };
+
+
+  //
+  //BB_bomberオブジェクト
+  //
+    this.BB_bomber = function (_text, _color) {
+        if (_color===undefined) {_color='rgb(255, 0, 165)';}
+        this.id=UUID.genV1().toString();
+
+        this.type="bomber";
+        this._text=_text;
+        this._rad1= 28;  //爆風範囲
+        this._rad2=  8;  //誤差範囲
+        this._center=[50,65,80,95,110,125,140,155,170,185,200,215];  //爆心
+        this._color=_color;
+        //描画して登録。初期座標は半径分ずらす
+        this.draw();
+        var px_rad = bbobj.meter_to_pixel(this._rad1);
+        this.move(px_rad, px_rad);
+        this.regist();
+    };
+    this.BB_bomber.prototype=new this.BB_base();
+
+    this.BB_bomber.prototype.draw = function () {
+        var px_rad1   = bbobj.meter_to_pixel(this._rad1),
+            px_rad2   = px_rad1 + bbobj.meter_to_pixel(this._rad2),
+            px_len    = bbobj.meter_to_pixel(this._center[this._center.length-1]),
+            crosshair = [],
+            point_ch  = [];
+
+        //攻撃位置を変換しておく
+        for ( var i = 0; i < this._center.length; ++i ) {
+            point_ch[i] = bbobj.meter_to_pixel(this._center[i]);
+        }
+
+        jcanvas.scout(0, 0, px_rad1, px_len, this._color, true).opacity(0.2).layer(this.id);
+        jcanvas.scout(0, 0, px_rad1, px_len, this._color, false).opacity(1).layer(this.id);
+        var self =jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
+
+        //攻撃範囲表示
+        for ( var i = 0; i < this._center.length; ++i ) {
+            jcanvas.circle(point_ch[i] , 0, px_rad1, this._color, false).opacity(1).layer(this.id),
+            jcanvas.circle(point_ch[i] , 0, px_rad2, this._color, true).opacity(0.3).layer(this.id);
+        }
+
+        //クロスヘア表示
+        for ( var i = 0; i < this._center.length; ++i ) {
+            crosshair.push(jcanvas.crosshair(point_ch[i] , 0).layer(this.id));
+        }
+
+        jcanvas.text(this._text, 0, -10)
+               .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
+        jcanvas.layer(this.id).draggable();
+
+        //角度変更処理
+        var mask = jcanvas.scout_mask(0, 0, px_rad1, px_len).layer(this.id),
+             obj = this;
+        mask.mousedown(function(point){
+                           var canvas = jc.canvas(bbobj.id),
+                               tmpmask = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
+                                                .layer("tmp_" + obj.id),
+                               layer    = jcanvas.layer(obj.id),
+                               tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                           tmpLayer.level('top');
+                           var pos_self  = self.position();
+                           var startrad = Math.atan2((point.y-pos_self.y), (point.x-pos_self.x)),
+                               baserad  = layer.getAngle();
+                           tmpmask.mousemove(function (pos) {
+                                                 var nowrad = Math.atan2((pos.y-pos_self.y), (pos.x-pos_self.x));
+                                                 var rad    = baserad + (nowrad - startrad);
+                                                 layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                                 for ( var i = 0; i < crosshair.length; ++i ) {
+                                                     crosshair[i].rotateTo((rad*(-180)/Math.PI), point_ch[i], 0);
+                                                 }
+                                             });
+                           tmpmask.mouseup(function (point) {
+                                               jcanvas.layer("tmp_" + obj.id).del();
+                                           });
+                       });
+
+        mask.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        mask.mouseout(function () {
                           jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
                       });
 
@@ -1491,6 +1580,10 @@ BB.prototype.add_bunker = function (string, color) {
 
 BB.prototype.add_sentry = function (string, color) {
     return new this.BB_sentry(string, color);
+};
+
+BB.prototype.add_bomber = function (string, color) {
+    return new this.BB_bomber(string, color);
 };
 
 BB.prototype.add_circle = function (string, radius, color) {
