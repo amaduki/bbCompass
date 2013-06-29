@@ -737,12 +737,12 @@ var BB = function (canvasID){
 
         //射程範囲の表示
         jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
-        var range   = jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.2).layer(this.id),
-            area    = jcanvas.circle(this._markerx, this._markery, px_rad3, this._color, false).opacity(1).layer(this.id);
+        var range   = jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.2).layer(this.id);
         jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
 
         //照準円の表示
-        var tgtline = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, false).opacity(1).layer(this.id),
+        var area    = jcanvas.circle(this._markerx, this._markery, px_rad3, this._color, false).opacity(1).layer(this.id),
+            tgtline = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, false).opacity(1).layer(this.id),
             cross   = jcanvas.crosshair(this._markerx, this._markery).layer(this.id),
             tgt     = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, true).opacity(0.3).layer(this.id);
         jcanvas.text(this._text, 0, -40)
