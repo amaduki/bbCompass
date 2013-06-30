@@ -951,7 +951,7 @@ var BB = function (canvasID){
         this.type="bomber";
         this._text=_text;
         this._rad1= 28;  //爆風範囲
-        this._rad2=  8;  //誤差範囲
+        this._rad2=  9;  //着弾誤差範囲
         this._center=[50,65,80,95,110,125,140,155,170,185,200,215];  //爆心
         this._color=_color;
         //描画して登録。初期座標は半径分ずらす
@@ -985,8 +985,10 @@ var BB = function (canvasID){
         }
 
         //クロスヘア表示
+        var angle = (jcanvas.layer(this.id).getAngle())*(-180)/Math.PI;
         for ( var i = 0; i < this._center.length; ++i ) {
-            crosshair.push(jcanvas.crosshair(point_ch[i] , 0).layer(this.id));
+            crosshair.push(jcanvas.crosshair(point_ch[i] , 0).layer(this.id)
+                                                             .rotateTo(angle, point_ch[i] , 0));
         }
 
         jcanvas.text(this._text, 0, -10)
