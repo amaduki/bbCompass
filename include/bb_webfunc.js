@@ -287,6 +287,10 @@ function set_misc() {
             obj = bbobj.add_sentry($("#name_misc").val(),$("#col_misc").val());
             break;
 
+        case "aerosent":  //先生
+            obj = bbobj.add_aerosentry($("#name_misc").val(),$("#col_misc").val());
+            break;
+
         case "bomber":  //爆撃通信機
             obj = bbobj.add_bomber($("#name_misc").val(),$("#col_misc").val());
             break;

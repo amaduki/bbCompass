@@ -940,6 +940,54 @@ var BB = function (canvasID){
         return this;
     };
 
+  //
+  //BB_aerosentryオブジェクト
+  //
+    this.BB_aerosentry = function (_text, _color) {
+        if (_color===undefined) {_color='rgb(255, 0, 0)';}
+        this.id=UUID.genV1().toString();
+
+        this.type="sentry";
+        this._text=_text;
+        this._radius=40; //固定値
+        this._color=_color;
+        //描画して登録。初期座標は偵察半径分ずらす
+        //マークはファイル依存させないため手打ち。
+        this._image    = new Image;
+        this._image.src= 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAIAAAC0tAIdAAAAAXN'
+                       + 'SR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABsSURBVChT'
+                       + 'nYxBEoAwDAL7/09HWkgkNid3xnED6IqIdYAU98mEIjtVRnZ62FIKqbOkf9fPocJD3ijxkHzXI'
+                       + '1r4GqjsqDu0A2iSKE3+/lvlhBb3ugR4SFoN/JwrvGgUMPqeEk/B7XvkdqoZDSIeqpRXt5iMa4'
+                       + 'kAAAAASUVORK5CYII=';
+        var obj        = this;
+        this._image.onload= function () {
+            obj.draw();
+            var px_rad = bbobj.meter_to_pixel(obj._radius);
+            obj.move(px_rad, px_rad);
+            obj.regist();
+        };
+    };
+    this.BB_aerosentry.prototype=new this.BB_base();
+
+    this.BB_aerosentry.prototype.draw = function () {
+        var px_rad = bbobj.meter_to_pixel(this._radius),
+            obj    = this,
+            img_width  = this._image.width,
+            img_height = this._image.height,
+            img_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
+
+        jcanvas.circle(0, 0, px_rad, this._color, false).opacity(1).layer(this.id);
+        var area = jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.3).layer(this.id);
+        jcanvas.circle(0, 0, img_rad, this._color, true).opacity(0.9).layer(this.id);
+        jcanvas.circle(0, 0, img_rad-2, '#ffffff', true).layer(this.id);
+        jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
+
+        jcanvas.text(this._text, 0, -10)
+               .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
+        jcanvas.layer(this.id).draggable();
+
+        return this;
+    };
 
   //
   //BB_bomberオブジェクト
@@ -1582,6 +1630,10 @@ BB.prototype.add_bunker = function (string, color) {
 
 BB.prototype.add_sentry = function (string, color) {
     return new this.BB_sentry(string, color);
+};
+
+BB.prototype.add_aerosentry = function (string, color) {
+    return new this.BB_aerosentry(string, color);
 };
 
 BB.prototype.add_bomber = function (string, color) {
