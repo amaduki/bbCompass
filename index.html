@@ -172,6 +172,7 @@
                 <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png"><br>偵察機</div>
                 <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png"><br>センサー</div>
                 <div class="option" data-target="objradar"><img src="./image/menu/radar.png"><br>レーダー</div>
+                <div class="option" data-target="objsonde"><img src="./image/menu/sonde.png"><br>滞空索敵</div>
                 <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png"><br>砲撃</div>
                 <div class="option" data-target="objwaft"><img src="./image/menu/waft.png"><br>ワフト</div>
                 <div class="option" data-target="objmisc"><img src="./image/menu/misc.png"><br>各種武器</div>
@@ -226,7 +227,7 @@
       </form></div>
 
       <!--レーダー-->
-      <div class="setobj hidden" id="objradar"><form name="sensor" action="javascript:set_radar();"> <!--レーダー-->
+      <div class="setobj hidden" id="objradar"><form name="radar" action="javascript:set_radar();">
           <div class="title">レーダーユニット</div>
           <div class="name">名前：</div>
           <div class="form"><input id="name_radar" type="text" class="formtext"></div>
@@ -235,12 +236,30 @@
           <div class="name">種別：</div>
           <div class="form">
               <select id="lst_radar" size="4" class="formlst">
-                  <!--valueは 索敵半径を指定 -->
+                  <!--valueは 索敵半径と角度を指定 -->
                   <option label="レーダー" value="[200,60]">レーダー</option>
                   <option label="レーダーII" value="[160,120]">レーダーII</option>
               </select>
           </div>
           <div class="submitbtn"><button id="submit_radar">設置</button></div>
+      </form></div>
+
+      <!--滞空索敵弾ー-->
+      <div class="setobj hidden" id="objsonde"><form name="sonde" action="javascript:set_sonde();">
+          <div class="title">滞空索敵弾</div>
+          <div class="name">名前：</div>
+          <div class="form"><input id="name_sonde" type="text" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_sonde" type="text" value="#00ff00" class="colorpick"></div>
+          <div class="name">種別：</div>
+          <div class="form">
+              <select id="lst_sonde" size="4" class="formlst">
+                  <!--valueは 射出半径と索敵半径を指定 -->
+                  <option label="滞空索敵弾" value="[350,60]">滞空索敵弾</option>
+                  <option label="小型索敵弾" value="[450,45]">小型索敵弾</option>
+              </select>
+          </div>
+          <div class="submitbtn"><button id="submit_sonde">設置</button></div>
       </form></div>
 
       <!--榴弾-->

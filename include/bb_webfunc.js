@@ -17,6 +17,7 @@ $(document).ready(function(){
     $("#lst_scout").change(function(){$("#name_scout").val($("#lst_scout option:selected").text());});
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
+    $("#lst_sonde").change(function(){$("#name_sonde").val($("#lst_sonde option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
     $("#lst_misc").change(function(){$("#name_misc").val($("#lst_misc option:selected").text());});
     $("#lst_icon").change(function(){$("#name_icon").val($("#lst_icon option:selected").text());});
@@ -244,6 +245,24 @@ function set_radar() {
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
+    add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
+//滞空索敵弾
+function set_sonde() {
+    if(! $("#lst_sonde").val()) {return;}
+    if (($("#name_sonde").val()).length == 0) {
+        name = "(" + $("#lst_sonde option:selected").text() + ")";
+    } else {
+        name = $("#name_sonde").val();
+    }
+
+    if(! $("#col_sonde").val()) {return;}
+
+    var param = eval($("#lst_sonde").val());
+    var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
     add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});

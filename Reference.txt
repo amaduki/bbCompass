@@ -344,6 +344,19 @@
   この画像の基準点は索敵範囲を示す扇形の中心が利用されます。
 
 
+・add_sonde (string text, num radius1, num radius2 [, string color])
+  引数：text     オブジェクトの名前
+        radius1  射出範囲半径(m指定)
+        radius2  偵察範囲半径(m指定)
+        color    表示色  省略時は緑色
+  返値：obj      画像オブジェクト(索敵弾)
+
+  索敵弾オブジェクトをcanvasに追加します
+  返されるオブジェクトが持つメソッドについては、
+  下にある画像オブジェクトのリファレンスを見てください。
+  この画像の基準点は射出範囲の中心点が利用されます。
+
+
 ・add_howitzer (string text, num radius1, num radius2, num radius3 [, string color])
   引数：text     オブジェクトの名前
         radius1  砲撃の射程(m指定)
@@ -389,6 +402,17 @@
   返されるオブジェクトが持つメソッドについては、
   下にある画像オブジェクトのリファレンスを見てください。
   この画像の基準点は攻撃範囲を示す扇形の中心が利用されます。
+
+
+・add_aerosentry (string text[, string color])
+  引数：text     オブジェクトの名前
+        color    表示色  省略時は紫色
+  返値：obj      画像オブジェクト(エアロセントリー)
+ 
+  エアロセントリーオブジェクトをcanvasに追加します
+  返されるオブジェクトが持つメソッドについては、
+  下にある画像オブジェクトのリファレンスを見てください。
+  この画像の基準点は攻撃範囲を示す円の中心が利用されます。
 
 
 ・add_icon (string text, file[, string color])

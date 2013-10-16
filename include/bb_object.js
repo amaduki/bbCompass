@@ -707,6 +707,127 @@ var BB = function (canvasID){
     };
 
   //
+  //BB_sondeオブジェクト
+  //
+    this.BB_sonde = function (_text, _radius1, _radius2, _color) {
+        if (_color===undefined) {_color='#00FF00';}
+        this.id=UUID.genV1().toString();
+
+        this.type="sonde";
+        this._text=_text;
+        this._radius1=_radius1;  //射程範囲
+        this._radius2=_radius2;  //偵察範囲
+        this._color=_color;
+        this._markerx=0;
+        this._markery=0;
+        //描画して登録。初期座標は有効射程分ずらす
+        this.draw();
+        var px_rad1 = bbobj.meter_to_pixel(this._radius1);
+        this.move(px_rad1, px_rad1);
+        this.regist();
+    };
+    this.BB_sonde.prototype=new this.BB_base();
+
+    this.BB_sonde.prototype.draw = function () {
+        var px_rad1 = bbobj.meter_to_pixel(this._radius1),
+            px_rad2 = bbobj.meter_to_pixel(this._radius2),
+            obj     = this;
+
+        //射程範囲の表示
+        jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
+        var range   = jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.2).layer(this.id);
+        jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
+
+        //照準円の表示
+        var tgtline = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, false).opacity(1).layer(this.id),
+            tgt     = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, true).opacity(0.5).layer(this.id),
+            point   = jcanvas.circle(this._markerx, this._markery, 3, '#FFFFFF', true).layer(this.id);
+        jcanvas.text(this._text, 0, -40)
+               .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
+        jcanvas.layer(this.id).draggable();
+
+        var dragfunc = function (cursor) {
+                                var followflag = true,
+                                    pos   = this.position(),
+                                    base  = range.position(),
+                                    layer = jcanvas.layer(obj.id),
+                                    dx    = cursor.x-base.x,
+                                    dy    = cursor.y-base.y;
+                                if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) > px_rad1) {
+                                    //はみだし禁止！
+                                    followflag=false;
+                                } else {
+                                    followflag=true;
+                                }
+
+                                if (followflag) {
+                                    tgt.translateTo(pos.x,pos.y);
+                                    tgtline.translateTo(pos.x,pos.y);
+                                    point.translateTo(pos.x,pos.y);
+                                } else {
+                                    var rad = Math.atan2((cursor.y-base.y),(cursor.x-base.x));
+                                    var x = base.x+px_rad1*Math.cos(rad);
+                                    var y = base.y+px_rad1*Math.sin(rad);
+                                    tgt.translateTo(x,y);
+                                    tgtline.translateTo(x,y);
+                                    point.translateTo(x,y);
+                                }
+                                obj._markerx=point._x+point._transformdx;
+                                obj._markery=point._y+point._transformdy;
+                       };
+
+        var tgtdrag = function () {
+                         jcanvas.layer(obj.id).optns.drag.val=false;
+                         tgt.optns.drag.val=true;
+                         point.optns.drag.val=true;
+                      };
+
+        var tgtundrag = function () {
+                            jcanvas.layer(obj.id).optns.drag.val=true;
+                            tgt.optns.drag.val=false;
+                            point.optns.drag.val=true;
+                        };
+
+        var resetfunc = function () {
+                            // 最初の位置に戻す
+                            var base  = range.position();
+                            tgt.translateTo(base.x,base.y);
+                            tgtline.translateTo(base.x,base.y);
+                            point.translateTo(base.x,base.y);
+                            obj._markerx=point._x+point._transformdx;
+                            obj._markery=point._y+point._transformdy;
+                            return false;
+                        };
+
+
+        //砲撃地点の処理
+        tgt.draggable(dragfunc);
+        point.draggable(dragfunc);
+
+        //初期状態ではレイヤを優先するため、個別ドラッグを抑止。
+        //ターゲット部分でボタンが押下された場合のみターゲットの個別ドラッグを有効化。
+        tgt.optns.drag.val=false;
+        tgt.mouseover(tgtdrag);
+        tgt.mouseout(tgtundrag);
+        tgt.dblclick(resetfunc);
+
+        //中心点も同様に処理させる
+        //ただし、dblclickはpropagationするのでtgtに任せる
+        point.optns.drag.val=false;
+        point.mouseover(tgtdrag);
+        point.mouseout(tgtundrag);
+
+        return this;
+    };
+
+    this.BB_sonde.prototype.applyZoom = function (scale, _x, _y) {
+        this._markerx = this._markerx * scale;
+        this._markery = this._markery * scale;
+        bbobj.BB_base.prototype.applyZoom.apply(this, arguments);
+        return this;
+    };
+
+  //
   //BB_howitzerオブジェクト
   //
     this.BB_howitzer = function (_text, _radius1, _radius2, _radius3, _color) {
@@ -1618,6 +1739,10 @@ BB.prototype.add_sensor = function (string, radius, color) {
 
 BB.prototype.add_radar = function (string, radius, angle, color) {
     return new this.BB_radar(string, radius, angle, color);
+};
+
+BB.prototype.add_sonde = function (string, radius1, radius2, color) {
+    return new this.BB_sonde(string, radius1, radius2, color);
 };
 
 BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) {
