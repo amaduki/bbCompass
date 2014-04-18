@@ -201,6 +201,10 @@ select#map > option.event,select#map.event{
     background-color:turquoise ;
 }
 
+select#map > option.scramble,select#map.scramble{
+    background-color:lightcoral;
+}
+
 #lst_layer{
     width:7em;
     white-space: nowrap;
