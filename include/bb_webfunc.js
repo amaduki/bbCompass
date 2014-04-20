@@ -195,7 +195,7 @@ function chg_map() {
     $("#lst_layer").children().remove();
     $("#lst_layer").append($('<option value=""></option>').text("通常"));
     for (var i=0;i<layer.length;i++) {
-        $("#lst_layer").append($('<option value="./map/'+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
+        $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
 }
