@@ -826,6 +826,116 @@ var BB = function (canvasID){
     };
 
   //
+  //BB_ndsensor オブジェクト
+  //
+    this.BB_ndsensor = function (_text, _radius, _color) {
+        if (_color===undefined) {_color='rgb(255, 0, 0)';}
+        this.id=UUID.genV1().toString();
+
+        this.type="ndsensor";
+        this._text=_text;
+        this._radius=_radius;
+        this._color=_color;
+
+        //中央アイコンはファイル依存させないため手打ち。
+        this._image    = new Image;
+        this._image.src= 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAIAAAC0tAIdAAAABnRS'
+                       + 'TlMA/wAAAP+JwC+QAAAAeElEQVR42q2QbQrAIAiG9WBBO1l0sgUdzFWSE1urwfoh6fvw+oEEBN'
+                       + 'sPRxpbER8lKRV5Znkz1YYOwBRCEDnGaFIgT3gqP/K9X5pVvk8ybmmgxU126YLmnJ1zHK2qc3bV'
+                       + 'tOlg6XK4eq/2+L+mdfyJltFlnrctlxe8AGPpa/QtEubEAAAAAElFTkSuQmCC';
+
+        //描画して登録。初期座標はx方向に偵察半径+100、y方向に100ずらす
+        var obj        = this;
+        this._image.onload= function () {
+            obj.draw();
+            var px_rad  = bbobj.meter_to_pixel(obj._radius);
+            obj.move(100+px_rad, 100);
+            obj.regist();
+        };
+    };
+    this.BB_ndsensor.prototype=new this.BB_base();
+
+    this.BB_ndsensor.prototype.draw = function () {
+        var px_rad  = bbobj.meter_to_pixel(this._radius),
+            obj     = this,
+            above  = 10,
+            below  = 5,
+            img_width  = this._image.width,
+            img_height = this._image.height,
+            img_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
+
+        var line     = jcanvas.line({points:[[px_rad, 0], [(-1) * px_rad, 0]], color:this._color})
+                              .opacity(1).lineStyle({lineWidth:3}).layer(this.id),
+            pt1col   = jcanvas.circle(px_rad, 0, 7, this._color, true).layer(this.id),
+            pt1      = jcanvas.circle(px_rad, 0, 5, "#FFFFFF", true).layer(this.id),
+            pt2col   = jcanvas.circle((-1) * px_rad, 0, 7, this._color, true).layer(this.id),
+            pt2      = jcanvas.circle((-1) * px_rad, 0, 5, "#FFFFFF", true).layer(this.id),
+            center   = jcanvas.circle(0, 0, img_rad, this._color, true).layer(this.id);
+
+        jcanvas.circle(0, 0, img_rad-2, '#FFFFFF', true).layer(this.id);
+        jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
+        jcanvas.text(this._text, 0, 0+above+img_height)
+               .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
+        jcanvas.layer(this.id).draggable();
+        
+        //移動処理(draggableでは回転できないため、独自定義)
+        var mdEvent = function(point){
+                          var pos_base = center.position(),
+                              canvas   = jc.canvas(bbobj.id);
+                              px_rad   = bbobj.meter_to_pixel(obj._radius),
+                              radius   = Math.sqrt(Math.pow((point.x),2) + Math.pow((point.y),2)),
+                              startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
+                              baserad  = jcanvas.layer(obj.id).getAngle(),
+                              tmpmask  = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
+                                                .layer("tmp_" + obj.id),
+                              layer    = jcanvas.layer(obj.id),
+                              tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                          tmpLayer.level('top');
+                          tmpmask.mousemove(function (pos) {
+                                                var pos_area = center.position(),
+                                                    nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    rad      = baserad+(nowrad - startrad);
+                                                 layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                            });
+                          tmpmask.mouseup(function() {
+                                              tmpLayer.del();
+                                          });
+                      };
+
+        //端点は角度変更
+        pt1.mousedown(mdEvent);
+        pt1.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        pt1.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+        pt1col.mousedown(mdEvent);
+        pt1col.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        pt1col.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+        pt2.mousedown(mdEvent);
+        pt2.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        pt2.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+        pt2col.mousedown(mdEvent);
+        pt2col.mouseover(function () {
+                           jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                       });
+        pt2col.mouseout(function () {
+                          jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                      });
+        return this;
+
+    };
+
+  //
   //BB_howitzerオブジェクト
   //
     this.BB_howitzer = function (_text, _radius1, _radius2, _radius3, _color) {
@@ -1755,6 +1865,10 @@ BB.prototype.add_radar = function (string, radius, angle, color) {
 
 BB.prototype.add_sonde = function (string, radius1, radius2, color) {
     return new this.BB_sonde(string, radius1, radius2, color);
+};
+
+BB.prototype.add_ndsensor = function (string, radius, color) {
+    return new this.BB_ndsensor(string, radius, color);
 };
 
 BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color) {

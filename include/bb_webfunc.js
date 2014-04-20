@@ -18,6 +18,7 @@ $(document).ready(function(){
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_sonde").change(function(){$("#name_sonde").val($("#lst_sonde option:selected").text());});
+    $("#lst_ndsensor").change(function(){$("#name_ndsensor").val($("#lst_ndsensor option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
     $("#lst_misc").change(function(){$("#name_misc").val($("#lst_misc option:selected").text());});
     $("#lst_icon").change(function(){$("#name_icon").val($("#lst_icon option:selected").text());});
@@ -263,6 +264,23 @@ function set_sonde() {
 
     var param = eval($("#lst_sonde").val());
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
+    add_object(obj.id, name);
+    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+}
+
+//ND索敵センサー
+function set_ndsensor() {
+    if(! $("#lst_ndsensor").val()) {return;}
+    if (($("#name_ndsensor").val()).length == 0) {
+        name = "(" + $("#lst_desensor option:selected").text() + ")";
+    } else {
+        name = $("#name_ndsensor").val();
+    }
+
+    if(! $("#col_ndsensor").val()) {return;}
+
+    var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
     add_object(obj.id, name);
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});

@@ -189,6 +189,7 @@
                 <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png"><br>センサー</div>
                 <div class="option" data-target="objradar"><img src="./image/menu/radar.png"><br>レーダー</div>
                 <div class="option" data-target="objsonde"><img src="./image/menu/sonde.png"><br>滞空索敵</div>
+                <div class="option" data-target="objndsensor"><img src="./image/menu/ndsensor.png"><br>ＮＤ索敵</div>
                 <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png"><br>砲撃</div>
                 <div class="option" data-target="objwaft"><img src="./image/menu/waft.png"><br>ワフト</div>
                 <div class="option" data-target="objmisc"><img src="./image/menu/misc.png"><br>各種武器</div>
@@ -278,6 +279,24 @@
               </select>
           </div>
           <div class="submitbtn"><button id="submit_sonde">設置</button></div>
+      </form></div>
+
+      <!--ND索敵センサー-->
+      <div class="setobj hidden" id="objndsensor"><form name="ndsensor" action="javascript:set_ndsensor();">
+          <div class="title">ND索敵センサー</div>
+          <div class="name">名前：</div>
+          <div class="form"><input id="name_ndsensor" type="text" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_ndsensor" type="text" value="#ff0000" class="colorpick"></div>
+          <div class="name">種別：</div>
+          <div class="form">
+              <select id="lst_ndsensor" size="4" class="formlst">
+                  <!--valueは 索敵半径と角度を指定 -->
+                  <option label="ND索敵" value="150">ND索敵</option>
+                  <option label="小型ND" value="100">小型ND</option>
+              </select>
+          </div>
+          <div class="submitbtn"><button id="submit_ndsensor">設置</button></div>
       </form></div>
 
       <!--榴弾-->
@@ -405,6 +424,7 @@
                   <option label="マイン"     value="image/mine.png">マイン</option>
                   <option label="セントリー" value="image/sentry.png">セントリー</option>
                   <option label="エアロセントリー" value="image/aero.png">エアロセントリー</option>
+                  <option label="リモートシューター" value="image/remote.png">リモートシューター</option>
               </select>
           </div>
           <div class="submitbtn"><button id="submit_waft">設置</button></div>
