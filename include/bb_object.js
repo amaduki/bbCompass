@@ -1241,7 +1241,7 @@ var BB = function (canvasID){
 
         this.type="bomber";
         this._text=_text;
-        this._rad1= 30;  //爆風範囲
+        this._rad1= 25;  //爆風範囲
         this._rad2=  0;  //着弾誤差範囲
         this._center=[50,65,80,95,110,125,140,155,170,185,200,215];  //爆心
         this._color=_color;
