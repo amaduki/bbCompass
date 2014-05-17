@@ -439,6 +439,11 @@ function set_freehand(){
     var colChg =function(){
                     obj.color($(this).val());
                 }
+    $("#col_freehand").bind('blur',colChg);
+    $("#undo_freehand").attr("disabled", false)
+                       .click(function(){freehandOnWrite.undo();});
+    $("#redo_freehand").attr("disabled", false)
+                       .click(function(){freehandOnWrite.redo();});
     $("#stop_freehand").attr("disabled", false)
                        .click(function(){
                                   freehandOnWrite=undefined;
@@ -446,9 +451,9 @@ function set_freehand(){
                                   $("#col_freehand").unbind('blur',colChg);
                                   $("button:not(.disable)").attr("disabled",false);
                                   $("#stop_freehand").attr("disabled", true).unbind("click");
+                                  $("#undo_freehand").attr("disabled", true).unbind("click");
+                                  $("#redo_freehand").attr("disabled", true).unbind("click");
                               });
-
-    $("#col_freehand").bind('blur',colChg);
 
 }
 

@@ -1441,11 +1441,12 @@ var BB = function (canvasID){
     this.BB_freehand = function ( _color) {
         if (_color===undefined) {_color='rgb(255, 255, 255)';}
         this.id=UUID.genV1().toString();
-        this.type    = "freehand";
-        this._color  = _color;
-        this._step   = 0;
-        this._stepcol= new Array;
-        this._hooker = undefined;
+        this.type       = "freehand";
+        this._color     = _color;
+        this._step      = 0;
+        this._stepcol   = new Array;
+        this._undoCache = new Array;
+        this._hooker    = undefined;
 
         //layerを確保するためのダミー画像を設置するのみ
         jcanvas.rect(0, 0, 1, 1, 'rgba(0, 0, 0, 0)').layer(this.id);
@@ -1497,7 +1498,10 @@ var BB = function (canvasID){
             layer  = jcanvas.layer(this.id),
             canvas = jc.canvas(bbobj.id);
 
-        if (this._hooker !== undefined) return;
+        if (this._hooker !== undefined) return this;
+
+        // 描画開始時にundoキャッシュをクリア
+        this._undoCache.length = 0;
 
         // マウスイベントフック用の四角形を最前面に展開
         this._hooker=UUID.genV1().toString();
@@ -1508,6 +1512,9 @@ var BB = function (canvasID){
         hooker.dblclick(function () {return false;});
         hooker.mousemove(function () {return false;});
         hooker.mousedown(function (ptstart) {
+                             //追記したのでundoキャッシュをクリアする
+                             obj._undoCache.length = 0;
+
                              obj._step++;
                              obj._stepcol[obj._step]=obj._color;
                              var line = jcanvas.line([[ptstart.x,ptstart.y],[ptstart.x,ptstart.y]],obj._color)
@@ -1528,10 +1535,32 @@ var BB = function (canvasID){
     };
 
     this.BB_freehand.prototype.undo = function () {
+        // 描画処理中でなければそのまま抜ける
+        if (this._hooker === undefined) return this;
+
         if (this._step != 0) {
+            this._undoCache.push({color:this._stepcol[this._step],
+                                  points:jc("#" + this._step, {canvas:bbobj.id, layer:this.id}).points()});
+            this._stepcol.splice(this._step, 1);
             jc("#" + this._step, {canvas:bbobj.id, layer:this.id}).del();
             this._step--;
         }
+        return this;
+    };
+
+    this.BB_freehand.prototype.redo = function () {
+        // 描画処理中でなければそのまま抜ける
+        if (this._hooker === undefined) return this;
+
+        // undoキャッシュにデータがなければそのまま抜ける
+        if (this._undoCache.length == 0) return this;
+
+        var cache = this._undoCache.pop();
+        this._step++;
+        this._stepcol[this._step]=cache.color;
+        jcanvas.line(cache.points, cache.color)
+               .layer(this.id).id(this._step).lineStyle({lineWidth:3});
+
         return this;
     };
 
@@ -1539,6 +1568,10 @@ var BB = function (canvasID){
         // イベントフック用の四角形を消す
         (jc.layer(this._hooker)).del();
         this._hooker = undefined;
+
+        // undoキャッシュをクリア
+        this._undoCache.length = 0;
+
         return this;
     };
 };
