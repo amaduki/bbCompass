@@ -67,18 +67,21 @@ div.ribbonmenu div.selector div.option.selected{
 
 div.ribbonmenu button {
     display:inline-block;
-    background-color: gainsboro;
-    padding:2px;
-    border:1px solid gray;
+    padding:3px;
+    border:1px solid gainsboro;
     border-radius:5px;
     cursor:default;
     margin:2px;
 }
 
-
-div.ribbonmenu button:hover {
+div.ribbonmenu button:enabled:hover {
     border:1px solid rgb(255,183,0);
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTAwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIwNiwgMTA0LCAwLjIpIi8+PHN0b3Agb2Zmc2V0PSIwLjgiIHN0b3AtY29sb3I9InJnYmEoMjU1LCAyMDYsIDEwNCwgMC41KSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0icmdiYSgyNTUsIDIwNiwgMTA0LCAwLjMpIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cxKSIgLz48L3N2Zz4=);
     background-image: -webkit-gradient(linear, center bottom, center top, color-stop(0%, rgba(255, 206, 104, 0.2)), color-stop(80%, rgba(255, 206, 104, 0.5)), color-stop(100%, rgba(255, 206, 104, 0.3)));
     background-image: linear-gradient(to top, rgba(255, 206, 104, 0.2) 0%, rgba(255, 206, 104, 0.5) 80%, rgba(255, 206, 104, 0.3) 100%);
+}
+
+div.ribbonmenu button:disabled {
+    color: gainsboro;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 1);
 }
