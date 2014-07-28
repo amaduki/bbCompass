@@ -39,8 +39,8 @@ $(document).ready(function(){
                            $("#map").children().remove();
                            $("#map").append(mapobj);
                            $("#map").children("[data-stage!='"+stage+"']").remove();
+                           $("#map").change();
                        });
-    $("#stage").change();
 
     $("#map").change(function (){
                            $("#map").removeClass("union event");
@@ -48,6 +48,9 @@ $(document).ready(function(){
                                $("#map").addClass($("#map option:selected").attr("class"));
                            }
                        });
+
+    // 初回のリセット
+    $("#stage").change();
 
   //メニュー
     $("div#objselector div.option").click(function () {
