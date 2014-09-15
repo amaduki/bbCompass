@@ -196,19 +196,19 @@
         <div id="objselector" class="selector">
             <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
             <div class="viewport">
-                <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png"><br>偵察機</div>
-                <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png"><br>センサー</div>
-                <div class="option" data-target="objradar"><img src="./image/menu/radar.png"><br>レーダー</div>
-                <div class="option" data-target="objsonde"><img src="./image/menu/sonde.png"><br>滞空索敵</div>
-                <div class="option" data-target="objndsensor"><img src="./image/menu/ndsensor.png"><br>ＮＤ索敵</div>
-                <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png"><br>砲撃</div>
-                <div class="option" data-target="objwaft"><img src="./image/menu/waft.png"><br>ワフト</div>
-                <div class="option" data-target="objmisc"><img src="./image/menu/misc.png"><br>各種武器</div>
-                <div class="option" data-target="objicon"><img src="./image/menu/icon.png"><br>アイコン</div>
-                <div class="option" data-target="objcircle"><img src="./image/menu/circle.png"><br>円</div>
-                <div class="option" data-target="objline"><img src="./image/menu/line.png"><br>直線</div>
-                <div class="option" data-target="objpoint"><img src="./image/menu/point.png"><br>点</div>
-                <div class="option" data-target="objfreehand"><img src="./image/menu/freehand.png"><br>手書き</div>
+                <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png" alt="メニュー偵察機"><br>偵察機</div>
+                <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png" alt="メニューセンサー"><br>センサー</div>
+                <div class="option" data-target="objradar"><img src="./image/menu/radar.png" alt="メニューレーダー"><br>レーダー</div>
+                <div class="option" data-target="objsonde"><img src="./image/menu/sonde.png" alt="メニュー滞空"><br>滞空索敵</div>
+                <div class="option" data-target="objndsensor"><img src="./image/menu/ndsensor.png" alt="メニューＮＤ"><br>ＮＤ索敵</div>
+                <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png" alt="メニュー砲撃"><br>砲撃</div>
+                <div class="option" data-target="objwaft"><img src="./image/menu/waft.png" alt="メニューワフト"><br>ワフト</div>
+                <div class="option" data-target="objmisc"><img src="./image/menu/misc.png" alt="メニューその他"><br>各種武器</div>
+                <div class="option" data-target="objicon"><img src="./image/menu/icon.png" alt="メニューアイコン"><br>アイコン</div>
+                <div class="option" data-target="objcircle"><img src="./image/menu/circle.png" alt="メニュー円"><br>円</div>
+                <div class="option" data-target="objline"><img src="./image/menu/line.png" alt="メニュー直線"><br>直線</div>
+                <div class="option" data-target="objpoint"><img src="./image/menu/point.png" alt="メニュー点"><br>点</div>
+                <div class="option" data-target="objfreehand"><img src="./image/menu/freehand.png" alt="メニュー手書き"><br>手書き</div>
             </div>
         </div>
       </div>
@@ -420,7 +420,7 @@
       </form></div>
 
       <!--アイコン-->
-        <div class="setobj hidden" id="objicon"><form name="waft" action="javascript:set_icon()">
+        <div class="setobj hidden" id="objicon"><form name="icon" action="javascript:set_icon()">
           <div class="title">アイコン</div>
           <div class="name">名前：</div>
           <div class="form"><input id="name_icon" type="text" class="formtext"></div>
@@ -439,7 +439,7 @@
                   <option label="リモートシューター" value="image/remote.png">リモートシューター</option>
               </select>
           </div>
-          <div class="submitbtn"><button id="submit_waft">設置</button></div>
+          <div class="submitbtn"><button id="submit_icon">設置</button></div>
       </form></div>
 
       <!--フリーハンド-->
@@ -450,7 +450,9 @@
           <div class="name">色：</div>
           <div class="form"><input id="col_freehand" type="text" value="#ffffff" class="colorpick"></div>
           <div class="submitbtn"><button id="submit_freehand">開始</button>
-                                 <button id="stop_freehand" type="button" class="disable" disabled>終了</button></div>
+                                 <button id="stop_freehand" type="button" class="disable" disabled>終了</button><br>
+                                 <button id="undo_freehand" type="button" class="disable" disabled>Undo</button>
+                                 <button id="redo_freehand" type="button" class="disable" disabled>Redo</button></div>
       </form></div>
     </div>
   </div>
@@ -515,7 +517,9 @@
      <ul>
        <li id="contextSelectMode" class="checked" onclick="javascript:stop_move()">選択モード</li>
        <li id="contextMoveMode" onclick="javascript:start_move()">移動モード</li>
-       <div class="hrdiv"><hr></div>
+     </ul>
+     <div class="hrdiv"><hr></div>
+     <ul>
        <li class="hasChild">ズーム
          <div class="ContextChild">
            <div class="Spacer"><!-- --></div>
@@ -524,13 +528,16 @@
              <li id="contextZoom_1_5" onclick="javascript:zoom_cnv(1.5)">150%</li>
              <li id="contextZoom_2" onclick="javascript:zoom_cnv(2)">200%</li>
              <li id="contextZoom_4" onclick="javascript:zoom_cnv(4)">400%</li>
+           </ul>
          </div>
        </li>
-       <div class="hrdiv"><hr></div>
+     </ul>
+     <div class="hrdiv"><hr></div>
+     <ul>
        <li onclick="javascript:saveImg()">画像を保存</li>
      </ul>
    </div>
-  <div id="Loading"><img src="./image/loading.gif"><br>読込中...</div>
+  <div id="Loading"><img src="./image/loading.gif" alt="loading"><br>読込中...</div>
 </div>
 <div id="Copyright">
    (c)SEGA
