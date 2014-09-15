@@ -155,6 +155,7 @@ function initialize(){
 
     $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
+    $(window).resize(function(){bbobj.chgScroll();});
 }
 
 //マップ変更
