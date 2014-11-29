@@ -150,14 +150,14 @@
         return ret;
     }
 
-    var setQueryString = function (bbobj, str, callback) {
+    var setQueryString = function (bbobj, str, mapfunc) {
         var objs     = new Array();
         var view     = jDataView.fromBase64(str);
         var map      = getStr(view);
         var dpm      = view.getFloat32();
         var imgscale = view.getFloat32();
 
-        bbobj.setbg(map, dpm, imgscale, callback);
+        mapfunc(map);
 
         var objtype,objname,objlen;
         while (view.tell() < view.byteLength) {

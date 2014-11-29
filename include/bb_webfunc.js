@@ -5,6 +5,7 @@ var scrollBarWidth=0;
 var scrollBarHeight=0;
 var freehandOnWrite=undefined;
 var bbobj="";
+var mapname="";
 
 //ターレット関連データ
 var turretSpec={"R":[200,180],
@@ -33,19 +34,25 @@ $(document).ready(function(){
                               });
     $('input.colorpick').change();
 
-    var mapobj=$("#map").children().get();
-    $("#stage").change(function (e){
-                           var stage=$("#stage option:selected").val();
-                           $("#map").children().remove();
-                           $("#map").append(mapobj);
-                           $("#map").children("[data-stage!='"+stage+"']").remove();
+    var mapobj=$("select#map").children().get();
+    $.extend({restoreMaps:function(){
+                            $("select#map").children().remove();
+                            $("select#map").append(mapobj);
+                        }
+
+             });
+
+    $("select#stage").change(function (e){
+                           var stage=$("select#stage option:selected").val();
+                           $.restoreMaps();
+                           $("select#map").children("[data-stage!='"+stage+"']").remove();
                            $("#map").change();
                        });
 
-    $("#map").change(function (){
-                           $("#map").removeClass("union event");
-                           if ($("#map option:selected").attr("class") !== undefined) {
-                               $("#map").addClass($("#map option:selected").attr("class"));
+    $("select#map").change(function (){
+                           $("select#map").removeClass("union event");
+                           if ($("select#map option:selected").attr("class") !== undefined) {
+                               $("select#map").addClass($("select#map option:selected").attr("class"));
                            }
                        });
 
@@ -169,6 +176,7 @@ function chg_map() {
     var salt  = "?" + new Date().getTime();
     bbobj.setbg("./map/"+stage+"/"+file+".jpg" + salt, scale[0], scale[1],
                 function(){
+                    mapname=file;
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
                     $("#lst_scale").val(1);
@@ -202,6 +210,17 @@ function chg_map() {
         $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
+}
+
+function set_map(name) {
+    $.restoreMaps();
+    $("select#stage").val($("select#map").children("[value='"+name+"']").attr("data-stage"));
+    $("select#stage").change();
+
+    $("select#map").val(name);
+    $("select#map").change();
+
+    chg_map();
 }
 
 //偵察機
@@ -608,21 +627,20 @@ function saveImg() {
 
 //URL化と戻し(仮設)
 function getURL() {
-    var file  = $("#map option:selected").val();
     var objs  = new Array();
 
     $($("#lst_object option").get().reverse()).each(function(){
         objs.push($(this).val());
     });
 
-    var querystr=BBQuery.getQueryString(bbobj, 'map/' + file + '.jpg', objs);
+    var querystr=BBQuery.getQueryString(bbobj, mapname, objs);
     window.prompt( "パラメータ" , querystr );
 }
 
 function setURL(querystr) {
     var querystr="";
     if(querystr=window.prompt("パラメータ")) {
-        BBQuery.setQueryString(bbobj, querystr);
+        BBQuery.setQueryString(bbobj, querystr, set_map);
     }
 }
 
