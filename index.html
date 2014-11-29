@@ -14,8 +14,12 @@
 <script type="text/javascript" src="./include/scp/jquery.simple-color-picker.js"></script>
 <script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.18.min.js"></script>
 <script type="text/javascript" src="./include/scroll/jquery.tinyscrollbar.min.js"></script>
-<script type="text/javascript" src="./include/bb_object.min.js"></script>
+<script type="text/javascript" src="./include/bb_query.js"></script>
+<script type="text/javascript" src="./include/bb_object.js"></script>
 <script type="text/javascript" src="./include/bb_webfunc.min.js"></script>
+<script type="text/javascript" src="./include/jdataview_base64.js"></script>
+<script type="text/javascript" src="./include/rawdeflate.js"></script>
+<script type="text/javascript" src="./include/rawinflate.js"></script>
 </head>
 <body onload="initialize()">
 <header>
@@ -92,11 +96,11 @@
             <option data-stage="darya" value="darya_b" data-layer="['中段','下段','全表示']">河底の弾雨</option>
             <option data-stage="darya" value="darya_c" data-layer="['中段','下段','全表示']">交錯の火線</option>
             <option data-stage="darya" value="darya_ea" data-layer="['中段','下段','全表示']" class="event">激闘の古跡</option>
-            <option data-stage="d51" value="d51_a"  data-layer="['中段','下段','全表示']">冷厳なる轟声</option>
-            <option data-stage="d51" value="d51_b"  data-layer="['中段','下段','全表示']">白銀死都</option>
-            <option data-stage="d51" value="d51_c"  data-layer="['中段','下段','全表示']">雪中遭遇戦</option>
-            <option data-stage="d51" value="d51_d"  data-layer="['中段','下段','全表示']">氷点下の鳴動</option>
-            <option data-stage="d51" value="d51_e"  data-layer="['中段','下段','全表示']">雪映えの赤光</option>
+            <option data-stage="d51" value="d51_a" data-layer="['中段','下段','全表示']">冷厳なる轟声</option>
+            <option data-stage="d51" value="d51_b" data-layer="['中段','下段','全表示']">白銀死都</option>
+            <option data-stage="d51" value="d51_c" data-layer="['中段','下段','全表示']">雪中遭遇戦</option>
+            <option data-stage="d51" value="d51_d" data-layer="['中段','下段','全表示']">氷点下の鳴動</option>
+            <option data-stage="d51" value="d51_e" data-layer="['中段','下段','全表示']">雪映えの赤光</option>
             <option data-stage="d51" value="d51_f"  data-layer="['中段','下段','全表示']">連携の標柱</option>
             <option data-stage="d51" value="d51_ea" data-layer="['中段','下段','全表示']" class="event">激闘の氷域</option>
             <option data-stage="wuhai" value="wuhai_a" data-layer="['上段','下段','全表示']">要衝襲撃</option>
@@ -509,9 +513,11 @@
     <div class="item">
       <div class="title">保存・出力</div>
       <div id="save_area">
-          <form name="save" action="javascript:saveImg()">
+          <form name="save">
           <div class="submitbtn">
-              <button id="save_img">画像を保存</button>
+              <button id="save_img" type="submit" formaction="javascript:saveImg()">保存</button>
+              <button id="get_url" type="submit" formaction="javascript:getURL()">URL出</button>
+              <button id="get_url" type="submit" formaction="javascript:setURL()">URL入</button>
           </div></form>
       </div>
     </div>
@@ -528,7 +534,7 @@
        <li id="contextSelectMode" class="checked" onclick="javascript:stop_move()">選択モード</li>
        <li id="contextMoveMode" onclick="javascript:start_move()">移動モード</li>
      </ul>
-     <div class="hrdiv"><hr></div>
+       <div class="hrdiv"><hr></div>
      <ul>
        <li class="hasChild">ズーム
          <div class="ContextChild">
@@ -542,7 +548,7 @@
          </div>
        </li>
      </ul>
-     <div class="hrdiv"><hr></div>
+       <div class="hrdiv"><hr></div>
      <ul>
        <li onclick="javascript:saveImg()">画像を保存</li>
      </ul>

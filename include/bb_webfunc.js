@@ -606,7 +606,7 @@ function saveImg() {
     window.open("./image.html","test");
 }
 
-//画像保存
+//URL化と戻し(仮設)
 function getURL() {
     var file  = $("#map option:selected").val();
     var objs  = new Array();
@@ -615,8 +615,17 @@ function getURL() {
         objs.push($(this).val());
     });
 
-    BBQuery.getQueryString(bbobj, file + '.jpg', objs);
+    var querystr=BBQuery.getQueryString(bbobj, 'map/' + file + '.jpg', objs);
+    window.prompt( "パラメータ" , querystr );
 }
+
+function setURL(querystr) {
+    var querystr="";
+    if(querystr=window.prompt("パラメータ")) {
+        BBQuery.setQueryString(bbobj, querystr);
+    }
+}
+
 
 //前景色を得る
 function get_fgColor($bgcol) {
