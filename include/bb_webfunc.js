@@ -212,7 +212,9 @@ function chg_map() {
     $("#lst_layer").val("");
 }
 
+//マップ指定変更
 function set_map(name) {
+    //ステージ選択とマップ選択を指定値に書き換え
     $.restoreMaps();
     $("select#stage").val($("select#map").children("[value='"+name+"']").attr("data-stage"));
     $("select#stage").change();
@@ -220,6 +222,7 @@ function set_map(name) {
     $("select#map").val(name);
     $("select#map").change();
 
+    //マップ変更関数を呼び出してマップを変えさせる
     chg_map();
 }
 
