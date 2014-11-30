@@ -174,7 +174,7 @@
                 obj=bbobj.add_circle(objname, rad, color);
                 obj._ptpos = getPos(view);
                 obj.moveTo(pos.x, pos.y)
-                   .redraw();
+                  .redraw();
                 break;
 
             case 0x02:  //line
@@ -297,8 +297,7 @@
                 objdata.unshift(0x01);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setInt16(obj._radius));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setPos(obj._ptpos));
                 break;
 
@@ -306,8 +305,7 @@
                 objdata.unshift(0x02);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setInt16(obj._length));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setPos(obj._pt1pos));
                 objdata = objdata.concat(setPos(obj._pt2pos));
                 break;
@@ -332,8 +330,7 @@
                 objdata = objdata.concat(setInt16(obj._radius));
                 objdata = objdata.concat(setInt16(obj._length));
                 objdata = objdata.concat(setInt16(obj._duration));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
                 break;
 
@@ -341,8 +338,7 @@
                 objdata.unshift(0x12);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setInt16(obj._radius));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 break;
 
             case 'radar':
@@ -350,8 +346,7 @@
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setInt16(obj._radius));
                 objdata = objdata.concat(setInt16(obj._angle));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
                 break;
 
@@ -362,8 +357,7 @@
                 objdata = objdata.concat(setInt16(obj._radius2));
                 objdata = objdata.concat(setInt16(obj._radius3));
 
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setPos({x:obj._markerx,
                                                  y:obj._markery}));
                 break;
@@ -371,8 +365,7 @@
             case 'bunker':
                 objdata.unshift(0x22);
                 objdata = objdata.concat(setCol(obj._color));
-                objdata = objdata.concat(setPos({x:jc.layer(obj.id)._transformdx,
-                                                 y:jc.layer(obj.id)._transformdy}));
+                objdata = objdata.concat(setPos(obj.position()));
                 break;
 
             default:
