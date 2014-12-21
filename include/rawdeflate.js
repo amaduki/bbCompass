@@ -1645,7 +1645,6 @@ var zip_qoutbuf = function() {
 
 var zip_deflate = function(arr, level) {
     var i, j;
-console.log(arr.length);
     zip_deflate_data = arr;
     zip_deflate_pos = 0;
     if(typeof level == "undefined")
@@ -1658,7 +1657,6 @@ console.log(arr.length);
 	aout.push.apply(aout,buff.slice(0,i));
     }
     zip_deflate_data = null; // G.C.
-console.log(aout.length);
     return aout;
 }
 
