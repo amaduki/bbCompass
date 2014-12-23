@@ -308,8 +308,8 @@ BBCQuery.prototype = {
 
         var obj,objtype,objname,objlen;
         while (this._offset < this._buf.length) {
-            objname = getStr.call(this);
             objlen  = getUint16.call(this);
+            objname = getStr.call(this);
             objtype = getUint8.call(this);
 
             switch ( objtype ) {
@@ -514,8 +514,8 @@ BBCQuery.prototype = {
                 break;
             }
             if (objdata === undefined) break;
-            objdata.unshift.apply(objdata, setInt16(objdata.length));
             objdata.unshift.apply(objdata, setStr(obj._text));
+            objdata.unshift.apply(objdata, setInt16(objdata.length));
             this._buf = this._buf.concat(objdata);
         }
     }
