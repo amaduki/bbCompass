@@ -187,18 +187,19 @@
         return ret;
     };
 
+    // this code is quoted from
+    // http://qiita.com/k_ui/items/e6c1661158bd584a4209
+    // canvas‚ğ—˜—p‚µ‚ÄFî•ñ‚ğRGB’l‚É•ÏŠ·‚·‚é
+    var canvas = document.createElement('canvas');
+    canvas.width = 1; canvas.height = 1;
+    var ctx = canvas.getContext('2d');
+
     var setCol = function (str) {
-        var ret = new Array(3);
-        if (str.search(/#[0-9a-fA-F]{6}/) == -1) return ("#000000") ;
+        ctx.fillStyle = str;
+        ctx.fillRect(0, 0, 1, 1);
 
-        var r = parseInt(str.substr(1, 2),16),
-            g = parseInt(str.substr(3, 2),16),
-            b = parseInt(str.substr(5, 2),16);
-
-        ret[0] = r;
-        ret[1] = g;
-        ret[2] = b;
-        return ret;
+        var col = ctx.getImageData(0, 0, 1, 1).data;
+        return [col[0], col[1], col[2]];
     };
 
     var getUint8 = function (){
