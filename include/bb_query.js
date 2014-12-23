@@ -305,7 +305,7 @@ BBCQuery.prototype = {
     setObjects : function () {
         var objs     = new Array();
 
-        var objtype,objname,objlen;
+        var obj,objtype,objname,objlen;
         while (this._offset < this._buf.length) {
             objname = getStr.call(this);
             objlen  = getUint16.call(this);
@@ -423,9 +423,7 @@ BBCQuery.prototype = {
             if (obj === undefined) break;
             objs.push(obj);
         }
-
-        return {map :map,
-                objs:objs};
+        return objs;
     },
 
     getObjects : function (objs) {

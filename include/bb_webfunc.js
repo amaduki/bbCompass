@@ -622,27 +622,35 @@ function getURL() {
         objs.push($(this).val());
     });
 
-    var hoge=new BBCQuery(bbobj, mapname);
-    var querystr=hoge.getQueryString();
+    var queryobj=new BBCQuery(bbobj, mapname);
+    queryobj.getObjects(objs);
+    var querystr=queryobj.getQueryString();
     window.prompt( "パラメータ" , querystr );
-//    delete hoge;
+    delete queryobj;
 }
 
 function setURL(querystr) {
     var querystr="";
+
     if(querystr=window.prompt("パラメータ")) {
-        var hoge=new BBCQuery(bbobj, 'dummy');
-        hoge.setQueryString(querystr);
+        var queryobj=new BBCQuery(bbobj, 'dummy');
+        queryobj.setQueryString(querystr);
 
         $.restoreMaps();
-        $("select#stage").val($("select#map").children("[value='"+hoge.map+"']").attr("data-stage"));
+        $("select#stage").val($("select#map").children("[value='"+queryobj.map+"']").attr("data-stage"));
         $("select#stage").change();
 
-        $("select#map").val(hoge.map);
+        $("select#map").val(queryobj.map);
         $("select#map").change();
 
-        chg_map(hoge.setObjects.bind(hoge));
-//        delete hoge;
+        chg_map(function(){
+            var objs;
+            objs=queryobj.setObjects.apply(queryobj);
+            for (var i=0;i<objs.length;i++) {
+                add_object(objs[i].id, objs[i]._text);
+            }
+        });
+        delete queryobj;
     }
 }
 
