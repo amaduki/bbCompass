@@ -618,7 +618,6 @@ function saveImg() {
 //URL化と戻し(仮設)
 function getURL() {
     var objs  = new Array();
-
     $($("#lst_object option").get().reverse()).each(function(){
         objs.push($(this).val());
     });
