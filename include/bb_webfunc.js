@@ -166,7 +166,7 @@ function initialize(){
 }
 
 //マップ変更
-function chg_map() {
+function chg_map(callback) {
     $("div#Loading").show();
     $("#lst_object").children().remove();
     var file  = $("#map option:selected").val();
@@ -198,6 +198,7 @@ function chg_map() {
                                                                      turretCircle,
                                                                      undefined,turretData[i][4]);
                                                 }
+                                                if (callback !== undefined){callback.call();};
                                             },
                             error         : function(){}
                 });
@@ -210,20 +211,6 @@ function chg_map() {
         $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
-}
-
-//マップ指定変更
-function set_map(name) {
-    //ステージ選択とマップ選択を指定値に書き換え
-    $.restoreMaps();
-    $("select#stage").val($("select#map").children("[value='"+name+"']").attr("data-stage"));
-    $("select#stage").change();
-
-    $("select#map").val(name);
-    $("select#map").change();
-
-    //マップ変更関数を呼び出してマップを変えさせる
-    chg_map();
 }
 
 //偵察機
@@ -636,14 +623,27 @@ function getURL() {
         objs.push($(this).val());
     });
 
-    var querystr=BBQuery.getQueryString(bbobj, mapname, objs);
+    var hoge=new BBCQuery(bbobj, mapname);
+    var querystr=hoge.getQueryString();
     window.prompt( "パラメータ" , querystr );
+//    delete hoge;
 }
 
 function setURL(querystr) {
     var querystr="";
     if(querystr=window.prompt("パラメータ")) {
-        BBQuery.setQueryString(bbobj, querystr, set_map);
+        var hoge=new BBCQuery(bbobj, 'dummy');
+        hoge.setQueryString(querystr);
+
+        $.restoreMaps();
+        $("select#stage").val($("select#map").children("[value='"+hoge.map+"']").attr("data-stage"));
+        $("select#stage").change();
+
+        $("select#map").val(hoge.map);
+        $("select#map").change();
+
+        chg_map(hoge.setObjects.bind(hoge));
+//        delete hoge;
     }
 }
 

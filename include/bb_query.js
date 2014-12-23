@@ -1,4 +1,86 @@
 (function (global) {
+
+//
+//  code is quoated from...
+//    base64.js,v 1.2 2011/12/27 14:34:49 dankogai Exp dankogai
+//    https://github.com/dankogai/js-base64
+//
+
+    var b64chars 
+        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+    var b64tab = function(bin){
+        var t = {};
+        for (var i = 0, l = bin.length; i < l; i++) t[bin.charAt(i)] = i;
+        return t;
+    }(b64chars);
+
+    var sub_toBase64 = function(m, Offset){
+        var len=m.length;
+        var padlen = (len<Offset+3)?[0, 2, 1][len-Offset]:0;
+        var n = (Offset>=len   ? 0 :(m[Offset]   << 16))
+              | (Offset+1>=len ? 0 :(m[Offset+1] <<  8))
+              | (Offset+2>=len ? 0 :(m[Offset+2]      ));
+
+        return b64chars.charAt( n >>> 18)
+             + b64chars.charAt((n >>> 12) & 63)
+             + (padlen >= 2 ? '' : b64chars.charAt((n >>> 6) & 63))
+             + (padlen >= 1 ? '' : b64chars.charAt(n & 63));
+
+    };
+
+    var toBase64 = function(data){
+        var i;
+        var b64="";
+
+        for (i=0;i<data.length;i=i+3) {
+            b64 = b64+sub_toBase64(data,i);
+        }
+
+        return b64.replace(/[+\/]/g, function(m0){
+                                         return m0 == '+' ? '-' : '_';
+                                     });
+    };
+
+    var sub_fromBase64 = function(m, Offset){
+        var ret= new Array();
+        var n = (b64tab[ m.charAt(Offset    ) ] << 18)
+              | (b64tab[ m.charAt(Offset + 1) ] << 12)
+              | (b64tab[ m.charAt(Offset + 2) ] <<  6)
+              | (b64tab[ m.charAt(Offset + 3) ]);
+
+        ret.push(((n >> 16)       ),
+                 ((n >>  8) & 0xff),
+                 ((n      ) & 0xff));
+
+        return ret;
+    };
+
+    var fromBase64 = function(b64){
+        b64 = b64.replace(/[-_]/g, function(m0){
+                                       return m0 == '-' ? '+' : '/';
+                                   })
+                 .replace(/[^A-Za-z0-9\+\/]/g, '');
+        var padlen = 0;
+        var data = new Array();
+        var i;
+
+        while(b64.length % 4){
+            b64 += 'A';
+            padlen++;
+        }
+
+        for (i=0;i<b64.length;i=i+4) {
+            data=data.concat(sub_fromBase64(b64,i));
+        }
+
+        data = data.slice(0, data.length - [0,1,2,0][padlen]);
+        return data;
+    };
+
+
+// Original code
+    //バッファ arrayへの読み書き関数
     var setStr = function (text){
         var ret = Array();
         var code;
@@ -119,17 +201,41 @@
         return ret;
     };
 
-    var getStr = function (view) {
-        var len = view.getUint8(),
-            ret = view.getString(len);
+    var getUint8 = function (){
+        var b0=this._buf[this._offset];
 
-        return ret;
+        this._offset+=1;
+        return b0;
     };
 
-    var getPos = function (view) {
-        var a = view.getUint8(),
-            b = view.getUint8(),
-            c = view.getUint8();
+    var getUint16 = function (){
+        var b1=this._buf[this._offset];
+        var b0=this._buf[this._offset+1];
+
+        this._offset+=2;
+        return (b1 << 8) + b0;
+    };
+
+    var getStr = function (){
+        var len = getUint8.call(this),
+            value = '';
+        for (var i = 0; i < len; i++) {
+            var char1 = getUint16.call(this);
+
+            if ((0xD800 <= char1) && (char1 <= 0xD8FF)) {
+                var char2 = getUint16.call(this);
+                    value += String.fromCharCode((char2 << 16) | char1)
+            } else {
+                    value += String.fromCharCode(char1);
+            }
+        }
+        return value;
+    };
+
+    var getPos = function (buf, Offset) {
+        var a = getUint8.call(this),
+            b = getUint8.call(this),
+            c = getUint8.call(this);
 
         var xsign = (a & 0x80) ? (-1) : 1;
         var ysign = (b & 0x08) ? (-1) : 1;
@@ -138,10 +244,35 @@
                 y:ysign * (((b & 0x07) << 8) | c)};
     };
 
-    var getCol = function (view) {
-        var a = (view.getUint8()).toString(16),
-            b = (view.getUint8()).toString(16),
-            c = (view.getUint8()).toString(16),
+    var getFloat32 = function () {
+        var b0 = getUint8.call(this),
+            b1 = getUint8.call(this),
+            b2 = getUint8.call(this),
+            b3 = getUint8.call(this);
+
+        var sign = 1 - (2 * (b0 >> 7)),
+            exponent = (((b0 << 1) & 0xff) | (b1 >> 7)) - 127,
+            mantissa = ((b1 & 0x7f) << 16) | (b2 << 8) | b3;
+
+        if (exponent === 128) {
+            if (mantissa !== 0) {
+                return NaN;
+            } else {
+                return sign * Infinity;
+            }
+        }
+
+        if (exponent === -127) { // Denormalized
+            return sign * mantissa * Math.pow(2, -126 - 23);
+        }
+
+        return sign * (1 + mantissa * Math.pow(2, -23)) * Math.pow(2, exponent);
+    };
+
+    var getCol = function (buf, Offset) {
+        var a = (getUint8.call(this)).toString(16),
+            b = (getUint8.call(this)).toString(16),
+            c = (getUint8.call(this)).toString(16),
             ret;
 
         ret = "#" + (a.length==1?("0"+a):a)
@@ -150,54 +281,69 @@
         return ret;
     }
 
-    var setQueryString = function (bbobj, str, mapfunc) {
-        var objs     = new Array();
-        var view     = jDataView.fromBase64(str);
-        var map      = getStr(view);
-        var dpm      = view.getFloat32();
-        var imgscale = view.getFloat32();
+var BBCQuery = function (bbobj, map) {
+    // todo:入力値のチェックかな？
+    this.bbobj=bbobj;
+    this.map=map;
+    this._buf=new Array();
+    this._buf=this._buf.concat(setStr(map));
+    this._offset=0;
+};
 
-        mapfunc(map);
+BBCQuery.prototype = {
+    setQueryString : function (str) {
+        var data  = fromBase64(str);
+        this._buf = RawDeflate.inflate(data);
+        this.map  = getStr.call(this);
+    },
+
+    getQueryString : function () {
+        var data=RawDeflate.deflate(this._buf);
+        return toBase64(data);
+    },
+
+    setObjects : function () {
+        var objs     = new Array();
 
         var objtype,objname,objlen;
-        while (view.tell() < view.byteLength) {
-            objname = getStr(view);
-            objlen  = view.getUint16();
-            objtype = view.getUint8();
+        while (this._offset < this._buf.length) {
+            objname = getStr.call(this);
+            objlen  = getUint16.call(this);
+            objtype = getUint8.call(this);
 
             switch ( objtype ) {
             case 0x01:  //circle
-                var color = getCol(view),
-                    rad   = view.getUint16(),
-                    pos   = getPos(view);
+                var color = getCol.call(this),
+                    rad   = getUint16.call(this),
+                    pos   = getPos.call(this);
 
                 obj=bbobj.add_circle(objname, rad, color);
-                obj._ptpos = getPos(view);
+                obj._ptpos = getPos.call(this);
                 obj.moveTo(pos.x, pos.y)
                   .redraw();
                 break;
 
             case 0x02:  //line
-                var color = getCol(view),
-                    len   = view.getUint16(),
-                    pos   = getPos(view);
+                var color = getCol.call(this),
+                    len   = getUint16.call(this),
+                    pos   = getPos.call(this);
 
                 obj=bbobj.add_line(objname, len, color);
                 obj.moveTo(pos.x, pos.y);
-                obj._pt1pos = getPos(view);
-                obj._pt2pos = getPos(view);
+                obj._pt1pos = getPos.call(this);
+                obj._pt2pos = getPos.call(this);
                 obj.redraw();
                 break;
 
             case 0x03:  //freehand
                 obj=bbobj.add_freehand();
-                obj._step = view.getUint8();
+                obj._step = getUint8.call(this);
                 for (i=1;i<=obj._step;i++) {
-                    obj._stepcol[i] = getCol(view);
-                    var length = view.getUint16(),
+                    obj._stepcol[i] = getCol.call(this);
+                    var length = getUint16.call(this),
                         points = new Array();
                     for (j=0; j<length; j++) {
-                         var point = getPos(view);
+                         var point = getPos.call(this);
                          points.push([point.x, point.y]);
                     }
                     jc.line(points, obj._stepcol[i])
@@ -206,12 +352,12 @@
                 break;
 
             case 0x11:  //scout
-                var color    = getCol(view),
-                    rad      = view.getUint16(),
-                    len      = view.getUint16(),
-                    duration = view.getUint16(),
-                    pos      = getPos(view),
-                    rotAngle = view.getFloat32();
+                var color    = getCol.call(this),
+                    rad      = getUint16.call(this),
+                    len      = getUint16.call(this),
+                    duration = getUint16.call(this),
+                    pos      = getPos.call(this),
+                    rotAngle = getFloat32.call(this);
 
                 obj=bbobj.add_scout(objname, rad, len, duration, color);
                 obj.moveTo(pos.x,pos.y)
@@ -220,9 +366,9 @@
                 break;
 
             case 0x12:  //sensor
-                var color = getCol(view),
-                    rad   = view.getUint16(),
-                    pos   = getPos(view);
+                var color = getCol.call(this),
+                    rad   = getUint16.call(this),
+                    pos   = getPos.call(this);
 
                 obj=bbobj.add_sensor(objname, rad, color);
                 obj.moveTo(pos.x, pos.y)
@@ -230,11 +376,11 @@
                 break;
 
             case 0x13:  //radar
-                var color = getCol(view),
-                    rad   = view.getUint16(),
-                    angle = view.getUint16(),
-                    pos   = getPos(view),
-                    rotAngle = view.getFloat32();
+                var color = getCol.call(this),
+                    rad   = getUint16.call(this),
+                    angle = getUint16.call(this),
+                    pos   = getPos.call(this),
+                    rotAngle = getFloat32.call(this);
 
                 obj=bbobj.add_radar(objname, rad, angle, color);
                 obj.moveTo(pos.x, pos.y)
@@ -244,11 +390,11 @@
 
             case 0x21:  //howitzer
                 var color   = getCol(view),
-                    rad1    = view.getUint16(),
-                    rad2    = view.getUint16(),
-                    rad3    = view.getUint16(),
-                    pos     = getPos(view),
-                    markpos = getPos(view);
+                    rad1    = getUint16.call(this),
+                    rad2    = getUint16.call(this),
+                    rad3    = getUint16.call(this),
+                    pos     = getPos.call(this),
+                    markpos = getPos.call(this);
 
                 obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color);
 
@@ -260,8 +406,8 @@
                 break;
 
             case 0x22:  //bunker
-                var color = getCol(view),
-                    pos   = getPos(view);
+                var color = getCol.call(this),
+                    pos   = getPos.call(this);
 
                 obj=bbobj.add_bunker(objname, color);
                 obj.moveTo(pos.x, pos.y)
@@ -280,14 +426,9 @@
 
         return {map :map,
                 objs:objs};
-    }
+    },
 
-
-    var getQueryString = function (bbobj, map, objs) {
-        var data    = new Array();
-        data = data.concat(setStr(map));
-        data = data.concat(setFloat32(bbobj.scale/bbobj.imgscale));
-        data = data.concat(setFloat32(bbobj.imgscale));
+    getObjects : function (objs) {
         for (var i=0;i<objs.length;i++) {
             var obj     = bbobj.object(objs[i]);
             var objdata = new Array();
@@ -376,20 +517,14 @@
             if (objdata === undefined) break;
             objdata.unshift.apply(objdata, setInt16(objdata.length));
             objdata.unshift.apply(objdata, setStr(obj._text));
-            data = data.concat(objdata);
+            this._buf = this._buf.concat(objdata);
         }
-console.log("before:" + data.length);
-        data=RawDeflate.deflate(data);
-console.log("after:" + data.length);
-        var buf  = jDataView.createBuffer.apply(undefined, data);
-        var view = new jDataView(buf);
-        console.log(view.toBase64());
-        return view.toBase64();
     }
+};
 
-    global.BBQuery= {
-        setQueryString:setQueryString,
-        getQueryString:getQueryString
-    };
+global.BBCQuery = (global.module || {}).exports = BBCQuery;
+if (typeof module !== 'undefined') {
+	module.exports = BBCQuery;
+}
 
 })(this);
