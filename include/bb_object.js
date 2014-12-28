@@ -188,6 +188,10 @@
             return {x:posx, y:posy};
         };
 
+        this.BB_base.prototype.angle = function () {
+            return (jc.layer(this.id).getAngle()*180/Math.PI);
+        };
+
         this.BB_base.prototype.click = function(fn) {
             jcanvas.layer(this.id).click(fn);
             return this;
