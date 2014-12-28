@@ -389,8 +389,8 @@
 
         //座標の扱いが特殊なので座標関連の関数を一部オーバーライド
         this.BB_line.prototype.position = function () {
-            var _x = (this._pt1pos.x + this._pt2pos.x)/2,
-                _y = (this._pt1pos.y + this._pt2pos.y)/2;
+            var _x = jcanvas.layer(this.id)._transformdx + (this._pt1pos.x + this._pt2pos.x)/2,
+                _y = jcanvas.layer(this.id)._transformdy + (this._pt1pos.y + this._pt2pos.y)/2;
             return {x:_x, y:_y};
         };
 
