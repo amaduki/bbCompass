@@ -316,28 +316,35 @@ BBCQuery.prototype = {
             case 0x01:  //circle
                 var color = getCol.call(this),
                     rad   = getUint16.call(this),
-                    pos   = getPos.call(this);
+                    pos   = getPos.call(this),
+                    ptpos = getPos.call(this);
 
-                obj=bbobj.add_circle(objname, rad, color);
-                obj._ptpos = getPos.call(this);
-                obj.moveTo(pos.x, pos.y)
-                  .redraw();
+                obj=bbobj.add_circle(objname, rad, color,
+                    function(){
+                        this._ptpos = ptpos;
+                        this.moveTo(pos.x, pos.y)
+                            .redraw();
+                    });
                 break;
 
             case 0x02:  //line
-                var color = getCol.call(this),
-                    len   = getUint16.call(this),
-                    pos   = getPos.call(this);
+                var color  = getCol.call(this),
+                    len    = getUint16.call(this),
+                    pos    = getPos.call(this),
+                    pt1pos = getPos.call(this),
+                    pt2pos = getPos.call(this);
 
-                obj=bbobj.add_line(objname, len, color);
-                obj.moveTo(pos.x, pos.y);
-                obj._pt1pos = getPos.call(this);
-                obj._pt2pos = getPos.call(this);
-                obj.redraw();
+                obj=bbobj.add_line(objname, len, color,
+                    function(){
+                        this._pt1pos = pt1pos;
+                        this._pt2pos = pt2pos;
+                        this.moveTo(pos.x, pos.y);
+                        this.redraw();
+                    });
                 break;
 
             case 0x03:  //freehand
-                obj=bbobj.add_freehand();
+                obj=bbobj.add_freehand(objname);
                 obj._step = getUint8.call(this);
                 for (i=1;i<=obj._step;i++) {
                     obj._stepcol[i] = getCol.call(this);
@@ -360,10 +367,12 @@ BBCQuery.prototype = {
                     pos      = getPos.call(this),
                     rotAngle = getFloat32.call(this);
 
-                obj=bbobj.add_scout(objname, rad, len, duration, color);
-                obj.moveTo(pos.x,pos.y)
-                   .rotateTo(rotAngle)
-                   .redraw();
+                obj=bbobj.add_scout(objname, rad, len, duration, color,
+                    function(){
+                        this.moveTo(pos.x,pos.y)
+                            .rotateTo(rotAngle)
+                            .redraw();
+                    });
                 break;
 
             case 0x12:  //sensor
@@ -371,9 +380,11 @@ BBCQuery.prototype = {
                     rad   = getUint16.call(this),
                     pos   = getPos.call(this);
 
-                obj=bbobj.add_sensor(objname, rad, color);
-                obj.moveTo(pos.x, pos.y)
-                   .redraw();
+                obj=bbobj.add_sensor(objname, rad, color,
+                    function(){
+                        this.moveTo(pos.x, pos.y)
+                            .redraw();
+                    });
                 break;
 
             case 0x13:  //radar
@@ -383,36 +394,40 @@ BBCQuery.prototype = {
                     pos   = getPos.call(this),
                     rotAngle = getFloat32.call(this);
 
-                obj=bbobj.add_radar(objname, rad, angle, color);
-                obj.moveTo(pos.x, pos.y)
-                   .rotateTo(rotAngle)
-                   .redraw();
+                obj=bbobj.add_radar(objname, rad, angle, color,
+                    function(){
+                        this.moveTo(pos.x, pos.y)
+                            .rotateTo(rotAngle)
+                            .redraw();
+                    });
                 break;
 
             case 0x21:  //howitzer
-                var color   = getCol(view),
+                var color   = getCol.call(this),
                     rad1    = getUint16.call(this),
                     rad2    = getUint16.call(this),
                     rad3    = getUint16.call(this),
                     pos     = getPos.call(this),
                     markpos = getPos.call(this);
 
-                obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color);
-
-                obj._markerx = markpos.x;
-                obj._markery = markpos.y;
-
-                obj.moveTo(pos.x, pos.y)
-                   .redraw();
+                obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color,
+                    function(){
+                        this._markerx = markpos.x;
+                        this._markery = markpos.y;
+                        this.moveTo(pos.x, pos.y)
+                            .redraw();
+                    });
                 break;
 
             case 0x22:  //bunker
                 var color = getCol.call(this),
                     pos   = getPos.call(this);
 
-                obj=bbobj.add_bunker(objname, color);
-                obj.moveTo(pos.x, pos.y)
-                   .redraw();
+                obj=bbobj.add_bunker(objname, color, 
+                    function(){
+                        this.moveTo(pos.x, pos.y)
+                            .redraw();
+                    });
                 break;
 
             default:
@@ -471,7 +486,7 @@ BBCQuery.prototype = {
                 objdata = objdata.concat(setInt16(obj._length));
                 objdata = objdata.concat(setInt16(obj._duration));
                 objdata = objdata.concat(setPos(obj.position()));
-                objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
+                objdata = objdata.concat(setFloat32(obj.angle()));
                 break;
 
             case 'sensor':
@@ -487,7 +502,7 @@ BBCQuery.prototype = {
                 objdata = objdata.concat(setInt16(obj._radius));
                 objdata = objdata.concat(setInt16(obj._angle));
                 objdata = objdata.concat(setPos(obj.position()));
-                objdata = objdata.concat(setFloat32(jc.layer(obj.id).getAngle()*180/Math.PI));
+                objdata = objdata.concat(setFloat32(obj.angle()));
                 break;
 
             case 'howitzer':
@@ -510,13 +525,14 @@ BBCQuery.prototype = {
 
             default:
                 objdata=undefined;
-                console.error("object not supported");
+                console.error("object " + obj.type + " not supported");
                 break;
             }
-            if (objdata === undefined) break;
-            objdata.unshift.apply(objdata, setStr(obj._text));
-            objdata.unshift.apply(objdata, setInt16(objdata.length));
-            this._buf = this._buf.concat(objdata);
+            if (objdata !== undefined) {
+                objdata.unshift.apply(objdata, setStr(obj._text));
+                objdata.unshift.apply(objdata, setInt16(objdata.length));
+                this._buf = this._buf.concat(objdata);
+            }
         }
     }
 };
