@@ -183,10 +183,11 @@
 
 
 ○BBオブジェクトのメソッド
-・setbg(string fipepath, num scale[, num imgscale])
+・setbg(string fipepath, num scale[, num imgscale [, function callback]])
   引数：filepath 地図画像のパス
         scale    1メートルあたりのピクセル数を指定(画像ファイル基準)
         imgscale 実表示の際画像サイズを縮小、拡大したい場合に指定
+        callback マップ表示処理完了後に実行されるコールバック関数
   返値：なし
 
   背景画像を変更するとともに、縮尺などの情報を更新します。
@@ -275,10 +276,11 @@
   マウス位置判定の円と、ターレットの向きが白く表示されます。
 
 
-・add_circle (string text, num radius[, string color])
+・add_circle (string text, num radius[, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius   円の初期半径(m単位)
         color    表示色  省略時は青色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(円)
 
   円オブジェクトをcanvasに追加します
@@ -287,10 +289,11 @@
   画像の基準点は円の中心が利用されます。
 
 
-・add_line (string text, num length[, string color])
+・add_line (string text, num length[, string color [, function callback]])
   引数：text     オブジェクトの名前
         length   直線の初期長さ(m単位)
         color    表示色  省略時は緑色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(直線)
 
   直線オブジェクトをcanvasに追加します
@@ -298,11 +301,12 @@
   下にある画像オブジェクトのリファレンスを見てください。
   画像の基準点は線を構成する二点の中心が利用されます。
 
-・add_point (string text, num radius, [, string color [, num align]])
+・add_point (string text, num radius, [, string color [, num align [, function callback]]])
   引数：text     オブジェクトの名前
         radius   点の半径(pixel単位)
         color    表示色  省略時は黄色
         align    0なら文字を点の左に、1なら右に表示させる。省略時は右
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(直線)
 
   点オブジェクトをcanvasに追加します
@@ -310,12 +314,13 @@
   下にある画像オブジェクトのリファレンスを見てください。
   画像の基準点は点を表現する円の中心が利用されます。
 
-・add_scout (string text, num radius, num length, num duration [, string color])
+・add_scout (string text, num radius, num length, num duration [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         length   偵察機が飛行する距離(m指定)
         duration 偵察機が「進む」時間(秒単位)
         color    表示色  省略時は赤色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(偵察機)
 
   偵察機オブジェクトをcanvasに追加します
@@ -324,10 +329,11 @@
   画像の基準点は偵察半径の中心が利用されます。
 
 
-・add_sensor (string text, num radius [, string color])
+・add_sensor (string text, num radius [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         color    表示色  省略時は赤色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(センサー)
 
   センサーオブジェクトをcanvasに追加します
@@ -336,11 +342,12 @@
   この画像の基準点は偵察半径の中心が利用されます。
 
 
-・add_radar (string text, num radius, num angle [, string color])
+・add_radar (string text, num radius, num angle [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius   偵察半径(m指定)
         angle    索敵角度(角度で指定)
         color    表示色  省略時は赤色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(レーダー)
 
   レーダーオブジェクトをcanvasに追加します
@@ -349,11 +356,12 @@
   この画像の基準点は索敵範囲を示す扇形の中心が利用されます。
 
 
-・add_sonde (string text, num radius1, num radius2 [, string color])
+・add_sonde (string text, num radius1, num radius2 [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius1  射出範囲半径(m指定)
         radius2  偵察範囲半径(m指定)
         color    表示色  省略時は緑色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(索敵弾)
 
   索敵弾オブジェクトをcanvasに追加します
@@ -362,10 +370,11 @@
   この画像の基準点は射出範囲の中心点が利用されます。
 
 
-・add_ndsensor (string text, num radius [, string color])
+・add_ndsensor (string text, num radius [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius   偵察範囲半径(m指定)
         color    表示色  省略時は緑色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(索敵弾)
 
   ND索敵センサーオブジェクトをcanvasに追加します
@@ -374,12 +383,13 @@
   この画像の基準点は索敵の中心点が利用されます。
 
 
-・add_howitzer (string text, num radius1, num radius2, num radius3 [, string color])
+・add_howitzer (string text, num radius1, num radius2, num radius3 [, string color [, function callback]])
   引数：text     オブジェクトの名前
         radius1  砲撃の射程(m指定)
         radius2  攻撃範囲(m指定)
         radius3  着弾誤差(m指定)
         color    表示色  省略時は黄色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(榴弾)
  
   榴弾オブジェクトをcanvasに追加します
@@ -388,9 +398,10 @@
   この画像の基準点は射程円の中心が利用されます。
 
 
-・add_bunker (string text[, string color])
+・add_bunker (string text[, string color [, function callback]])
   引数：text     オブジェクトの名前
         color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(バンカー)
  
   バンカーオブジェクトをcanvasに追加します
@@ -399,9 +410,10 @@
   この画像の基準点は攻撃範囲の中心が利用されます。
 
 
-・add_bomber (string text[, string color])
+・add_bomber (string text[, string color [, function callback]])
   引数：text     オブジェクトの名前
         color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(爆撃機)
  
   爆撃機オブジェクトをcanvasに追加します
@@ -410,9 +422,10 @@
   この画像の基準点は自機に相当する位置が利用されます。
 
 
-・add_sentry (string text[, string color])
+・add_sentry (string text[, string color [, function callback]])
   引数：text     オブジェクトの名前
         color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(セントリー)
  
   セントリーガンオブジェクトをcanvasに追加します
@@ -421,9 +434,10 @@
   この画像の基準点は攻撃範囲を示す扇形の中心が利用されます。
 
 
-・add_aerosentry (string text[, string color])
+・add_aerosentry (string text[, string color [, function callback]])
   引数：text     オブジェクトの名前
         color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(エアロセントリー)
  
   エアロセントリーオブジェクトをcanvasに追加します
@@ -432,10 +446,11 @@
   この画像の基準点は攻撃範囲を示す円の中心が利用されます。
 
 
-・add_icon (string text, file[, string color])
+・add_icon (string text, file[, string color [, function callback]])
   引数：text     オブジェクトの名前
         file     表示に利用するアイコンの場所
         color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(バンカー)
  
   アイコンオブジェクトをcanvasに追加します
@@ -449,10 +464,12 @@
   こちらはアイコンをそのままのサイズで出す点が異なります。
 
 
-・add_waft (string text, file[, string color])
+・add_waft (string text, file[, string color [, function callback]])
   引数：text     オブジェクトの名前
         file     表示に利用するアイコンの場所
         color    表示色  省略時は紫色
+        color    表示色  省略時は紫色
+        callback 描画処理完了後に実行されるコールバック関数
   返値：obj      画像オブジェクト(バンカー)
  
   ワフトローダーオブジェクトをcanvasに追加します
