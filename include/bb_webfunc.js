@@ -131,9 +131,9 @@ $(document).ready(function(){
     $('#objselector').tinyscrollbar({invertscroll:true});
 
   //ズーム
-  $("#lst_scale").change(function() {
-                             zoom_cnv($(this).val());
-                         });
+    $("#lst_scale").change(function() {
+                               zoom_cnv($(this).val());
+                           });
 
   //changelog
     $.ajax({url     : "./Changelog.txt",
@@ -142,6 +142,7 @@ $(document).ready(function(){
             success : function(txt,status){$("#changelog").val(txt);},
             error   : function(){$("#changelog").val("更新履歴の取得に失敗しました");}
            });
+
 });
 
 //canvas初期化
@@ -163,6 +164,12 @@ function initialize(){
     $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
     $(window).resize(function(){bbobj.chgScroll();});
+
+  //query stringがあれば再現処理に入る
+    if (window.location.search) {
+        setURL(window.location.search.substr(1));
+    }
+
 }
 
 //マップ変更
@@ -625,14 +632,12 @@ function getURL() {
     var queryobj=new BBCQuery(bbobj, mapname);
     queryobj.getObjects(objs);
     var querystr=queryobj.getQueryString();
-    window.prompt( "パラメータ" , querystr );
+    window.prompt( "パラメータ" , location.protocol + '//' + location.host + '/' + location.pathname
+                                  + '?' + querystr );
     delete queryobj;
 }
 
 function setURL(querystr) {
-    var querystr="";
-
-    if(querystr=window.prompt("パラメータ")) {
         var queryobj=new BBCQuery(bbobj, 'dummy');
         queryobj.setQueryString(querystr);
 
@@ -651,7 +656,6 @@ function setURL(querystr) {
             }
         });
         delete queryobj;
-    }
 }
 
 
