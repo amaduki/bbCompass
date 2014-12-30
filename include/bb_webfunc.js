@@ -630,7 +630,7 @@ function getURL() {
     var queryobj=new BBCQuery(bbobj, $("select#map").val());
     queryobj.getObjects(objs);
     var querystr=queryobj.getQueryString();
-    window.prompt( "パラメータ" , location.protocol + '//' + location.host + '/' + location.pathname
+    window.prompt( "パラメータ" , location.protocol + '//' + location.host + location.pathname
                                   + '?' + querystr );
     delete queryobj;
 }
