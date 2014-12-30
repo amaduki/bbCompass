@@ -80,7 +80,7 @@
 
 
 // Original code
-    //バッファ arrayへの読み書き関数
+    //繝舌ャ繝輔ぃ array縺ｸ縺ｮ隱ｭ縺ｿ譖ｸ縺埼未謨ｰ
     var setStr = function (text){
         var ret = Array();
         var code;
@@ -189,7 +189,7 @@
 
     // this code is quoted from
     // http://qiita.com/k_ui/items/e6c1661158bd584a4209
-    // canvasを利用して色情報をRGB値に変換する
+    // canvas繧貞茜逕ｨ縺励※濶ｲ諠�蝣ｱ繧坦GB蛟､縺ｫ螟画鋤縺吶ｋ
     var canvas = document.createElement('canvas');
     canvas.width = 1; canvas.height = 1;
     var ctx = canvas.getContext('2d');
@@ -203,6 +203,10 @@
     };
 
     var getUint8 = function (){
+        if (this._buf.length < this._offset) {
+            throw "Buffer size error (get Uint8)";
+        }
+
         var b0=this._buf[this._offset];
 
         this._offset+=1;
@@ -210,6 +214,10 @@
     };
 
     var getUint16 = function (){
+        if (this._buf.length < this._offset+1) {
+            throw "Buffer size error (get Uint16)";
+        }
+
         var b1=this._buf[this._offset];
         var b0=this._buf[this._offset+1];
 
@@ -218,22 +226,39 @@
     };
 
     var getStr = function (){
+        if (this._buf.length < this._offset) {
+            throw "Buffer size error (get String length)";
+        }
+
         var len = getUint8.call(this),
             value = '';
-        for (var i = 0; i < len; i++) {
-            var char1 = getUint16.call(this);
 
-            if ((0xD800 <= char1) && (char1 <= 0xD8FF)) {
-                var char2 = getUint16.call(this);
-                    value += String.fromCharCode((char2 << 16) | char1)
-            } else {
-                    value += String.fromCharCode(char1);
+        try {
+            for (var i = 0; i < len; i++) {
+                var char1 = getUint16.call(this);
+
+                if ((0xD800 <= char1) && (char1 <= 0xD8FF)) {
+                    var char2 = getUint16.call(this);
+                        value += String.fromCharCode((char2 << 16) | char1)
+                } else {
+                        value += String.fromCharCode(char1);
+                }
             }
+        } catch(e) {
+            console.error(e);
+            throw "Buffer size error (get String data)";
         }
+
+        var control_codes = /[\u0000-\u001F\u007F-\u009F]/g;
+        value.replace(control_codes, "\uFFFD");
         return value;
     };
 
     var getPos = function (buf, Offset) {
+        if (this._buf.length < this._offset+3) {
+            throw "Buffer size error (get Position)";
+        }
+
         var a = getUint8.call(this),
             b = getUint8.call(this),
             c = getUint8.call(this);
@@ -246,6 +271,10 @@
     };
 
     var getFloat32 = function () {
+        if (this._buf.length < this._offset+4) {
+            throw "Buffer size error (get Float32)";
+        }
+
         var b0 = getUint8.call(this),
             b1 = getUint8.call(this),
             b2 = getUint8.call(this),
@@ -271,6 +300,10 @@
     };
 
     var getCol = function (buf, Offset) {
+        if (this._buf.length<this._offset+3) {
+            throw "Buffer size error (get Color)";
+        }
+
         var a = (getUint8.call(this)).toString(16),
             b = (getUint8.call(this)).toString(16),
             c = (getUint8.call(this)).toString(16),
@@ -283,7 +316,6 @@
     }
 
 var BBCQuery = function (bbobj, map) {
-    // todo:入力値のチェックかな？
     this.bbobj=bbobj;
     this.map=map;
     this._buf=new Array();
@@ -306,139 +338,145 @@ BBCQuery.prototype = {
     setObjects : function () {
         var objs     = new Array();
 
-        var obj,objtype,objname,objlen;
-        while (this._offset < this._buf.length) {
-            objlen  = getUint16.call(this);
-            objname = getStr.call(this);
-            objtype = getUint8.call(this);
+        try {
+            var obj,objtype,objname,objlen;
+            while (this._offset < this._buf.length) {
+                objlen  = getUint16.call(this);
+                objname = getStr.call(this);
+                objtype = getUint8.call(this);
 
-            switch ( objtype ) {
-            case 0x01:  //circle
-                var color = getCol.call(this),
-                    rad   = getUint16.call(this),
-                    pos   = getPos.call(this),
-                    ptpos = getPos.call(this);
+                switch ( objtype ) {
+                case 0x01:  //circle
+                    var color = getCol.call(this),
+                        rad   = getUint16.call(this),
+                        pos   = getPos.call(this),
+                        ptpos = getPos.call(this);
 
-                obj=bbobj.add_circle(objname, rad, color,
-                    function(){
-                        this._ptpos = ptpos;
-                        this.moveTo(pos.x, pos.y)
-                            .redraw();
-                    });
-                break;
+                    obj=bbobj.add_circle(objname, rad, color,
+                        function(){
+                            this._ptpos = ptpos;
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    break;
 
-            case 0x02:  //line
-                var color  = getCol.call(this),
-                    len    = getUint16.call(this),
-                    pos    = getPos.call(this),
-                    pt1pos = getPos.call(this),
-                    pt2pos = getPos.call(this);
+                case 0x02:  //line
+                    var color  = getCol.call(this),
+                        len    = getUint16.call(this),
+                        pos    = getPos.call(this),
+                        pt1pos = getPos.call(this),
+                        pt2pos = getPos.call(this);
 
-                obj=bbobj.add_line(objname, len, color,
-                    function(){
-                        this._pt1pos = pt1pos;
-                        this._pt2pos = pt2pos;
-                        this.moveTo(pos.x, pos.y);
-                        this.redraw();
-                    });
-                break;
+                    obj=bbobj.add_line(objname, len, color,
+                        function(){
+                            this._pt1pos = pt1pos;
+                            this._pt2pos = pt2pos;
+                            this.moveTo(pos.x, pos.y);
+                            this.redraw();
+                        });
+                    break;
 
-            case 0x03:  //freehand
-                obj=bbobj.add_freehand(objname);
-                obj._step = getUint8.call(this);
-                for (i=1;i<=obj._step;i++) {
-                    obj._stepcol[i] = getCol.call(this);
-                    var length = getUint16.call(this),
-                        points = new Array();
-                    for (j=0; j<length; j++) {
-                         var point = getPos.call(this);
-                         points.push([point.x, point.y]);
+                    case 0x03:  //freehand
+                        obj=bbobj.add_freehand(objname);
+                        obj._step = getUint8.call(this);
+                        for (i=1;i<=obj._step;i++) {
+                            obj._stepcol[i] = getCol.call(this);
+                            var length = getUint16.call(this),
+                                points = new Array();
+                        for (j=0; j<length; j++) {
+                             var point = getPos.call(this);
+                             points.push([point.x, point.y]);
+                        }
+                        jc.line(points, obj._stepcol[i])
+                          .layer(obj.id).id(i).lineStyle({lineWidth:3});
                     }
-                    jc.line(points, obj._stepcol[i])
-                      .layer(obj.id).id(i).lineStyle({lineWidth:3});
+                    break;
+
+                case 0x11:  //scout
+                    var color    = getCol.call(this),
+                        rad      = getUint16.call(this),
+                        len      = getUint16.call(this),
+                        duration = getUint16.call(this),
+                        pos      = getPos.call(this),
+                        rotAngle = getFloat32.call(this);
+
+                    obj=bbobj.add_scout(objname, rad, len, duration, color,
+                        function(){
+                            this.moveTo(pos.x,pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    break;
+
+                case 0x12:  //sensor
+                    var color = getCol.call(this),
+                        rad   = getUint16.call(this),
+                        pos   = getPos.call(this);
+
+                    obj=bbobj.add_sensor(objname, rad, color,
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    break;
+
+                case 0x13:  //radar
+                    var color = getCol.call(this),
+                        rad   = getUint16.call(this),
+                        angle = getUint16.call(this),
+                        pos   = getPos.call(this),
+                        rotAngle = getFloat32.call(this);
+
+                    obj=bbobj.add_radar(objname, rad, angle, color,
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    break;
+
+                case 0x21:  //howitzer
+                    var color   = getCol.call(this),
+                        rad1    = getUint16.call(this),
+                        rad2    = getUint16.call(this),
+                        rad3    = getUint16.call(this),
+                        pos     = getPos.call(this),
+                        markpos = getPos.call(this);
+
+                    obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color,
+                        function(){
+                            this._markerx = markpos.x;
+                            this._markery = markpos.y;
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    break;
+
+                case 0x22:  //bunker
+                    var color = getCol.call(this),
+                        pos   = getPos.call(this);
+
+                    obj=bbobj.add_bunker(objname, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    break;
+
+                default:
+                    obj=undefined;
+                    console.error("object not supported");
+                    view.seek(view.tell()+objlen-1);
+                    break;
                 }
-                break;
-
-            case 0x11:  //scout
-                var color    = getCol.call(this),
-                    rad      = getUint16.call(this),
-                    len      = getUint16.call(this),
-                    duration = getUint16.call(this),
-                    pos      = getPos.call(this),
-                    rotAngle = getFloat32.call(this);
-
-                obj=bbobj.add_scout(objname, rad, len, duration, color,
-                    function(){
-                        this.moveTo(pos.x,pos.y)
-                            .rotateTo(rotAngle)
-                            .redraw();
-                    });
-                break;
-
-            case 0x12:  //sensor
-                var color = getCol.call(this),
-                    rad   = getUint16.call(this),
-                    pos   = getPos.call(this);
-
-                obj=bbobj.add_sensor(objname, rad, color,
-                    function(){
-                        this.moveTo(pos.x, pos.y)
-                            .redraw();
-                    });
-                break;
-
-            case 0x13:  //radar
-                var color = getCol.call(this),
-                    rad   = getUint16.call(this),
-                    angle = getUint16.call(this),
-                    pos   = getPos.call(this),
-                    rotAngle = getFloat32.call(this);
-
-                obj=bbobj.add_radar(objname, rad, angle, color,
-                    function(){
-                        this.moveTo(pos.x, pos.y)
-                            .rotateTo(rotAngle)
-                            .redraw();
-                    });
-                break;
-
-            case 0x21:  //howitzer
-                var color   = getCol.call(this),
-                    rad1    = getUint16.call(this),
-                    rad2    = getUint16.call(this),
-                    rad3    = getUint16.call(this),
-                    pos     = getPos.call(this),
-                    markpos = getPos.call(this);
-
-                obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color,
-                    function(){
-                        this._markerx = markpos.x;
-                        this._markery = markpos.y;
-                        this.moveTo(pos.x, pos.y)
-                            .redraw();
-                    });
-                break;
-
-            case 0x22:  //bunker
-                var color = getCol.call(this),
-                    pos   = getPos.call(this);
-
-                obj=bbobj.add_bunker(objname, color, 
-                    function(){
-                        this.moveTo(pos.x, pos.y)
-                            .redraw();
-                    });
-                break;
-
-            default:
-                obj=undefined;
-                console.error("object not supported");
-                view.seek(view.tell()+objlen-1);
-                break;
+                if (obj === undefined) break;
+                objs.push(obj);
             }
-            if (obj === undefined) break;
-            objs.push(obj);
+        } catch (e) {
+            console.error(e);
+            alert("繝�繝ｼ繧ｿ蜿悶ｊ霎ｼ縺ｿ荳ｭ縺ｫ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆");
         }
+
         return objs;
     },
 
