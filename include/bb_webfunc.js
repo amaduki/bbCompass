@@ -5,7 +5,6 @@ var scrollBarWidth=0;
 var scrollBarHeight=0;
 var freehandOnWrite=undefined;
 var bbobj="";
-var mapname="";
 
 //ターレット関連データ
 var turretSpec={"R":[200,180],
@@ -183,7 +182,6 @@ function chg_map(callback) {
     var salt  = "?" + new Date().getTime();
     bbobj.setbg("./map/"+stage+"/"+file+".jpg" + salt, scale[0], scale[1],
                 function(){
-                    mapname=file;
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
                     $("#lst_scale").val(1);
@@ -622,14 +620,14 @@ function saveImg() {
     window.open("./image.html","test");
 }
 
-//URL化と戻し(仮設)
+//現在の状態をURL化
 function getURL() {
     var objs  = new Array();
     $($("#lst_object option").get().reverse()).each(function(){
         objs.push($(this).val());
     });
 
-    var queryobj=new BBCQuery(bbobj, mapname);
+    var queryobj=new BBCQuery(bbobj, $("select#map").val());
     queryobj.getObjects(objs);
     var querystr=queryobj.getQueryString();
     window.prompt( "パラメータ" , location.protocol + '//' + location.host + '/' + location.pathname
@@ -637,24 +635,27 @@ function getURL() {
     delete queryobj;
 }
 
+//URLクエリストリングからの復元
 function setURL(querystr) {
         var queryobj=new BBCQuery(bbobj, 'dummy');
-        queryobj.setQueryString(querystr);
 
-        $.restoreMaps();
-        $("select#stage").val($("select#map").children("[value='"+queryobj.map+"']").attr("data-stage"));
-        $("select#stage").change();
+        if (queryobj.setQueryString(querystr)) {
+            $.restoreMaps();
+            $("select#stage").val($("select#map").children("[value='"+queryobj.map+"']").attr("data-stage"));
+            $("select#stage").change();
 
-        $("select#map").val(queryobj.map);
-        $("select#map").change();
+            $("select#map").val(queryobj.map);
+            $("select#map").change();
 
-        chg_map(function(){
-            var objs;
-            objs=queryobj.setObjects.apply(queryobj);
-            for (var i=0;i<objs.length;i++) {
-                add_object(objs[i].id, objs[i]._text);
-            }
-        });
+            chg_map(function(){
+                var objs;
+                objs=queryobj.setObjects.apply(queryobj);
+                for (var i=0;i<objs.length;i++) {
+                    add_object(objs[i].id, objs[i]._text);
+                }
+            });
+        }
+
         delete queryobj;
 }
 

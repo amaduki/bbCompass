@@ -327,7 +327,16 @@ BBCQuery.prototype = {
     setQueryString : function (str) {
         var data  = fromBase64(str);
         this._buf = RawDeflate.inflate(data);
-        this.map  = getStr.call(this);
+        try {
+            this.map  = getStr.call(this);
+        } catch(e) {
+            console.error(e);
+            alert("データ取り込み中にエラーが発生しました");
+            this._buf=new Array();
+
+            return false;
+        }
+        return true;
     },
 
     getQueryString : function () {
