@@ -629,9 +629,37 @@ function getURL() {
 
     var queryobj=new BBCQuery(bbobj, $("select#map").val());
     queryobj.getObjects(objs);
-    var querystr=queryobj.getQueryString();
-    window.prompt( "パラメータ" , location.protocol + '//' + location.host + location.pathname
-                                  + '?' + querystr );
+    var querystr = queryobj.getQueryString(),
+        baseurl  = location.protocol + '//' + location.host + location.pathname + '?' + querystr;
+
+    if (baseurl.match(/^https?:\/\//)) {
+        $.ajax({
+            type: 'GET',
+            url: 'http://inf.to/api/insert',
+            dataType: 'jsonp',
+            crossDomain   : true,
+            cache         : false,
+            jsonp         : false,
+            data: {
+                      url         : baseurl,
+                      callback    : "shortenURL",
+                  },
+            jsonpCallback: 'shortenURL',
+            success: function(data,status){
+                         if (data["succeeded"]) {
+                             window.prompt("表示用URL",data["short_url"]);
+                         } else {
+                             alert("URL短縮に失敗しました");
+                         }
+                     },
+            error: function(){
+                       alert("URL短縮に失敗しました");
+                   }
+        });
+    } else {
+        window.prompt( "表示用URL" , baseurl );
+    }
+
     delete queryobj;
 }
 
