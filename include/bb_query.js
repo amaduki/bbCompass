@@ -345,21 +345,22 @@ BBCQuery.prototype = {
     },
 
     setObjects : function () {
-        var objs     = new Array();
+        var objs     = new Array(),
+            queryobj = this;
 
         try {
             var obj,objtype,objname,objlen;
             while (this._offset < this._buf.length) {
-                objlen  = getUint16.call(this);
-                objname = getStr.call(this);
-                objtype = getUint8.call(this);
+                objlen  = getUint16.call(queryobj);
+                objname = getStr.call(queryobj);
+                objtype = getUint8.call(queryobj);
 
                 switch ( objtype ) {
-                case 0x01:  //circle
-                    var color = getCol.call(this),
-                        rad   = getUint16.call(this),
-                        pos   = getPos.call(this),
-                        ptpos = getPos.call(this);
+                case 0x01: (function () { //circle
+                    var color = getCol.call(queryobj),
+                        rad   = getUint16.call(queryobj),
+                        pos   = getPos.call(queryobj),
+                        ptpos = getPos.call(queryobj);
 
                     obj=bbobj.add_circle(objname, rad, color,
                         function(){
@@ -367,14 +368,15 @@ BBCQuery.prototype = {
                             this.moveTo(pos.x, pos.y)
                                 .redraw();
                         });
+                    }());
                     break;
 
-                case 0x02:  //line
-                    var color  = getCol.call(this),
-                        len    = getUint16.call(this),
-                        pos    = getPos.call(this),
-                        pt1pos = getPos.call(this),
-                        pt2pos = getPos.call(this);
+                case 0x02: (function () { //line
+                    var color  = getCol.call(queryobj),
+                        len    = getUint16.call(queryobj),
+                        pos    = getPos.call(queryobj),
+                        pt1pos = getPos.call(queryobj),
+                        pt2pos = getPos.call(queryobj);
 
                     obj=bbobj.add_line(objname, len, color,
                         function(){
@@ -383,31 +385,33 @@ BBCQuery.prototype = {
                             this.moveTo(pos.x, pos.y);
                             this.redraw();
                         });
+                    }());
                     break;
 
-                    case 0x03:  //freehand
-                        obj=bbobj.add_freehand(objname);
-                        obj._step = getUint8.call(this);
-                        for (i=1;i<=obj._step;i++) {
-                            obj._stepcol[i] = getCol.call(this);
-                            var length = getUint16.call(this),
-                                points = new Array();
+                case 0x03: (function () { //freehand
+                    obj=bbobj.add_freehand(objname);
+                    obj._step = getUint8.call(queryobj);
+                    for (i=1;i<=obj._step;i++) {
+                        obj._stepcol[i] = getCol.call(queryobj);
+                        var length = getUint16.call(queryobj),
+                            points = new Array();
                         for (j=0; j<length; j++) {
-                             var point = getPos.call(this);
+                             var point = getPos.call(queryobj);
                              points.push([point.x, point.y]);
                         }
                         jc.line(points, obj._stepcol[i])
                           .layer(obj.id).id(i).lineStyle({lineWidth:3});
                     }
+                    }());
                     break;
 
-                case 0x11:  //scout
-                    var color    = getCol.call(this),
-                        rad      = getUint16.call(this),
-                        len      = getUint16.call(this),
-                        duration = getUint16.call(this),
-                        pos      = getPos.call(this),
-                        rotAngle = getFloat32.call(this);
+                case 0x11: (function () { //scout
+                    var color    = getCol.call(queryobj),
+                        rad      = getUint16.call(queryobj),
+                        len      = getUint16.call(queryobj),
+                        duration = getUint16.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
 
                     obj=bbobj.add_scout(objname, rad, len, duration, color,
                         function(){
@@ -415,26 +419,28 @@ BBCQuery.prototype = {
                                 .rotateTo(rotAngle)
                                 .redraw();
                         });
+                    }());
                     break;
 
-                case 0x12:  //sensor
-                    var color = getCol.call(this),
-                        rad   = getUint16.call(this),
-                        pos   = getPos.call(this);
+                case 0x12: (function () { //sensor
+                    var color = getCol.call(queryobj),
+                        rad   = getUint16.call(queryobj),
+                        pos   = getPos.call(queryobj);
 
                     obj=bbobj.add_sensor(objname, rad, color,
                         function(){
                             this.moveTo(pos.x, pos.y)
                                 .redraw();
                         });
+                    }());
                     break;
 
-                case 0x13:  //radar
-                    var color = getCol.call(this),
-                        rad   = getUint16.call(this),
-                        angle = getUint16.call(this),
-                        pos   = getPos.call(this),
-                        rotAngle = getFloat32.call(this);
+                case 0x13: (function () { //radar
+                    var color = getCol.call(queryobj),
+                        rad   = getUint16.call(queryobj),
+                        angle = getUint16.call(queryobj),
+                        pos   = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
 
                     obj=bbobj.add_radar(objname, rad, angle, color,
                         function(){
@@ -442,15 +448,16 @@ BBCQuery.prototype = {
                                 .rotateTo(rotAngle)
                                 .redraw();
                         });
+                    }());
                     break;
 
-                case 0x21:  //howitzer
-                    var color   = getCol.call(this),
-                        rad1    = getUint16.call(this),
-                        rad2    = getUint16.call(this),
-                        rad3    = getUint16.call(this),
-                        pos     = getPos.call(this),
-                        markpos = getPos.call(this);
+                case 0x21: (function () { //howitzer
+                    var color   = getCol.call(queryobj),
+                        rad1    = getUint16.call(queryobj),
+                        rad2    = getUint16.call(queryobj),
+                        rad3    = getUint16.call(queryobj),
+                        pos     = getPos.call(queryobj),
+                        markpos = getPos.call(queryobj);
 
                     obj=bbobj.add_howitzer(objname, rad1, rad2, rad3, color,
                         function(){
@@ -459,17 +466,19 @@ BBCQuery.prototype = {
                             this.moveTo(pos.x, pos.y)
                                 .redraw();
                         });
+                    }());
                     break;
 
-                case 0x22:  //bunker
-                    var color = getCol.call(this),
-                        pos   = getPos.call(this);
+                case 0x22: (function () { //bunker
+                    var color = getCol.call(queryobj),
+                        pos   = getPos.call(queryobj);
 
                     obj=bbobj.add_bunker(objname, color, 
                         function(){
                             this.moveTo(pos.x, pos.y)
                                 .redraw();
                         });
+                    }());
                     break;
 
                 default:
