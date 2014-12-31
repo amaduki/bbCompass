@@ -221,16 +221,11 @@ function chg_map(callback) {
 //偵察機
 function set_scout() {
     if(! $("#lst_scout").val()) {return;}
-    if (($("#name_scout").val()).length == 0) {
-        name = "(" + $("#lst_scout option:selected").text() + ")";
-    } else {
-        name = $("#name_scout").val();
-    }
     if(! $("#col_scout").val()) {return;}
 
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_scout").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -238,15 +233,10 @@ function set_scout() {
 //センサー
 function set_sensor() {
     if(! $("#lst_sensor").val()) {return;}
-    if (($("#name_sensor").val()).length == 0) {
-        name = "(" + $("#lst_sensor option:selected").text() + ")";
-    } else {
-        name = $("#name_sensor").val();
-    }
     if(! $("#col_sensor").val()) {return;}
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_sensor").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -254,17 +244,11 @@ function set_sensor() {
 //レーダー
 function set_radar() {
     if(! $("#lst_radar").val()) {return;}
-    if (($("#name_radar").val()).length == 0) {
-        name = "(" + $("#lst_radar option:selected").text() + ")";
-    } else {
-        name = $("#name_radar").val();
-    }
-
     if(! $("#col_radar").val()) {return;}
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_radar").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -272,17 +256,11 @@ function set_radar() {
 //滞空索敵弾
 function set_sonde() {
     if(! $("#lst_sonde").val()) {return;}
-    if (($("#name_sonde").val()).length == 0) {
-        name = "(" + $("#lst_sonde option:selected").text() + ")";
-    } else {
-        name = $("#name_sonde").val();
-    }
-
     if(! $("#col_sonde").val()) {return;}
 
     var param = eval($("#lst_sonde").val());
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_sonde").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -290,16 +268,10 @@ function set_sonde() {
 //ND索敵センサー
 function set_ndsensor() {
     if(! $("#lst_ndsensor").val()) {return;}
-    if (($("#name_ndsensor").val()).length == 0) {
-        name = "(" + $("#lst_desensor option:selected").text() + ")";
-    } else {
-        name = $("#name_ndsensor").val();
-    }
-
     if(! $("#col_ndsensor").val()) {return;}
 
     var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_ndsensor").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -307,16 +279,11 @@ function set_ndsensor() {
 //砲撃
 function set_howitzer(){
     if(! $("#lst_howitzer").val()) {return;}
-    if (($("#name_howitzer").val()).length == 0) {
-        name = "(" + $("#lst_howitzer option:selected").text() + ")";
-    } else {
-        name = $("#name_howitzer").val();
-    }
     if(! $("#col_howitzer").val()) {return;}
 
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_howitzer").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -325,11 +292,6 @@ function set_howitzer(){
 //その他攻撃関連
 function set_misc() {
     if(! $("#lst_misc").val()) {return;}
-    if (($("#name_misc").val()).length == 0) {
-        name = "(" + $("#lst_misc option:selected").text() + ")";
-    } else {
-        name = $("#name_misc").val();
-    }
     if(! $("#col_misc").val()) {return;}
 
     var obj;
@@ -352,7 +314,7 @@ function set_misc() {
     }
 
     if (obj) {
-        add_object(obj.id, name);
+        add_object(obj.id, coalesce_name(obj, $("#name_misc").val()));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -362,15 +324,10 @@ function set_misc() {
 //アイコン
 function set_icon(){
     if(! $("#lst_icon").val()) {return;}
-    if (($("#name_icon").val()).length == 0) {
-        name = "(" + $("#lst_icon option:selected").text() + "アイコン)";
-    } else {
-        name = $("#name_icon").val();
-    }
     if(! $("#col_icon").val()) {return;}
 
     var obj = bbobj.add_icon($("#name_icon").val(), $("#lst_icon").val(), $("#col_icon").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_icon").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -379,15 +336,10 @@ function set_icon(){
 //ワフトローダー
 function set_waft(file) {
     if(! file) {return;}
-    if (($("#name_waft").val()).length == 0) {
-        name = "(ワフトローダー)";
-    } else {
-        name = $("#name_waft").val();
-    }
     if(! $("#col_waft").val()) {return;}
 
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_waft").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -396,15 +348,10 @@ function set_waft(file) {
 //円
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}
-    if (($("#name_circle").val()).length == 0) {
-        name = "(円)";
-    } else {
-        name = $("#name_circle").val();
-    }
     if(! $("#col_circle").val()) {return;}
 
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_circle").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -412,15 +359,10 @@ function set_circle(){
 //直線
 function set_line(){
     if(! $("#len_line").val()) {return;}
-    if (($("#name_line").val()).length == 0) {
-        name = "(直線)";
-    } else {
-        name = $("#name_line").val();
-    }
     if(! $("#col_line").val()) {return;}
 
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_line").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -429,13 +371,7 @@ function set_line(){
 function set_point(){
     var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
 
-    if (($("#name_point").val()).length == 0) {
-        name = "(点)";
-    } else {
-        name = $("#name_point").val();
-    }
-
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_point").val()));
     obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
     obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
@@ -444,13 +380,7 @@ function set_point(){
 function set_freehand(){
     var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
 
-    if (($("#name_freehand").val()).length == 0) {
-        name = "(フリーハンド)";
-    } else {
-        name = $("#name_freehand").val();
-    }
-
-    add_object(obj.id, name);
+    add_object(obj.id, coalesce_name(obj, $("#name_freehand").val()));
     $("button").attr("disabled",true);
     obj.start();
     freehandOnWrite = obj;
@@ -679,7 +609,7 @@ function setURL(querystr) {
                 var objs;
                 objs=queryobj.setObjects.apply(queryobj);
                 for (var i=0;i<objs.length;i++) {
-                    add_object(objs[i].id, objs[i]._text);
+                    add_object(objs[i].id, coalesce_name(objs[i], objs[i]._text));
                 }
             });
         }
@@ -687,6 +617,88 @@ function setURL(querystr) {
         delete queryobj;
 }
 
+//オブジェクトの名前が空白だった場合の対策関数
+function coalesce_name(obj){
+    var name;
+
+    if (obj._text.length != 0) {
+        //名前指定がある場合はそのまま利用
+        name= obj._text;
+    } else {
+        //名前指定がないので、種別に応じた仮の名前を利用
+        switch ( obj.type ) {
+        case 'scout':
+            name = "(偵察機)";
+            break;
+
+        case 'sensor':
+            name = "(センサー)";
+            break;
+
+        case 'radar':
+            name = "(レーダー)";
+            break;
+
+        case 'sonde':
+            name = "(索敵弾)";
+            break;
+
+        case 'ndsensor':
+            name = "(ND)";
+            break;
+
+        case 'howitzer':
+            name = "(榴弾)";
+            break;
+
+        case 'bunker':
+            name = "(バンカー)";
+            break;
+
+        case 'sentry':
+            name = "(セントリー)";
+            break;
+
+        case 'aerosentry':
+            name = "(エアロセントリー)";
+            break;
+
+        case 'bomber':
+            name = "(爆撃機)";
+            break;
+
+        case 'icon':
+            name = "(アイコン)";
+            break;
+
+        case 'waft':
+            name = "(ワフトローダー)";
+            break;
+
+        case 'circle':
+            name = "(円)";
+            break;
+
+        case 'line':
+            name = "(直線)";
+            break;
+
+        case 'point':
+            name = "(点)";
+            break;
+
+        case 'freehand':
+            name = "(フリーハンド)";
+            break;
+
+        default:
+            name= "(無名)";
+            break;
+        }
+    }
+
+    return name;
+}
 
 //前景色を得る
 function get_fgColor($bgcol) {
