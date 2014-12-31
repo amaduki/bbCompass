@@ -1204,7 +1204,7 @@
             if (_color===undefined) {_color='rgb(255, 0, 0)';}
             this.id=UUID.genV1().toString();
 
-            this.type="sentry";
+            this.type="aerosentry";
             this._text=_text;
             this._radius=40; //固定値
             this._color=_color;
