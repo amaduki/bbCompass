@@ -382,8 +382,8 @@ BBCQuery.prototype = {
                         function(){
                             this._pt1pos = pt1pos;
                             this._pt2pos = pt2pos;
-                            this.moveTo(pos.x, pos.y);
-                            this.redraw();
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
                         });
                     }());
                     break;
@@ -402,6 +402,33 @@ BBCQuery.prototype = {
                         jc.line(points, obj._stepcol[i])
                           .layer(obj.id).id(i).lineStyle({lineWidth:3});
                     }
+                    }());
+                    break;
+
+                case 0x04: (function () { //point
+                    var color  = getCol.call(queryobj),
+                        align  = getUint8.call(queryobj),
+                        size   = getUint8.call(queryobj),
+                        pos    = getPos.call(queryobj);
+
+                    obj=bbobj.add_point(objname, size, color, align,
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
+                case 0x05: (function () { //icon
+                    var color  = getCol.call(queryobj),
+                        file   = getStr.call(queryobj),
+                        pos    = getPos.call(queryobj);
+
+                    obj=bbobj.add_icon(objname, file, color,
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
                     }());
                     break;
 
@@ -451,6 +478,38 @@ BBCQuery.prototype = {
                     }());
                     break;
 
+                case 0x14: (function () { //sonde
+                    var color   = getCol.call(queryobj),
+                        rad1    = getUint16.call(queryobj),
+                        rad2    = getUint16.call(queryobj),
+                        pos     = getPos.call(queryobj),
+                        markpos = getPos.call(queryobj);
+
+                    obj=bbobj.add_sonde(objname, rad1, rad2, color,
+                        function(){
+                            this._markerx = markpos.x;
+                            this._markery = markpos.y;
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
+                case 0x15: (function () { //ndsensor
+                    var color    = getCol.call(queryobj),
+                        rad      = getUint16.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
+
+                    obj=bbobj.add_ndsensor(objname, rad, color,
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
                 case 0x21: (function () { //howitzer
                     var color   = getCol.call(queryobj),
                         rad1    = getUint16.call(queryobj),
@@ -481,9 +540,64 @@ BBCQuery.prototype = {
                     }());
                     break;
 
+                case 0x23: (function () { //bomber
+                    var color    = getCol.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
+
+                    obj=bbobj.add_bomber(objname, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
+                case 0x24: (function () { //sentry
+                    var color    = getCol.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
+
+                    obj=bbobj.add_sentry(objname, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
+                case 0x25: (function () { //aerosentry
+                    var color    = getCol.call(queryobj),
+                        pos      = getPos.call(queryobj);
+
+                    obj=bbobj.add_aerosentry(objname, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
+                case 0x30: (function () { //waft
+                    var color    = getCol.call(queryobj),
+                        file     = getStr.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
+
+                    obj=bbobj.add_waft(objname, file, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
                 default:
                     obj=undefined;
-                    console.error("object not supported");
+                    console.error("object type not supported (" + objtype + ")");
                     view.seek(view.tell()+objlen-1);
                     break;
                 }
@@ -515,10 +629,9 @@ BBCQuery.prototype = {
             case 'line':
                 objdata.unshift(0x02);
                 objdata = objdata.concat(setCol(obj._color));
-                objdata = objdata.concat(setInt16(obj._length));
+                objdata = objdata.concat(setInt8(obj._align));
+                objdata = objdata.concat(setInt8(obj._size));
                 objdata = objdata.concat(setPos(obj.position()));
-                objdata = objdata.concat(setPos(obj._pt1pos));
-                objdata = objdata.concat(setPos(obj._pt2pos));
                 break;
 
             case 'freehand':
@@ -535,6 +648,21 @@ BBCQuery.prototype = {
                 }
                 break;
 
+            case 'point':
+                objdata.unshift(0x04);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt8(obj._align));
+                objdata = objdata.concat(setInt8(obj._size));
+                objdata = objdata.concat(setPos(obj.position()));
+                break;
+
+            case 'icon':
+                objdata.unshift(0x05);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setStr(obj._file));
+                objdata = objdata.concat(setPos(obj.position()));
+                break;
+
             case 'scout':
                 objdata.unshift(0x11);
                 objdata = objdata.concat(setCol(obj._color));
@@ -542,7 +670,7 @@ BBCQuery.prototype = {
                 objdata = objdata.concat(setInt16(obj._length));
                 objdata = objdata.concat(setInt16(obj._duration));
                 objdata = objdata.concat(setPos(obj.position()));
-                objdata = objdata.concat(setFloat32(obj.angle()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
                 break;
 
             case 'sensor':
@@ -558,7 +686,26 @@ BBCQuery.prototype = {
                 objdata = objdata.concat(setInt16(obj._radius));
                 objdata = objdata.concat(setInt16(obj._angle));
                 objdata = objdata.concat(setPos(obj.position()));
-                objdata = objdata.concat(setFloat32(obj.angle()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
+                break;
+
+            case 'sonde':
+                objdata.unshift(0x14);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius1));
+                objdata = objdata.concat(setInt16(obj._radius2));
+
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setPos({x:obj._markerx,
+                                                 y:obj._markery}));
+                break;
+
+            case 'ndsensor':
+                objdata.unshift(0x15);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setInt16(obj._radius));
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
                 break;
 
             case 'howitzer':
@@ -577,6 +724,34 @@ BBCQuery.prototype = {
                 objdata.unshift(0x22);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setPos(obj.position()));
+                break;
+
+            case 'bomber':
+                objdata.unshift(0x23);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
+                break;
+
+            case 'sentry':
+                objdata.unshift(0x24);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
+                break;
+
+            case 'aerosentry':
+                objdata.unshift(0x25);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setPos(obj.position()));
+                break;
+
+            case 'waft':
+                objdata.unshift(0x30);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setStr(obj._file));
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
                 break;
 
             default:

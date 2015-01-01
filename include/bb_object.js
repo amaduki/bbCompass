@@ -203,7 +203,7 @@
             return {x:posx, y:posy};
         };
 
-        this.BB_base.prototype.angle = function () {
+        this.BB_base.prototype.rotAngle = function () {
             return (jc.layer(this.id).getAngle()*180/Math.PI);
         };
 
@@ -1367,6 +1367,7 @@
 
             this.type   = "icon";
             this._text  = _text;
+            this._file  = _file;
             this._color = _color;
 
             //描画して登録。初期座標は半径分ずらす
@@ -1411,6 +1412,7 @@
 
             this.type   = "waft";
             this._text  = _text;
+            this._file  = _file;
             this._rad   = 20;  //大ざっぱに全長40m程度?
             this._color = _color;
 
@@ -1978,8 +1980,8 @@
         return new this.BB_line(string, length, color, _callback);
     };
 
-    BB.prototype.add_point = function (string, length, color, align, _callback) {
-        return new this.BB_point(string, length, color, align, _callback);
+    BB.prototype.add_point = function (string, size, color, align, _callback) {
+        return new this.BB_point(string, size, color, align, _callback);
     };
 
     BB.prototype.add_icon = function (string, file, color, _callback) {
