@@ -33,19 +33,25 @@ $(document).ready(function(){
                               });
     $('input.colorpick').change();
 
-    var mapobj=$("#map").children().get();
-    $("#stage").change(function (e){
-                           var stage=$("#stage option:selected").val();
-                           $("#map").children().remove();
-                           $("#map").append(mapobj);
-                           $("#map").children("[data-stage!='"+stage+"']").remove();
+    var mapobj=$("select#map").children().get();
+    $.extend({restoreMaps:function(){
+                            $("select#map").children().remove();
+                            $("select#map").append(mapobj);
+                        }
+
+             });
+
+    $("select#stage").change(function (e){
+                           var stage=$("select#stage option:selected").val();
+                           $.restoreMaps();
+                           $("select#map").children("[data-stage!='"+stage+"']").remove();
                            $("#map").change();
                        });
 
-    $("#map").change(function (){
-                           $("#map").removeClass("union event");
-                           if ($("#map option:selected").attr("class") !== undefined) {
-                               $("#map").addClass($("#map option:selected").attr("class"));
+    $("select#map").change(function (){
+                           $("select#map").removeClass("union event");
+                           if ($("select#map option:selected").attr("class") !== undefined) {
+                               $("select#map").addClass($("select#map option:selected").attr("class"));
                            }
                        });
 
@@ -92,7 +98,7 @@ $(document).ready(function(){
         //どこかクリックしたらメニューを消す
         $(document).one('click', function() {
             $("div.ContextMenu,div.ContextMenu div.ContextChild").hide();
-        });
+    });
 
     });
 
@@ -124,9 +130,9 @@ $(document).ready(function(){
     $('#objselector').tinyscrollbar({invertscroll:true});
 
   //ズーム
-  $("#lst_scale").change(function() {
-                             zoom_cnv($(this).val());
-                         });
+    $("#lst_scale").change(function() {
+                               zoom_cnv($(this).val());
+                           });
 
   //changelog
     $.ajax({url     : "./Changelog.txt",
@@ -135,6 +141,7 @@ $(document).ready(function(){
             success : function(txt,status){$("#changelog").val(txt);},
             error   : function(){$("#changelog").val("更新履歴の取得に失敗しました");}
            });
+
 });
 
 //canvas初期化
@@ -156,18 +163,30 @@ function initialize(){
     $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
     $(window).resize(function(){bbobj.chgScroll();});
+
+  //query stringがあれば再現処理に入る
+    if (window.location.search) {
+        setURL(window.location.search.substr(1));
+    }
+
 }
 
 //マップ変更
-function chg_map() {
-    $("div#Loading").show();
-    $("#lst_object").children().remove();
-    var file  = $("#map option:selected").val();
-    var stage = $("#map option:selected").attr("data-stage");
+function chg_map(callback) {
+    var file  = sanitize_filename($("#map option:selected").val());
+    var stage = sanitize_filename($("#map option:selected").attr("data-stage"));
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
-    var salt  = "?" + new Date().getTime();
-    bbobj.setbg("./map/"+stage+"/"+file+".jpg" + salt, scale[0], scale[1],
+
+    if ((file == null) || (stage == null)) {
+        alert("マップファイル名エラー");
+        return;
+    }
+
+    $("div#Loading").show();
+    $("#lst_object").children().remove();
+
+    bbobj.setbg("./map/"+stage+"/"+file+".jpg", scale[0], scale[1],
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
@@ -175,7 +194,7 @@ function chg_map() {
                     $("ul#contextZoom").children("li").removeClass("checked");
                     $("li#contextZoom_1").addClass("checked");
                     $("div#Loading").hide();
-                    $.ajax({url           : "./data/" + file + ".txt",
+                    $.ajax({url           : "data/" + file + ".txt",
                             dataType      : "jsonp",
                             crossDomain   : true,
                             cache         : false,
@@ -190,6 +209,7 @@ function chg_map() {
                                                                      turretCircle,
                                                                      undefined,turretData[i][4]);
                                                 }
+                                                if (callback !== undefined){callback.call();};
                                             },
                             error         : function(){}
                     });
@@ -199,7 +219,7 @@ function chg_map() {
     $("#lst_layer").children().remove();
     $("#lst_layer").append($('<option value=""></option>').text("通常"));
     for (var i=0;i<layer.length;i++) {
-        $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
+        $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
 }
@@ -207,115 +227,95 @@ function chg_map() {
 //偵察機
 function set_scout() {
     if(! $("#lst_scout").val()) {return;}
-    if (($("#name_scout").val()).length == 0) {
-        name = "(" + $("#lst_scout option:selected").text() + ")";
-    } else {
-        name = $("#name_scout").val();
-    }
     if(! $("#col_scout").val()) {return;}
 
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_scout").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //センサー
 function set_sensor() {
     if(! $("#lst_sensor").val()) {return;}
-    if (($("#name_sensor").val()).length == 0) {
-        name = "(" + $("#lst_sensor option:selected").text() + ")";
-    } else {
-        name = $("#name_sensor").val();
-    }
     if(! $("#col_sensor").val()) {return;}
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_sensor").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //レーダー
 function set_radar() {
     if(! $("#lst_radar").val()) {return;}
-    if (($("#name_radar").val()).length == 0) {
-        name = "(" + $("#lst_radar option:selected").text() + ")";
-    } else {
-        name = $("#name_radar").val();
-    }
-
     if(! $("#col_radar").val()) {return;}
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_radar").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //滞空索敵弾
 function set_sonde() {
     if(! $("#lst_sonde").val()) {return;}
-    if (($("#name_sonde").val()).length == 0) {
-        name = "(" + $("#lst_sonde option:selected").text() + ")";
-    } else {
-        name = $("#name_sonde").val();
-    }
-
     if(! $("#col_sonde").val()) {return;}
 
     var param = eval($("#lst_sonde").val());
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_sonde").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //ND索敵センサー
 function set_ndsensor() {
     if(! $("#lst_ndsensor").val()) {return;}
-    if (($("#name_ndsensor").val()).length == 0) {
-        name = "(" + $("#lst_desensor option:selected").text() + ")";
-    } else {
-        name = $("#name_ndsensor").val();
-    }
-
     if(! $("#col_ndsensor").val()) {return;}
 
     var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_ndsensor").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //砲撃
 function set_howitzer(){
     if(! $("#lst_howitzer").val()) {return;}
-    if (($("#name_howitzer").val()).length == 0) {
-        name = "(" + $("#lst_howitzer option:selected").text() + ")";
-    } else {
-        name = $("#name_howitzer").val();
-    }
     if(! $("#col_howitzer").val()) {return;}
 
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_howitzer").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
 //その他攻撃関連
 function set_misc() {
     if(! $("#lst_misc").val()) {return;}
-    if (($("#name_misc").val()).length == 0) {
-        name = "(" + $("#lst_misc option:selected").text() + ")";
-    } else {
-        name = $("#name_misc").val();
-    }
     if(! $("#col_misc").val()) {return;}
 
     var obj;
@@ -338,7 +338,7 @@ function set_misc() {
     }
 
     if (obj) {
-        add_object(obj.id, name);
+        add_object(obj.id, coalesce_name(obj, $("#name_misc").val()));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -348,117 +348,112 @@ function set_misc() {
 //アイコン
 function set_icon(){
     if(! $("#lst_icon").val()) {return;}
-    if (($("#name_icon").val()).length == 0) {
-        name = "(" + $("#lst_icon option:selected").text() + "アイコン)";
-    } else {
-        name = $("#name_icon").val();
-    }
     if(! $("#col_icon").val()) {return;}
 
-    var obj = bbobj.add_icon($("#name_icon").val(), $("#lst_icon").val(), $("#col_icon").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    var file  = sanitize_filename($("#lst_icon").val());
+    if (file == null) {
+        alert("アイコンファイル名エラー");
+        return;
+    }
+
+    var obj = bbobj.add_icon($("#name_icon").val(), file, $("#col_icon").val());
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_icon").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
 //ワフトローダー
 function set_waft(file) {
     if(! file) {return;}
-    if (($("#name_waft").val()).length == 0) {
-        name = "(ワフトローダー)";
-    } else {
-        name = $("#name_waft").val();
-    }
     if(! $("#col_waft").val()) {return;}
 
+    file  = sanitize_filename(file);
+    if (file == null) {
+        alert("ワフト画像ファイル名エラー");
+        return;
+    }
+
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_waft").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
 //円
 function set_circle(){
     if(! $("#rad_circle").val()) {return;}
-    if (($("#name_circle").val()).length == 0) {
-        name = "(円)";
-    } else {
-        name = $("#name_circle").val();
-    }
     if(! $("#col_circle").val()) {return;}
 
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_circle").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //直線
 function set_line(){
     if(! $("#len_line").val()) {return;}
-    if (($("#name_line").val()).length == 0) {
-        name = "(直線)";
-    } else {
-        name = $("#name_line").val();
-    }
     if(! $("#col_line").val()) {return;}
 
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_line").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //点
 function set_point(){
     var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
 
-    if (($("#name_point").val()).length == 0) {
-        name = "(点)";
-    } else {
-        name = $("#name_point").val();
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_point").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
-
-    add_object(obj.id, name);
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
 }
 
 //フリーハンド
 function set_freehand(){
-    var obj = bbobj.add_freehand($("#col_freehand").val());
+    var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
 
-    if (($("#name_freehand").val()).length == 0) {
-        name = "(フリーハンド)";
-    } else {
-        name = $("#name_freehand").val();
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_freehand").val()));
+        $("button").attr("disabled",true);
+        obj.start();
+        freehandOnWrite = obj;
+        var colChg =function(){
+                        obj.color($(this).val());
+                    }
+        $("#col_freehand").bind('blur',colChg);
+        $("#undo_freehand").attr("disabled", false)
+                           .click(function(){freehandOnWrite.undo();});
+        $("#redo_freehand").attr("disabled", false)
+                           .click(function(){freehandOnWrite.redo();});
+        $("#stop_freehand").attr("disabled", false)
+                           .click(function(){
+                                      freehandOnWrite=undefined;
+                                      obj.end();
+                                      $("#col_freehand").unbind('blur',colChg);
+                                      $("button:not(.disable)").attr("disabled",false);
+                                      $("#stop_freehand").attr("disabled", true).unbind("click");
+                                      $("#undo_freehand").attr("disabled", true).unbind("click");
+                                      $("#redo_freehand").attr("disabled", true).unbind("click");
+                                  });
     }
-
-    add_object(obj.id, name);
-    $("button").attr("disabled",true);
-    obj.start();
-    freehandOnWrite = obj;
-    var colChg =function(){
-                    obj.color($(this).val());
-                }
-    $("#col_freehand").bind('blur',colChg);
-    $("#undo_freehand").attr("disabled", false)
-                       .click(function(){freehandOnWrite.undo();});
-    $("#redo_freehand").attr("disabled", false)
-                       .click(function(){freehandOnWrite.redo();});
-    $("#stop_freehand").attr("disabled", false)
-                       .click(function(){
-                                  freehandOnWrite=undefined;
-                                  obj.end();
-                                  $("#col_freehand").unbind('blur',colChg);
-                                  $("button:not(.disable)").attr("disabled",false);
-                                  $("#stop_freehand").attr("disabled", true).unbind("click");
-                                  $("#undo_freehand").attr("disabled", true).unbind("click");
-                                  $("#redo_freehand").attr("disabled", true).unbind("click");
-                              });
-
 }
 
 //ズーム
@@ -606,6 +601,155 @@ function saveImg() {
     window.open("./image.html","test");
 }
 
+//現在の状態をURL化
+function getURL() {
+    var objs  = new Array();
+    $($("#lst_object option").get().reverse()).each(function(){
+        objs.push($(this).val());
+    });
+
+    var queryobj=new BBCQuery(bbobj, $("select#map").val());
+    queryobj.getObjects(objs);
+    var querystr = queryobj.getQueryString(),
+        baseurl  = location.protocol + '//' + location.host + location.pathname + '?' + querystr;
+
+    if (baseurl.match(/^https?:\/\//)) {
+        $.ajax({
+            type: 'GET',
+            url: 'http://inf.to/api/insert',
+            dataType: 'jsonp',
+            crossDomain   : true,
+            cache         : false,
+            jsonp         : false,
+            data: {
+                      url         : baseurl,
+                      callback    : "shortenURL",
+                  },
+            jsonpCallback: 'shortenURL',
+            success: function(data,status){
+                         if (data["succeeded"]) {
+                             window.prompt("表示用URL",data["short_url"]);
+                         } else {
+                             alert("URL短縮に失敗しました");
+                         }
+                     },
+            error: function(){
+                       alert("URL短縮に失敗しました");
+                   }
+        });
+    } else {
+        window.prompt( "表示用URL" , baseurl );
+    }
+
+    delete queryobj;
+}
+
+//URLクエリストリングからの復元
+function setURL(querystr) {
+        var queryobj=new BBCQuery(bbobj, 'dummy');
+
+        if (queryobj.setQueryString(querystr)) {
+            $.restoreMaps();
+            $("select#stage").val($("select#map").children("[value='"+queryobj.map+"']").attr("data-stage"));
+            $("select#stage").change();
+
+            $("select#map").val(queryobj.map);
+            $("select#map").change();
+
+            chg_map(function(){
+                var objs;
+                objs=queryobj.setObjects.apply(queryobj);
+                for (var i=0;i<objs.length;i++) {
+                    add_object(objs[i].id, coalesce_name(objs[i], objs[i]._text));
+                }
+            });
+        }
+
+        delete queryobj;
+}
+
+//オブジェクトの名前が空白だった場合の対策関数
+function coalesce_name(obj){
+    var name;
+
+    if (obj._text.length != 0) {
+        //名前指定がある場合はそのまま利用
+        name= obj._text;
+    } else {
+        //名前指定がないので、種別に応じた仮の名前を利用
+        switch ( obj.type ) {
+        case 'scout':
+            name = "(偵察機)";
+            break;
+
+        case 'sensor':
+            name = "(センサー)";
+            break;
+
+        case 'radar':
+            name = "(レーダー)";
+            break;
+
+        case 'sonde':
+            name = "(索敵弾)";
+            break;
+
+        case 'ndsensor':
+            name = "(ND)";
+            break;
+
+        case 'howitzer':
+            name = "(榴弾)";
+            break;
+
+        case 'bunker':
+            name = "(バンカー)";
+            break;
+
+        case 'sentry':
+            name = "(セントリー)";
+            break;
+
+        case 'aerosentry':
+            name = "(エアロセントリー)";
+            break;
+
+        case 'bomber':
+            name = "(爆撃機)";
+            break;
+
+        case 'icon':
+            name = "(アイコン)";
+            break;
+
+        case 'waft':
+            name = "(ワフトローダー)";
+            break;
+
+        case 'circle':
+            name = "(円)";
+            break;
+
+        case 'line':
+            name = "(直線)";
+            break;
+
+        case 'point':
+            name = "(点)";
+            break;
+
+        case 'freehand':
+            name = "(フリーハンド)";
+            break;
+
+        default:
+            name= "(無名)";
+            break;
+        }
+    }
+
+    return name;
+}
 
 //前景色を得る
 function get_fgColor($bgcol) {
@@ -620,4 +764,15 @@ function get_fgColor($bgcol) {
         return ("#FFFFFF");
     }
     return ("#000000");
+}
+
+//ファイル名・ディレクトリ名チェック
+function sanitize_filename(path) {
+        var control_codes = /[\u0000-\u001F\u007F-\u009F]/g;
+        path.replace(control_codes, "\uFFFD");
+        if(path.match(/^([.~]?\/)?([A-Za-z0-9_-][A-Za-z0-9_.-]+\/)*[A-Za-z0-9_-][A-Za-z0-9_.-]+$/)){
+            return path;
+        } else {
+            return null;
+        }
 }
