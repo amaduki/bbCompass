@@ -65,25 +65,31 @@ BBコンパスもどき
     (jQueryとJcanvaScriptはデュアルライセンスですが、MIT Licenseに従います)
 
     ・jQuery  http://jquery.com/
-      MIT License or the GNU General Public License (GPL) Version 2.
+      MIT License or the GNU General Public License (GPL) Version 2
 
     ・UUID.js  https://github.com/LiosK/UUID.js
       MIT License
 
     ・JcanvaScript  http://jcscript.com/
-      MIT License or the GNU General Public License (GPL) Version 2. 
+      MIT License or the GNU General Public License (GPL) Version 2
 
-    ※一部機能においてJcanvaScriptの内部変数を参照、書き換えしています。
-      JcanvaScriptのバージョンを上げるとうまく動かなくなる可能性があります。
+      ※一部機能においてJcanvaScriptの内部変数を参照、書き換えしています。
+        JcanvaScriptのバージョンを上げるとうまく動かなくなる可能性があります。
 
     また、下記のライブラリについては私家改造版を利用しています。
     この場合の著作権の扱いは今一つわかりませんが（改造部分のみ私の著作物？）
-    幸いにしてどちらもMIT Licenseで公開されているものですので、
-    改造部分もMITLicenseを採用し、まとめて配布するものとします。
+    基本的にはそれぞれのライセンスに従って取り扱います
 
     ・simpleColorPicker jQuery plugin  http://rachel-carvalho.github.com/simple-color-picker/
+      MIT License
 
     ・Tiny Scrollbar  http://baijs.nl/tinyscrollbar/
+      MIT License
+
+    ・js-deflate  https://github.com/dankogai/js-deflate
+      the GNU General Public License (GPL) Version 2
+
+      ※base64.jsについても一部を変更し、bb_query.jsに取り込んでいます
 
 
   (3)マップ画像について

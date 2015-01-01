@@ -14,11 +14,11 @@
 <script type="text/javascript" src="./include/scp/jquery.simple-color-picker.js"></script>
 <script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.18.min.js"></script>
 <script type="text/javascript" src="./include/scroll/jquery.tinyscrollbar.min.js"></script>
-<script type="text/javascript" src="./include/bb_query.js"></script>
-<script type="text/javascript" src="./include/bb_object.js"></script>
-<script type="text/javascript" src="./include/bb_webfunc.js"></script>
-<script type="text/javascript" src="./include/rawdeflate.js"></script>
-<script type="text/javascript" src="./include/rawinflate.js"></script>
+<script type="text/javascript" src="./include/bb_object.min.js"></script>
+<script type="text/javascript" src="./include/bb_query.min.js"></script>
+<script type="text/javascript" src="./include/bb_webfunc.min.js"></script>
+<script type="text/javascript" src="./include/js-deflate/rawdeflate.min.js"></script>
+<script type="text/javascript" src="./include/js-deflate/rawinflate.min.js"></script>
 </head>
 <body onload="initialize()">
 <header>
@@ -549,6 +549,7 @@
        <div class="hrdiv"><hr></div>
      <ul>
        <li onclick="javascript:saveImg()">画像を保存</li>
+       <li onclick="javascript:getURL()">URL出力</li>
      </ul>
    </div>
   <div id="Loading"><img src="./image/loading.gif" alt="loading"><br>読込中...</div>
@@ -595,6 +596,7 @@ IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いくだ
 <li><a href="http://rachel-carvalho.github.com/simple-color-picker/" target="_blank">simpleColorPicker jQuery plugin</a>
 <li><a href="http://baijs.nl/tinyscrollbar/" target="_blank">Tiny Scrollbar</a>(私家改造版)
 <li><a href="https://github.com/LiosK/UUID.js" target="_blank">UUID.js</a>
+<li><a href="https://github.com/dankogai/js-deflate" target="_blank">js-deflate</a>(私家改造版)
 </ul>
 </div>
 </div>
