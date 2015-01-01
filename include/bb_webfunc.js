@@ -173,14 +173,20 @@ function initialize(){
 
 //マップ変更
 function chg_map(callback) {
-    $("div#Loading").show();
-    $("#lst_object").children().remove();
-    var file  = $("#map option:selected").val();
-    var stage = $("#map option:selected").attr("data-stage");
+    var file  = sanitize_filename($("#map option:selected").val());
+    var stage = sanitize_filename($("#map option:selected").attr("data-stage"));
     var layer = eval($("#map option:selected").attr("data-layer"));
     var scale = eval($("#stage").children("[value='"+stage+"']").attr("data-scale"));
-    var salt  = "?" + new Date().getTime();
-    bbobj.setbg("./map/"+stage+"/"+file+".jpg" + salt, scale[0], scale[1],
+
+    if ((file == null) || (stage == null)) {
+        alert("マップファイル名エラー");
+        return;
+    }
+
+    $("div#Loading").show();
+    $("#lst_object").children().remove();
+
+    bbobj.setbg("./map/"+stage+"/"+file+".jpg", scale[0], scale[1],
                 function(){
                     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                                   .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
@@ -188,7 +194,7 @@ function chg_map(callback) {
                     $("ul#contextZoom").children("li").removeClass("checked");
                     $("li#contextZoom_1").addClass("checked");
                     $("div#Loading").hide();
-                    $.ajax({url           : "./data/" + file + ".txt",
+                    $.ajax({url           : "data/" + file + ".txt",
                             dataType      : "jsonp",
                             crossDomain   : true,
                             cache         : false,
@@ -206,14 +212,14 @@ function chg_map(callback) {
                                                 if (callback !== undefined){callback.call();};
                                             },
                             error         : function(){}
-                });
+                    });
                 });
 
 
     $("#lst_layer").children().remove();
     $("#lst_layer").append($('<option value=""></option>').text("通常"));
     for (var i=0;i<layer.length;i++) {
-        $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+salt+'"></option>').text(layer[i]));
+        $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
 }
@@ -225,9 +231,12 @@ function set_scout() {
 
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_scout").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_scout").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //センサー
@@ -236,9 +245,12 @@ function set_sensor() {
     if(! $("#col_sensor").val()) {return;}
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_sensor").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_sensor").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //レーダー
@@ -248,9 +260,12 @@ function set_radar() {
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_radar").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_radar").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //滞空索敵弾
@@ -260,9 +275,12 @@ function set_sonde() {
 
     var param = eval($("#lst_sonde").val());
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_sonde").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_sonde").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //ND索敵センサー
@@ -271,9 +289,12 @@ function set_ndsensor() {
     if(! $("#col_ndsensor").val()) {return;}
 
     var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_ndsensor").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_ndsensor").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //砲撃
@@ -283,9 +304,12 @@ function set_howitzer(){
 
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_howitzer").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_howitzer").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
@@ -316,7 +340,7 @@ function set_misc() {
     if (obj) {
         add_object(obj.id, coalesce_name(obj, $("#name_misc").val()));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
 }
 
@@ -326,10 +350,19 @@ function set_icon(){
     if(! $("#lst_icon").val()) {return;}
     if(! $("#col_icon").val()) {return;}
 
-    var obj = bbobj.add_icon($("#name_icon").val(), $("#lst_icon").val(), $("#col_icon").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_icon").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    var file  = sanitize_filename($("#lst_icon").val());
+    if (file == null) {
+        alert("アイコンファイル名エラー");
+        return;
+    }
+
+    var obj = bbobj.add_icon($("#name_icon").val(), file, $("#col_icon").val());
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_icon").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
@@ -338,10 +371,19 @@ function set_waft(file) {
     if(! file) {return;}
     if(! $("#col_waft").val()) {return;}
 
+    file  = sanitize_filename(file);
+    if (file == null) {
+        alert("ワフト画像ファイル名エラー");
+        return;
+    }
+
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_waft").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_waft").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 
@@ -351,9 +393,12 @@ function set_circle(){
     if(! $("#col_circle").val()) {return;}
 
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_circle").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_circle").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //直線
@@ -362,47 +407,53 @@ function set_line(){
     if(! $("#col_line").val()) {return;}
 
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
-    add_object(obj.id, coalesce_name(obj, $("#name_line").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_line").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //点
 function set_point(){
     var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
 
-    add_object(obj.id, coalesce_name(obj, $("#name_point").val()));
-    obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
-    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_point").val()));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+    }
 }
 
 //フリーハンド
 function set_freehand(){
     var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
 
-    add_object(obj.id, coalesce_name(obj, $("#name_freehand").val()));
-    $("button").attr("disabled",true);
-    obj.start();
-    freehandOnWrite = obj;
-    var colChg =function(){
-                    obj.color($(this).val());
-                }
-    $("#col_freehand").bind('blur',colChg);
-    $("#undo_freehand").attr("disabled", false)
-                       .click(function(){freehandOnWrite.undo();});
-    $("#redo_freehand").attr("disabled", false)
-                       .click(function(){freehandOnWrite.redo();});
-    $("#stop_freehand").attr("disabled", false)
-                       .click(function(){
-                                  freehandOnWrite=undefined;
-                                  obj.end();
-                                  $("#col_freehand").unbind('blur',colChg);
-                                  $("button:not(.disable)").attr("disabled",false);
-                                  $("#stop_freehand").attr("disabled", true).unbind("click");
-                                  $("#undo_freehand").attr("disabled", true).unbind("click");
-                                  $("#redo_freehand").attr("disabled", true).unbind("click");
-                              });
-
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj, $("#name_freehand").val()));
+        $("button").attr("disabled",true);
+        obj.start();
+        freehandOnWrite = obj;
+        var colChg =function(){
+                        obj.color($(this).val());
+                    }
+        $("#col_freehand").bind('blur',colChg);
+        $("#undo_freehand").attr("disabled", false)
+                           .click(function(){freehandOnWrite.undo();});
+        $("#redo_freehand").attr("disabled", false)
+                           .click(function(){freehandOnWrite.redo();});
+        $("#stop_freehand").attr("disabled", false)
+                           .click(function(){
+                                      freehandOnWrite=undefined;
+                                      obj.end();
+                                      $("#col_freehand").unbind('blur',colChg);
+                                      $("button:not(.disable)").attr("disabled",false);
+                                      $("#stop_freehand").attr("disabled", true).unbind("click");
+                                      $("#undo_freehand").attr("disabled", true).unbind("click");
+                                      $("#redo_freehand").attr("disabled", true).unbind("click");
+                                  });
+    }
 }
 
 //ズーム
@@ -713,4 +764,15 @@ function get_fgColor($bgcol) {
         return ("#FFFFFF");
     }
     return ("#000000");
+}
+
+//ファイル名・ディレクトリ名チェック
+function sanitize_filename(path) {
+        var control_codes = /[\u0000-\u001F\u007F-\u009F]/g;
+        path.replace(control_codes, "\uFFFD");
+        if(path.match(/^([.~]?\/)?([A-Za-z0-9_-][A-Za-z0-9_.-]+\/)*[A-Za-z0-9_-][A-Za-z0-9_.-]+$/)){
+            return path;
+        } else {
+            return null;
+        }
 }

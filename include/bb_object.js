@@ -137,6 +137,21 @@
                          };
         });
 
+
+    //
+    // 内部関数定義
+    //
+    var sanitize_filepath = function (path) {
+        var control_codes = /[\u0000-\u001F\u007F-\u009F]/g;
+        path.replace(control_codes, "\uFFFD");
+        if(path.match(/^([.~]?\/)?([A-Za-z0-9_-][A-Za-z0-9_.-]+\/)*[A-Za-z0-9_-][A-Za-z0-9_.-]+$/)){
+            return path;
+        } else {
+            return null;
+        }
+    }
+
+
     //
     // BBオブジェクト定義
     //
@@ -1346,6 +1361,10 @@
             if (_color===undefined) {_color='rgb(0, 255, 255)';}
             this.id=UUID.genV1().toString();
 
+            if ((_file = sanitize_filepath(_file)) == null){
+                return null;
+            }
+
             this.type   = "icon";
             this._text  = _text;
             this._color = _color;
@@ -1385,6 +1404,10 @@
         this.BB_waft = function (_text, _file, _color, _callback) {
             if (_color===undefined) {_color='rgb(0, 255, 255)';}
             this.id=UUID.genV1().toString();
+
+            if ((_file = sanitize_filepath(_file)) == null){
+                return null;
+            }
 
             this.type   = "waft";
             this._text  = _text;
@@ -1770,6 +1793,10 @@
             jcanvas = this.jcanvas,
             id      = this.id;
         if (imgscale===undefined) {imgscale=1;};
+
+        if ((file = sanitize_filepath(file)) == null){
+            return null;
+        }
 
         image.src=file;
         image.onload=function() {
