@@ -1,11 +1,13 @@
 /*
- * $Id: rawdeflate.js,v 0.3 2009/03/01 19:05:05 dankogai Exp dankogai $
+ * $Id: rawdeflate.js,v 0.4 2013/02/23 01:55:59 dankogai Exp dankogai $
  *
+ * GNU General Public License, version 2 (GPL-2.0)
+ *   http://opensource.org/licenses/GPL-2.0
  * Original:
- *   http://www.onicos.com/staff/iz/amuse/javascript/expert/deflate.txt
+ *  http://www.onicos.com/staff/iz/amuse/javascript/expert/deflate.txt
  */
 
-(function(){
+(function(ctx){
 
 /* Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
  * Version: 1.0.1
@@ -1660,7 +1662,7 @@ var zip_deflate = function(arr, level) {
     return aout;
 }
 
-if (! window.RawDeflate) RawDeflate = {};
-RawDeflate.deflate = zip_deflate;
+if (! ctx.RawDeflate) ctx.RawDeflate = {};
+ctx.RawDeflate.deflate = zip_deflate;
 
-})();
+})(this);
