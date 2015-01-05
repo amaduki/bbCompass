@@ -1,5 +1,11 @@
 (function (global) {
     //
+    // 内部変数初期化
+    //
+
+    var salt = Math.round((new Date()).getTime() / 1000);
+
+    //
     //jCanvaScriptへの関数、オブジェクト追加
     //
 
@@ -1372,7 +1378,7 @@
 
             //描画して登録。初期座標は半径分ずらす
             this._image    = new Image;
-            this._image.src=_file;
+            this._image.src=_file+'?'+salt;
             var obj        = this;
             this._image.onload= function () {
                 var px_dia = Math.sqrt(Math.pow(obj._image.width,2) + Math.pow(obj._image.height,2));
@@ -1418,7 +1424,7 @@
 
             //描画して登録。初期座標は半径分ずらす
             this._image    = new Image;
-            this._image.src=_file;
+            this._image.src=_file+'?'+salt;
             var obj        = this,
                 px_rad     = bbobj.meter_to_pixel(this._rad);
             this._image.onload= function () {
@@ -1800,7 +1806,7 @@
             return null;
         }
 
-        image.src=file;
+        image.src=file+'?'+salt;
         image.onload=function() {
             var canvas = document.getElementById(id);
             canvas.width  = image.width*imgscale;
@@ -1824,7 +1830,7 @@
 
         if (file) {
             //ファイル指定があれば差分を出力し、即時再描画
-            image.src=file;
+            image.src=file+'?'+salt;
             image.onload=function() {
                 jcanvas("#bgdiff").del();
                 jcanvas.imgdiff(image,0,0,image.width*imgscale,image.height*imgscale)
