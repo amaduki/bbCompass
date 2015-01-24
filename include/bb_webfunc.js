@@ -616,21 +616,22 @@ function getURL() {
     if (baseurl.match(/^https?:\/\//)) {
         $.ajax({
             type: 'GET',
-            url: 'http://inf.to/api/insert',
+            url: 'http://is.gd/create.php',
             dataType: 'jsonp',
             crossDomain   : true,
             cache         : false,
             jsonp         : false,
             data: {
                       url         : baseurl,
-                      callback    : "shortenURL",
+                      format      : "json",
+                      callback    : "shortenurl",
                   },
-            jsonpCallback: 'shortenURL',
+            jsonpCallback: 'shortenurl',
             success: function(data,status){
-                         if (data["succeeded"]) {
-                             window.prompt("表示用URL",data["short_url"]);
+                         if (! data["errorcode"]) {
+                             window.prompt("表示用URL",data["shorturl"]);
                          } else {
-                             alert("URL短縮に失敗しました");
+                             alert("URL短縮エラー(" & data["errorcode"] & ")");
                          }
                      },
             error: function(){
