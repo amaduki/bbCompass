@@ -335,6 +335,11 @@ function set_misc() {
         case "bomber":  //爆撃通信機
             obj = bbobj.add_bomber($("#name_misc").val(),$("#col_misc").val());
             break;
+
+        case "bascout":  //偵察要請装置
+            obj = bbobj.add_bascout($("#name_misc").val(),$("#col_misc").val());
+            break;
+
     }
 
     if (obj) {
@@ -717,6 +722,10 @@ function coalesce_name(obj){
 
         case 'bomber':
             name = "(爆撃機)";
+            break;
+
+        case 'bascout':
+            name = "(偵察要請)";
             break;
 
         case 'icon':

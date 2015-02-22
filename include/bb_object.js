@@ -1268,6 +1268,7 @@
             return this;
         };
 
+
       //
       //BB_bomberオブジェクト
       //
@@ -1355,6 +1356,100 @@
             mask.mouseout(function () {
                               jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
                           });
+
+            return this;
+        };
+
+
+      //
+      //BB_bascoutオブジェクト
+      //
+        this.BB_bascout = function (_text, _color, _callback) {
+            if (_color===undefined) {_color='rgb(255, 0, 165)';}
+            this.id=UUID.genV1().toString();
+
+            this.type="bascout";
+            this._text=_text;
+            this._color=_color;
+            this._visible=true;
+            //描画して登録。初期座標はとりあえず100づつずらしておく
+            this.draw();
+            var px_rad  = bbobj.meter_to_pixel(100);
+            this.move(px_rad, px_rad);
+            this.regist();
+            if (typeof(_callback) === "function"){_callback.apply(this);};
+        };
+        this.BB_bascout.prototype=new this.BB_base();
+
+        this.BB_bascout.prototype.draw = function () {
+            var px_wid  = bbobj.meter_to_pixel(500),
+                px_len  = bbobj.meter_to_pixel(1200),
+                px_back = bbobj.meter_to_pixel(300),
+                obj     = this;
+
+            var area    = jcanvas.rect((-1)*px_wid, (-1)*px_back,
+                                        2*px_wid,   px_len, this._color, true)
+                                 .opacity(0.2).layer(this.id).visible(this._visible),
+                areaf   = jcanvas.rect((-1)*px_wid, (-1)*px_back,
+                                        2*px_wid,   px_len, this._color, false)
+                                 .opacity(1).layer(this.id).visible(this._visible),
+                bar     = jcanvas.line([[0,7],[0,25]], this._color)
+                                 .lineStyle({lineWidth:2}).layer(this.id),
+                arrow   = jcanvas.line([[5,15],[0,25],[-5,15]], this._color, true).layer(this.id),
+                center  = jcanvas.circle(0, 0, 7, this._color, true).layer(this.id),
+                centerf = jcanvas.circle(0, 0, 5, '#FFFFFF', true).layer(this.id);
+
+            jcanvas.text(this._text, 0, -10)
+                   .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
+            jcanvas.layer(this.id).draggable();
+
+            //角度変更処理
+            var mdEvent = function(point){
+//                              if (jcanvas.layer(obj.id).optns.drag.val==true){return false;}
+                              var canvas = jc.canvas(bbobj.id),
+                                  tmpmask = jcanvas.rect(0, 0, canvas.width(), canvas.height(), 'rgba(0, 0, 0, 0)')
+                                                   .layer("tmp_" + obj.id),
+                                  layer    = jcanvas.layer(obj.id),
+                                  tmpLayer = jcanvas.layer("tmp_" + obj.id);
+                              tmpLayer.level('top');
+                              var pos_self = centerf.position();
+                              var startrad = Math.atan2((point.y-pos_self.y), (point.x-pos_self.x)),
+                                  baserad  = layer.getAngle();
+                              tmpmask.mousemove(function (pos) {
+                                                    var nowrad = Math.atan2((pos.y-pos_self.y), (pos.x-pos_self.x));
+                                                    var rad    = baserad + (nowrad - startrad);
+                                                    layer.rotateTo((rad*180/Math.PI), 0, 0);
+                                                });
+                              tmpmask.mouseup(function (point) {
+                                                  tmpLayer.del();
+                                              });
+                              return true;
+                          };
+            areaf.mousedown(mdEvent);
+            bar.mousedown(mdEvent);
+            arrow.mousedown(mdEvent);
+
+            //  ドラッグ無効
+            var drugoff = function(){
+                              jcanvas.layer(obj.id).optns.drag.val=false;
+                          };
+            areaf.mouseover(drugoff);
+            arrow.mouseover(drugoff);
+            bar.mouseover(drugoff);
+
+            //  ドラッグ有効
+            var drugon = function(){
+                              jcanvas.layer(obj.id).optns.drag.val=true;
+                          };
+            areaf.mouseout(drugon);
+            arrow.mouseout(drugon);
+            bar.mouseout(drugon);
+
+            centerf.dblclick(function (){
+                                 obj._visible = ! (obj._visible);
+                                 area.visible(obj._visible);
+                                 areaf.visible(obj._visible);
+                             });
 
             return this;
         };
@@ -1976,6 +2071,10 @@
 
     BB.prototype.add_bomber = function (string, color, _callback) {
         return new this.BB_bomber(string, color, _callback);
+    };
+
+    BB.prototype.add_bascout = function (string, color, _callback) {
+        return new this.BB_bascout(string, color, _callback);
     };
 
     BB.prototype.add_circle = function (string, radius, color, _callback) {

@@ -510,6 +510,20 @@ BBCQuery.prototype = {
                     }());
                     break;
 
+                case 0x16: (function () { //bascout
+                    var color    = getCol.call(queryobj),
+                        pos      = getPos.call(queryobj),
+                        rotAngle = getFloat32.call(queryobj);
+
+                    obj=bbobj.add_bascout(objname, color, 
+                        function(){
+                            this.moveTo(pos.x, pos.y)
+                                .rotateTo(rotAngle)
+                                .redraw();
+                        });
+                    }());
+                    break;
+
                 case 0x21: (function () { //howitzer
                     var color   = getCol.call(queryobj),
                         rad1    = getUint16.call(queryobj),
@@ -728,6 +742,13 @@ BBCQuery.prototype = {
 
             case 'bomber':
                 objdata.unshift(0x23);
+                objdata = objdata.concat(setCol(obj._color));
+                objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setFloat32(obj.rotAngle()));
+                break;
+
+            case 'bascout':
+                objdata.unshift(0x16);
                 objdata = objdata.concat(setCol(obj._color));
                 objdata = objdata.concat(setPos(obj.position()));
                 objdata = objdata.concat(setFloat32(obj.rotAngle()));
