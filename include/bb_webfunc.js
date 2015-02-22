@@ -233,7 +233,7 @@ function set_scout() {
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_scout").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -247,7 +247,7 @@ function set_sensor() {
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_sensor").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -262,7 +262,7 @@ function set_radar() {
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_radar").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -277,7 +277,7 @@ function set_sonde() {
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_sonde").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -291,7 +291,7 @@ function set_ndsensor() {
     var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_ndsensor").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -306,7 +306,7 @@ function set_howitzer(){
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_howitzer").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -343,7 +343,7 @@ function set_misc() {
     }
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_misc").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -364,7 +364,7 @@ function set_icon(){
     var obj = bbobj.add_icon($("#name_icon").val(), file, $("#col_icon").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_icon").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -385,7 +385,7 @@ function set_waft(file) {
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_waft").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -400,7 +400,7 @@ function set_circle(){
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_circle").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -414,7 +414,7 @@ function set_line(){
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_line").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -425,7 +425,7 @@ function set_point(){
     var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_point").val()));
+        add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
     }
@@ -436,7 +436,7 @@ function set_freehand(){
     var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
 
     if (obj) {
-        add_object(obj.id, coalesce_name(obj, $("#name_freehand").val()));
+        add_object(obj.id, coalesce_name(obj));
         $("button").attr("disabled",true);
         obj.start();
         freehandOnWrite = obj;
@@ -666,7 +666,7 @@ function setURL(querystr) {
                 var objs;
                 objs=queryobj.setObjects.apply(queryobj);
                 for (var i=0;i<objs.length;i++) {
-                    add_object(objs[i].id, coalesce_name(objs[i], objs[i]._text));
+                    add_object(objs[i].id, coalesce_name(objs[i]));
                 }
             });
         }

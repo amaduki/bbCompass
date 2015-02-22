@@ -671,6 +671,7 @@
                 obj.move(px_rad, px_rad);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_radar.prototype=new this.BB_base();
@@ -695,8 +696,7 @@
             //移動処理(draggableでは回転できないため、独自定義)
             var mdEvent = function(point){
                               var pos_base = area.position(),
-                                  canvas   = jc.canvas(bbobj.id);
-                                  px_rad   = bbobj.meter_to_pixel(obj._radius),
+                                  canvas   = jc.canvas(bbobj.id),
                                   radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2)),
                                   startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
                                   baserad  = jcanvas.layer(obj.id).getAngle(),
@@ -706,8 +706,7 @@
                                   tmpLayer = jcanvas.layer("tmp_" + obj.id);
                               tmpLayer.level('top');
                               tmpmask.mousemove(function (pos) {
-                                                    var pos_area = area.position(),
-                                                        nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    var nowrad   = Math.atan2((pos.y-pos_base.y), (pos.x-pos_base.x)),
                                                         rad      = baserad+(nowrad - startrad);
                                                      layer.rotateTo((rad*180/Math.PI), 0, 0);
                                                 });
@@ -883,6 +882,7 @@
                 obj.move(100+px_rad, 100);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_ndsensor.prototype=new this.BB_base();
@@ -913,8 +913,7 @@
             //移動処理(draggableでは回転できないため、独自定義)
             var mdEvent = function(point){
                               var pos_base = center.position(),
-                                  canvas   = jc.canvas(bbobj.id);
-                                  px_rad   = bbobj.meter_to_pixel(obj._radius),
+                                  canvas   = jc.canvas(bbobj.id),
                                   radius   = Math.sqrt(Math.pow((point.x),2) + Math.pow((point.y),2)),
                                   startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
                                   baserad  = jcanvas.layer(obj.id).getAngle(),
@@ -924,8 +923,7 @@
                                   tmpLayer = jcanvas.layer("tmp_" + obj.id);
                               tmpLayer.level('top');
                               tmpmask.mousemove(function (pos) {
-                                                    var pos_area = center.position(),
-                                                        nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    var nowrad   = Math.atan2((pos.y-pos_base.y), (pos.x-pos_base.x)),
                                                         rad      = baserad+(nowrad - startrad);
                                                      layer.rotateTo((rad*180/Math.PI), 0, 0);
                                                 });
@@ -1154,6 +1152,7 @@
                 obj.move(px_rad, px_rad);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_sentry.prototype=new this.BB_base();
@@ -1177,8 +1176,7 @@
             //移動処理(draggableでは回転できないため、独自定義)
             var mdEvent = function(point){
                               var pos_base = area.position(),
-                                  canvas   = jc.canvas(bbobj.id);
-                                  px_rad   = bbobj.meter_to_pixel(obj._radius),
+                                  canvas   = jc.canvas(bbobj.id),
                                   radius   = Math.sqrt(Math.pow((point.x-pos_base.x),2) + Math.pow((point.y-pos_base.y),2)),
                                   startrad = Math.atan2((point.y-pos_base.y), (point.x-pos_base.x)),
                                   baserad  = jcanvas.layer(obj.id).getAngle(),
@@ -1188,8 +1186,7 @@
                                   tmpLayer = jcanvas.layer("tmp_" + obj.id);
                               tmpLayer.level('top');
                               tmpmask.mousemove(function (pos) {
-                                                    var pos_area = area.position(),
-                                                        nowrad   = Math.atan2((pos.y-pos_area.y), (pos.x-pos_area.x)),
+                                                    var nowrad   = Math.atan2((pos.y-pos_base.y), (pos.x-pos_base.x)),
                                                         rad      = baserad+(nowrad - startrad);
                                                      layer.rotateTo((rad*180/Math.PI), 0, 0);
                                                 });
@@ -1244,6 +1241,7 @@
                 obj.move(px_rad, px_rad);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_aerosentry.prototype=new this.BB_base();
@@ -1481,6 +1479,7 @@
                 obj.move(px_dia, px_dia);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_icon.prototype=new this.BB_base();
@@ -1527,6 +1526,7 @@
                 obj.move(px_rad, px_rad);
                 obj.regist();
                 if (typeof(_callback) === "function"){_callback.apply(obj);};
+                delete this._image;
             };
         };
         this.BB_waft.prototype=new this.BB_base();
