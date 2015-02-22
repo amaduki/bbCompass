@@ -667,6 +667,8 @@ function setURL(querystr) {
                 objs=queryobj.setObjects.apply(queryobj);
                 for (var i=0;i<objs.length;i++) {
                     add_object(objs[i].id, coalesce_name(objs[i]));
+                    var obj=objs[i];
+                    obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
                 }
             });
         }

@@ -349,11 +349,11 @@ BBCQuery.prototype = {
             queryobj = this;
 
         try {
-            var obj,objtype,objname,objlen;
             while (this._offset < this._buf.length) {
-                objlen  = getUint16.call(queryobj);
-                objname = getStr.call(queryobj);
-                objtype = getUint8.call(queryobj);
+                var obj,
+                    objlen  = getUint16.call(queryobj),
+                    objname = getStr.call(queryobj),
+                    objtype = getUint8.call(queryobj);
 
                 switch ( objtype ) {
                 case 0x01: (function () { //circle
