@@ -49,7 +49,7 @@ $(document).ready(function(){
                        });
 
     $("select#map").change(function (){
-                           $("select#map").removeClass("union event");
+                           $("select#map").removeClass("union event scramble");
                            if ($("select#map option:selected").attr("class") !== undefined) {
                                $("select#map").addClass($("select#map option:selected").attr("class"));
                            }
