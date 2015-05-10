@@ -2097,8 +2097,8 @@
         return new this.BB_waft(string, file, color, _callback);
     };
 
-    BB.prototype.add_freehand = function (color) {
-        return new this.BB_freehand(color);
+    BB.prototype.add_freehand = function (text, color) {
+        return new this.BB_freehand(text, color);
     };
 
     //
