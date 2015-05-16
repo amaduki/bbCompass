@@ -73,6 +73,38 @@ $(document).ready(function(){
                                    });
     });
 
+  //狭い時用メニュー
+    $("div.menutab#menutab_map").click(function(ev){
+        if ($("div.menucell#menu_map,div.menucell#menu_cont").is(":visible")) {
+            $("div.ribbonmenu").fadeOut();
+            $("div.menutab").removeClass("selected");
+        } else {
+            $("div.menutab").removeClass("selected");
+            $("div.ribbonmenu").fadeOut("normal",function(){
+                $("div.ribbonmenu>*").hide();
+                $("div.menucell#menu_map,div.menucell#menu_cont").show();
+                $("div.ribbonmenu").fadeIn();
+                $("div.menutab#menutab_map").addClass("selected");
+            });
+        }
+    });
+
+    $("div.menutab#menutab_item").click(function(ev){
+        if ($("div.menusubcell#subcell_graph").is(":visible")) {
+            $("div.ribbonmenu").fadeOut();
+            $("div.menutab").removeClass("selected");
+        } else {
+            $("div.menutab").removeClass("selected");
+            $("div.ribbonmenu").fadeOut("normal",function(){
+                $("div.ribbonmenu>*").hide();
+                $("div.menusubcell#subcell_graph").show();
+                $("div.ribbonmenu").fadeIn();
+                $("div.menutab#menutab_item").addClass("selected");
+            });
+        }
+    });
+
+
   //コンテキストメニュー
     $("div.ContextMenu").bind('contextmenu', function(ev){ev.preventDefault()});
     $("div.ContextMenu li.hasChild").bind('click', function(ev){
@@ -222,6 +254,10 @@ function chg_map(callback) {
         $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
+
+    if ($("nav").is(":visible")) {
+        $("div.ribbonmenu").fadeOut();
+    }
 }
 
 //偵察機

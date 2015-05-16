@@ -22,7 +22,11 @@
 </head>
 <body onload="initialize()">
 <header>
-<div class="caption"><h1>BBコンパスもどき</h1></div>
+  <div class="caption"><h1>BBコンパスもどき</h1></div>
+  <nav>
+      <div class="menutab selected" id="menutab_map"><span>マップ選択/操作</span></div>
+      <div class="menutab" id="menutab_item"><span>アイテム設置</span></div>
+  </nav>
 </header>
 
 <div class="menutitle">
@@ -573,6 +577,12 @@
 </div>
 <div id="WorkArea">
 </div>
+<div id="Changes">
+<div class="caption"><h3>更新履歴</h3></div>
+<textarea id="changelog" rows="10" cols="50"></textarea><br>
+<p>※お願い※<br>更新履歴に記載があるのに新マップが読み込めない、上手く動作しないといった不具合がある場合、
+<strong>更新(Ctrl+F5)を押して再読み込み</strong>を試してください。改善する場合があります。</p>
+</div>
 <div id="Thanks_Attention">
 <div id="Attention">
 <div class="caption"><h3>注意事項など</h3></div>
@@ -607,12 +617,6 @@ IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いくだ
 <li><a href="https://github.com/dankogai/js-deflate" target="_blank">js-deflate</a>(私家改造版)
 </ul>
 </div>
-</div>
-<div id="Changes">
-<div class="caption"><h3>更新履歴</h3></div>
-<textarea id="changelog" rows="10" cols="50"></textarea><br>
-<p>※お願い※<br>更新履歴に記載があるのに新マップが読み込めない、上手く動作しないといった不具合がある場合、
-<strong>更新(Ctrl+F5)を押して再読み込み</strong>を試してください。改善する場合があります。</p>
 </div>
 <div id="Address">
 <address>製作者：<a href="http://bbcompass.blog.fc2.com/">暇人@BB</a></address>
