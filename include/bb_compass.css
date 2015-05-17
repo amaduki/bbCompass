@@ -75,6 +75,7 @@ div.caption {
     }
 
     div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
+        display:block;
         width: 10.5em;
     }
 

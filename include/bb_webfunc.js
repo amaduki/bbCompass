@@ -58,7 +58,7 @@ $(document).ready(function(){
     // 初回のリセット
     $("#stage").change();
 
-  //メニュー
+  //メニューのオブジェクト選択
     $("div#objselector div.option").click(function () {
         if ($(this).hasClass("selected")) {
             return false;
@@ -130,7 +130,7 @@ $(document).ready(function(){
         //どこかクリックしたらメニューを消す
         $(document).one('click', function() {
             $("div.ContextMenu,div.ContextMenu div.ContextChild").hide();
-    });
+        });
 
     });
 
@@ -194,7 +194,35 @@ function initialize(){
 
     $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
-    $(window).resize(function(){bbobj.chgScroll();});
+
+  //ウィンドウサイズの変更に対する対処
+    $(window).resize(function(){
+        bbobj.chgScroll();
+        if ($("div.menutitle").is(":visible")) {
+            //各ブロックをcssのデフォルトに戻す
+            $("div.ribbonmenu>div").removeAttr('style');
+
+            //メニュー全体はスイッチを基に表示：非表示を決める
+            if ($("span#menusw_on").is(":visible")) {
+                $("div.ribbonmenu").hide();
+            } else {
+                $("div.ribbonmenu").show();
+            }
+        } else {
+            if ($("div.menutab#menutab_map").hasClass("selected")) {
+                $("div.menusubcell#subcell_graph").hide();
+                $("div.menucell#menu_map,div.menucell#menu_cont").show();
+                $("div.ribbonmenu").show();
+            } else if ($("div.menutab#menutab_item").hasClass("selected")) {
+                $("div.menucell#menu_map,div.menucell#menu_cont").hide();
+                $("div.menusubcell#subcell_graph").show();
+                $("div.ribbonmenu").show();
+            } else {
+                $("div.ribbonmenu").hide();
+            }
+
+        }
+    }); 
 
   //query stringがあれば再現処理に入る
     if (window.location.search) {
