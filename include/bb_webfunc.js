@@ -187,8 +187,8 @@ function initialize(){
     bbobj=new BB(CanvasName);
 
     var cnvArea = document.getElementById(DivName);
-    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
-    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight+6;
+    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.clientWidth;
+    scrollBarHeight = cnvArea.offsetHeight - cnvArea.clientHeight+6;
     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                     .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
@@ -197,7 +197,11 @@ function initialize(){
 
   //ウィンドウサイズの変更に対する対処
     $(window).resize(function(){
+        //canvasの幅を調整し、jCanvaScriptの処理に反映させる
+        chgCanvasSize();
         bbobj.chgScroll();
+
+        //メニューの表示・非表示対処
         if ($("div.menutitle").is(":visible")) {
             //各ブロックをcssのデフォルトに戻す
             $("div.ribbonmenu>div").removeAttr('style');
@@ -248,8 +252,6 @@ function chg_map(callback) {
 
     bbobj.setbg("./map/"+stage+"/"+file+".jpg", scale[0], scale[1],
                 function(){
-                    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
-                                  .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
                     $("#lst_scale").val(1);
                     $("ul#contextZoom").children("li").removeClass("checked");
                     $("li#contextZoom_1").addClass("checked");
@@ -261,6 +263,7 @@ function chg_map(callback) {
                             jsonp         : false,
                             jsonpCallback : "stageData",
                             success       : function(data,status){
+                                                chgCanvasSize();
                                                 var turretData = data["turret"];
                                                 for(i=0;i<turretData.length;i++) {
                                                     bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
@@ -852,3 +855,15 @@ function sanitize_filename(path) {
             return null;
         }
 }
+
+//キャンバスエリアが画面幅を超えないように調整
+function chgCanvasSize () {
+    if ( $("canvas#"+CanvasName).outerWidth() <= $('body').innerWidth()) {
+        $("div#"+DivName).width($("canvas#"+CanvasName).outerWidth() + scrollBarWidth)
+                      .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
+    } else {
+        $("div#"+DivName).width("100%")
+                      .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
+    }
+}
+
