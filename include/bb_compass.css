@@ -14,8 +14,8 @@ div.caption {
     background:url("../image/bbtexture.png");
 }
 
-/* メニュー部 */
 @media only screen and (min-width : 850px) { 
+    /* メニュー部 */
     div.menutitle{
         width:95%;
         max-width:62em;
@@ -83,6 +83,43 @@ div.caption {
         margin-left:10.6em;
         margin-right:21.3em;
     }
+
+    /* 設置部 */
+    div#map_area .formtext{
+        max-width:8em;
+    }
+
+    #lst_layer{
+        width:7em;
+        white-space: nowrap;
+    }
+
+    #lst_object{
+        width:6em;
+        white-space: nowrap;
+    }
+
+    /* 制御部 */
+    #obj_area{
+        float:left;
+        width:100%;
+        margin-right:-3.4em;
+        margin-left:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont{
+        text-align:center;
+        float:left;
+        width:3em;
+        margin-right:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont button{
+        margin-top:0.2em;
+        margin-bottom:0.2em;
+    }
 }
 
 @media only screen and (max-width : 849px) { 
@@ -108,6 +145,7 @@ div.caption {
         overflow:hidden;
     }
 
+    /* メニュー部 */
     div.menutitle {
         display:none;
     }
@@ -187,17 +225,45 @@ div.caption {
         padding:0.2em;
     }
 
-    div.maparea .formtext {
-        width:80%;
-    }
-
     div.name{
         padding-top:0.2em;
         padding-bottom:0.2em;
     }
+
+    /* 設置部 */
+    div#map_area .formtext{
+        min-width:70%;
+    }
+
+    #lst_layer{
+        min-width:70%;
+        white-space: nowrap;
+    }
+
+    /* 制御部 */
+    #lst_object{
+        width:60%;
+        white-space: nowrap;
+    }
+
+    #obj_area{
+        float:left;
+        width:100%;
+        margin-right:-40%;
+        margin-left:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont{
+        text-align:center;
+        float:left;
+        width:35%;
+        margin-right:0.2em;
+        margin-top:0.3em;
+    }
 }
 
-/* 設置部 */
+/* 設置部共通 */
 div#objsel_area {
     float:left;
     width:100%;
@@ -299,7 +365,7 @@ div.submitbtn{
     text-align:center;
 }
 
-/* マップ部 */
+/* マップ部共通 */
 div.map_selector{
     text-align:left;
     margin-top:0.3em;
@@ -325,29 +391,8 @@ select#map > option.scramble,select#map.scramble{
     margin:0.3em;
 }
 
-@media only screen and (min-width : 850px) { 
-    div#map_area .formtext{
-        max-width:8em;
-    }
 
-    #lst_layer{
-        width:7em;
-        white-space: nowrap;
-    }
-}
-
-@media only screen and (max-width : 849px) { 
-    div#map_area .formtext{
-        min-width:70%;
-    }
-
-    #lst_layer{
-        min-width:70%;
-        white-space: nowrap;
-    }
-}
-
-/* 表示部 */
+/* 表示部共通 */
 div#cursorselector {
     margin-top:0.3em;
     margin-bottom:0.3em;
@@ -360,64 +405,6 @@ div#cursorselector > div{
     height:30px;
     text-align:center;
     line-height:30px;
-}
-
-/* 制御部 */
-
-@media only screen and (min-width : 850px) { 
-    #lst_object{
-        width:6em;
-        white-space: nowrap;
-    }
-
-    #obj_area{
-        float:left;
-        width:100%;
-        margin-right:-3.4em;
-        margin-left:0.2em;
-        margin-top:0.3em;
-    }
-
-    #obj_cont{
-        text-align:center;
-        float:left;
-        width:3em;
-        margin-right:0.2em;
-        margin-top:0.3em;
-    }
-
-    #obj_cont button{
-        margin-top:0.2em;
-        margin-bottom:0.2em;
-    }
-}
-
-@media only screen and (max-width : 849px) { 
-    #lst_object{
-        width:60%;
-        white-space: nowrap;
-    }
-
-    #obj_area{
-        float:left;
-        width:100%;
-        margin-right:-40%;
-        margin-left:0.2em;
-        margin-top:0.3em;
-    }
-
-    #obj_cont{
-        text-align:center;
-        float:left;
-        width:35%;
-        margin-right:0.2em;
-        margin-top:0.3em;
-    }
-
-    #obj_cont button{
-/*        margin-top:0.2em;
-        margin-bottom:0.2em;*/
-    }
 }
 
 /* canvasまわり */
