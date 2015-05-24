@@ -1727,7 +1727,7 @@
     BB.prototype.touchToMouse = function(canvas) {
         var clickthr=5;  // クリックとみなす範囲の閾値
 
-        var touchid=0,mouseoverflag=false,touchflag=false,dblclkflag=0,startX=0,startY=0;
+        var touchid=0,mouseoverflag=false,touchflag=false,startX=0,startY=0,clkflag;
         var bbobj=this;
 
         function getTouch (ev){
@@ -1766,15 +1766,15 @@
                 event.initMouseEvent(type, true, true, window,
                                      ((type == 'dblclick')?2:1),
                                      touch.screenX, touch.screenY,
-                                     touch.clientX, touch.clientY, 
+                                     touch.clientX, touch.clientY,
                                      false, false, false, false, 0, null); 
             touch.target.dispatchEvent(event); 
         };
 
         function pointInObj(touch) {
             var cnvrect = jc.canvas(bbobj.id).cnv.getBoundingClientRect();
-            var x = touch.clientX-cnvrect.left,
-                y = touch.clientY-cnvrect.top,
+            var x = touch.pageX - cnvrect.left - window.pageXOffset,
+                y = touch.pageY - cnvrect.top - window.pageYOffset,
                 result = false;
 
             for (var objid in (bbobj.member)) {
@@ -1808,14 +1808,10 @@
                                     e.preventDefault();
                                     mouseoverflag=true;
 
-                                    //前回タッチからの距離が閾値を超えていたらダブルクリック判定を外す
-                                    if (dblclkflag && (Math.abs(startX - touch.clientX)>clickthr
-                                                       || Math.abs(startY - touch.clientY)>clickthr)) {
-                                        clearTimeout(dblclkflag);
-                                        dblclkflag=0;
-                                    }
-                                    startX=touch.clientX;
-                                    startY=touch.clientY;
+                                    startX=touch.pageX;
+                                    startY=touch.pageY;
+
+                                    clkflag=setTimeout(function(){clkflag=0},300);
                                     dispatchMouseEvent('mousemove',touch);
                                     jc.canvas(BB.id).frame();
                                     dispatchMouseEvent('mousedown',touch);
@@ -1833,10 +1829,12 @@
                                         cnvy    = cnvrect.top,
                                         width   = e.target.offsetWidth||e.target.width,
                                         height  = e.target.offsetHeight||e.target.height;
+                                    var clix    = touch.pageX - window.pageXOffset,
+                                        cliy    = touch.pageY - window.pageYOffset;
 
                                     //canvasの枠内ならmousemove、枠外ならmouseout
-                                    if (touch.clientX > cnvx && touch.clientY > cnvy
-                                        && touch.clientX < cnvx+width && touch.clientY < cnvy+height) {
+                                    if (clix > cnvx && cliy > cnvy
+                                        && clix < cnvx+width && cliy < cnvy+height) {
                                         if (! mouseoverflag) dispatchMouseEvent('mouseover',touch);
                                         dispatchMouseEvent('mousemove',touch);
                                         mouseoverflag=true;
@@ -1856,20 +1854,13 @@
                                     if (! mouseoverflag) return;
                                     var touch=getTouch(e);
                                     dispatchMouseEvent('mouseup',touch);
-                                    //タッチ開始からの距離が閾値以下ならクリック扱い
-                                    if (Math.abs(startX - touch.clientX)<clickthr
-                                        && Math.abs(startY - touch.clientY)<clickthr) {
-                                        if (dblclkflag) {
-                                            dispatchMouseEvent('click',touch)
-                                            dispatchMouseEvent('dblclick',touch)
-                                            clearTimeout(dblclkflag);
-                                            dblclkflag=0;
-                                        } else {
-                                            dispatchMouseEvent('click',touch)
-                                            dblclkflag=setTimeout(function(){dblclkflag=0},500);
-                                            startX=touch.clientX;
-                                            startY=touch.clientY;
-                                        }
+                                    //タッチ開始からの距離が閾値以下ならクリックイベントも発火
+                                    if (Math.abs(startX - touch.pageX)<clickthr
+                                        && Math.abs(startY - touch.pageY)<clickthr
+                                        && clkflag != 0) {
+
+                                        if (clkflag) clearTimeout(clkflag);
+                                        dispatchMouseEvent('click',touch)
                                     }
                                     mouseoverflag=false;},
                                 false);

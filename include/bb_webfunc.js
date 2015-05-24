@@ -876,6 +876,7 @@ function chgCanvasSize () {
         $("div#"+DivName).width("100%")
                       .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
     }
+    bbobj.chgScroll();
 }
 
 //ナヴィゲーションタブエリアを非表示にする
