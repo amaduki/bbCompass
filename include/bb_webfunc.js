@@ -104,6 +104,11 @@ $(document).ready(function(){
         }
     });
 
+  //メニュー部の操作でスクロールすることを防ぐ
+    $("header,div.ribbonmenu").bind('touchmove',function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+    });
 
   //コンテキストメニュー
     $("div.ContextMenu").bind('contextmenu', function(ev){ev.preventDefault()});
