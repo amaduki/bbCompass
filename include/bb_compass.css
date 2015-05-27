@@ -164,7 +164,7 @@ div.caption {
         border-radius: 5px 5px 0 0;
         position:relative;
         top:2px;
-        width:10em;
+        width:8em;
         height:25px;
         text-align:center;
         color:white;
@@ -242,14 +242,14 @@ div.caption {
 
     /* 制御部 */
     #lst_object{
-        width:60%;
+        width:55%;
         white-space: nowrap;
     }
 
     #obj_area{
         float:left;
         width:100%;
-        margin-right:-40%;
+        margin-right:-45%;
         margin-left:0.2em;
         margin-top:0.3em;
     }
@@ -257,7 +257,7 @@ div.caption {
     #obj_cont{
         text-align:center;
         float:left;
-        width:35%;
+        width:40%;
         margin-right:0.2em;
         margin-top:0.3em;
     }
@@ -555,6 +555,10 @@ div#Loading{
 #Address{
     clear:both;
     text-align:right;
+}
+
+textarea#changelog{
+    width:90%;
 }
 
 /* 画面幅が広い場合変更履歴と謝辞等を左右に分けて配置*/
