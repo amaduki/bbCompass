@@ -76,14 +76,14 @@ $(document).ready(function(){
   //狭い時用メニュー
     $("div.menutab#menutab_map").click(function(ev){
         if ($("div.menucell#menu_map,div.menucell#menu_cont").is(":visible")) {
-            $("div.ribbonmenu").fadeOut();
+            $("div.ribbonmenu").fadeOut("fast");
             $("div.menutab").removeClass("selected");
         } else {
             $("div.menutab").removeClass("selected");
-            $("div.ribbonmenu").fadeOut("normal",function(){
+            $("div.ribbonmenu").fadeOut("fast",function(){
                 $("div.ribbonmenu>*").hide();
                 $("div.menucell#menu_map,div.menucell#menu_cont").show();
-                $("div.ribbonmenu").fadeIn();
+                $("div.ribbonmenu").fadeIn("fast");
                 $("div.menutab#menutab_map").addClass("selected");
             });
         }
@@ -91,14 +91,14 @@ $(document).ready(function(){
 
     $("div.menutab#menutab_item").click(function(ev){
         if ($("div.menusubcell#subcell_graph").is(":visible")) {
-            $("div.ribbonmenu").fadeOut();
+            $("div.ribbonmenu").fadeOut("fast");
             $("div.menutab").removeClass("selected");
         } else {
             $("div.menutab").removeClass("selected");
-            $("div.ribbonmenu").fadeOut("normal",function(){
+            $("div.ribbonmenu").fadeOut("fast",function(){
                 $("div.ribbonmenu>*").hide();
                 $("div.menusubcell#subcell_graph").show();
-                $("div.ribbonmenu").fadeIn();
+                $("div.ribbonmenu").fadeIn("fast");
                 $("div.menutab#menutab_item").addClass("selected");
             });
         }
@@ -896,12 +896,13 @@ function bindScroll(ojQuery) {
     ojQuery.each(function(i, elem) {
         elem.addEventListener ('wheel',
                                function(e) {
+                                   //スクロールが上限に達している場合はデフォルト動作を阻害する
                                    if ((e.deltaX < 0) && (elem.scrollLeft <= 0)
                                        || (e.deltaX > 0) && (elem.scrollLeft >= elem.scrollWidth - elem.clientWidth)
                                        || (e.deltaY < 0) && (elem.scrollTop <= 0)
                                        || (e.deltaY > 0) && (elem.scrollTop >= elem.scrollHeight - elem.clientHeight)) {
                                        e.preventDefault();
-                                       return false;
+                                       return;
                                    }
 
                                    if (e.deltaMode == 0) {
@@ -911,13 +912,13 @@ function bindScroll(ojQuery) {
                                        elem.scrollLeft = elem.scrollLeft + e.deltaX * element.style.lineHeight;
                                        elem.scrollTop  = elem.scrollTop + e.deltaY * element.style.lineHeight;
                                    } else if (e.deltaMode == 2){
-                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * document.pageX;
-                                       elem.scrollTop  = elem.scrollTop + e.deltaY * document.pageY;
+                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * document.documentElement.clientWidth;
+                                       elem.scrollTop  = elem.scrollTop + e.deltaY * document.documentElement.clientHeight;
                                    } else {
-                                       return true;
+                                       return;
                                    }
                                    e.preventDefault();
-                                   return true;
+                                   return;
                                },
                                false);
 
@@ -961,31 +962,23 @@ function bindScroll(ojQuery) {
                                         scrollStartY=elem.scrollTop;
                                         scrollLimitX=elem.scrollWidth - elem.clientWidth;
                                         scrollLimitY=elem.scrollHeight - elem.clientHeight;
-                                        return false;
+                                        return;
                                     },
                                     false);
 
             elem.addEventListener('touchmove',
                                   function(e){
-                                      //touchstartで拾ったタッチが見つからなければ抜ける
-                                      if (! flag) return false;
-
+                                      //touchstartで拾ったイベントがないなら何もしない
+                                      if (! flag) return;
                                       var touch=getTouch(e);
                                       if (touch === undefined) {
                                           flag=false;
-                                          return false
+                                          return;
                                       }
 
                                       e.preventDefault();
-                                      var newX = scrollStartX + (touch.clientX - startX) * (-1),
-                                          newY = scrollStartY + (touch.clientY - startY) * (-1);
-                                      if (newX < 0) newX=0;
-                                      if (newX > scrollLimitX) newX=scrollLimitX;
-                                      elem.scrollLeft=newX
-
-                                      if (newY < 0) newY=0;
-                                      if (newY > scrollLimitY) newY=scrollLimitY;
-                                      elem.scrollTop=newY
+                                      elem.scrollLeft=scrollStartX + (touch.clientX - startX) * (-1);
+                                      elem.scrollTop=scrollStartY + (touch.clientY - startY) * (-1);
                                   },
                                   false);
 
