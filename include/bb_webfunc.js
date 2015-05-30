@@ -104,11 +104,12 @@ $(document).ready(function(){
         }
     });
 
-  //メニュー部の操作でスクロールすることを防ぐ
+  //メニュー部のタッチによるスクロール防止と、独自スクロール処理のbind
     $("header,div.ribbonmenu").bind('touchmove',function(ev){
         ev.preventDefault();
         ev.stopPropagation();
     });
+    bindScroll($("div#objselector"));
 
   //コンテキストメニュー
     $("div.ContextMenu").bind('contextmenu', function(ev){ev.preventDefault()});
@@ -164,7 +165,6 @@ $(document).ready(function(){
             $(this).children(".ContextChild").hide();
         }
     );
-    $('#objselector').tinyscrollbar({invertscroll:true});
 
   //ズーム
     $("#lst_scale").change(function() {
@@ -890,4 +890,110 @@ function closeNav() {
         $("nav>div").removeClass("selected");
         $("div.ribbonmenu").fadeOut();
     }
+}
+
+//スクロール関連独自処理
+function bindScroll(ojQuery) {
+    ojQuery.each(function(i, elem) {
+        elem.addEventListener ('wheel',
+                               function(e) {
+                                   if ((e.deltaX < 0) && (elem.scrollLeft <= 0)
+                                       || (e.deltaX > 0) && (elem.scrollLeft >= elem.scrollWidth - elem.clientWidth)
+                                       || (e.deltaY < 0) && (elem.scrollTop <= 0)
+                                       || (e.deltaY > 0) && (elem.scrollTop >= elem.scrollHeight - elem.clientHeight)) {
+                                       e.preventDefault();
+                                       return false;
+                                   }
+
+                                   if (e.deltaMode == 0) {
+                                       elem.scrollLeft = elem.scrollLeft + e.deltaX;
+                                       elem.scrollTop  = elem.scrollTop + e.deltaY;
+                                   } else if (e.deltaMode == 1){
+                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * element.style.lineHeight;
+                                       elem.scrollTop  = elem.scrollTop + e.deltaY * element.style.lineHeight;
+                                   } else if (e.deltaMode == 2){
+                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * document.pageX;
+                                       elem.scrollTop  = elem.scrollTop + e.deltaY * document.pageY;
+                                   } else {
+                                       return true;
+                                   }
+                                   e.preventDefault();
+                                   return true;
+                               },
+                               false);
+
+        if (window.TouchEvent) {
+            var startX,startY,scrollStartX,scrollStartY,scrollLimitX,scrollLimitY,
+                flag,touchid;
+
+            function getTouch (ev){
+                var touch;
+
+                switch (ev.type) {
+                    case "touchstart":
+                        touch   = ev.touches[0];
+                        touchid = touch.identifier;
+                        break
+
+                    case "touchmove":
+                        for (i=0;i<ev.changedTouches.length;i++) {
+                            if (ev.changedTouches[i].identifier == touchid) {
+                                touch=ev.changedTouches[i];
+                                break;
+                            }
+                        }
+                    break;
+                }
+
+                if (touch===undefined) {
+                    return undefined;
+                }
+                return touch;
+            }
+
+            elem.addEventListener ('touchstart',
+                                    function(e){
+                                        var touch=getTouch(e);
+
+                                        flag=true;
+                                        startX=touch.clientX;
+                                        startY=touch.clientY;
+                                        scrollStartX=elem.scrollLeft;
+                                        scrollStartY=elem.scrollTop;
+                                        scrollLimitX=elem.scrollWidth - elem.clientWidth;
+                                        scrollLimitY=elem.scrollHeight - elem.clientHeight;
+                                        return false;
+                                    },
+                                    false);
+
+            elem.addEventListener('touchmove',
+                                  function(e){
+                                      //touchstartで拾ったタッチが見つからなければ抜ける
+                                      if (! flag) return false;
+
+                                      var touch=getTouch(e);
+                                      if (touch === undefined) {
+                                          flag=false;
+                                          return false
+                                      }
+
+                                      e.preventDefault();
+                                      var newX = scrollStartX + (touch.clientX - startX) * (-1),
+                                          newY = scrollStartY + (touch.clientY - startY) * (-1);
+                                      if (newX < 0) newX=0;
+                                      if (newX > scrollLimitX) newX=scrollLimitX;
+                                      elem.scrollLeft=newX
+
+                                      if (newY < 0) newY=0;
+                                      if (newY > scrollLimitY) newY=scrollLimitY;
+                                      elem.scrollTop=newY
+                                  },
+                                  false);
+
+            elem.addEventListener('touchend',
+                                  function(e){
+                                      flag=false;
+                                  });
+        }
+    });
 }
