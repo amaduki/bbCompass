@@ -107,7 +107,6 @@ $(document).ready(function(){
   //メニュー部のタッチによるスクロール防止と、独自スクロール処理のbind
     $("header,div.ribbonmenu").bind('touchmove',function(ev){
         ev.preventDefault();
-        ev.stopPropagation();
     });
     bindScroll($("div#objselector"));
 
