@@ -196,7 +196,7 @@ function initialize(){
     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                     .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
-    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
+    $("#lst_layer").change(function (){closeNav();bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
   //ウィンドウサイズの変更に対する対処
@@ -301,7 +301,6 @@ function set_scout() {
 
     var param = eval($("#lst_scout").val());
     var obj = bbobj.add_scout($("#name_scout").val(), param[0], param[1], param[2], $("#col_scout").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -316,7 +315,6 @@ function set_sensor() {
     if(! $("#col_sensor").val()) {return;}
 
     var obj = bbobj.add_sensor($("#name_sensor").val(),$("#lst_sensor").val(), $("#col_sensor").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -332,7 +330,6 @@ function set_radar() {
 
     var param = eval($("#lst_radar").val());
     var obj = bbobj.add_radar($("#name_radar").val(), param[0], param[1], $("#col_radar").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -348,7 +345,6 @@ function set_sonde() {
 
     var param = eval($("#lst_sonde").val());
     var obj = bbobj.add_sonde($("#name_sonde").val(), param[0], param[1], $("#col_sonde").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -363,7 +359,6 @@ function set_ndsensor() {
     if(! $("#col_ndsensor").val()) {return;}
 
     var obj = bbobj.add_ndsensor($("#name_ndsensor").val(), $("#lst_ndsensor").val(), $("#col_ndsensor").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -379,7 +374,6 @@ function set_howitzer(){
 
     var param = eval($("#lst_howitzer").val());
     var obj = bbobj.add_howitzer($("#name_howitzer").val(), param[0], param[1], param[2], $("#col_howitzer").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -417,7 +411,6 @@ function set_misc() {
             break;
 
     }
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -439,7 +432,6 @@ function set_icon(){
     }
 
     var obj = bbobj.add_icon($("#name_icon").val(), file, $("#col_icon").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -461,7 +453,6 @@ function set_waft(file) {
     }
 
     var obj = bbobj.add_waft($("#name_waft").val(), file, $("#col_waft").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -477,7 +468,6 @@ function set_circle(){
     if(! $("#col_circle").val()) {return;}
 
     var obj = bbobj.add_circle($("#name_circle").val(), $("#rad_circle").val(), $("#col_circle").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -492,7 +482,6 @@ function set_line(){
     if(! $("#col_line").val()) {return;}
 
     var obj = bbobj.add_line($("#name_line").val(), $("#len_line").val(), $("#col_line").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -504,7 +493,6 @@ function set_line(){
 //点
 function set_point(){
     var obj = bbobj.add_point($("#name_point").val(), $("#size_point").val(), $("#col_point").val(), $("#align_point").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -516,6 +504,7 @@ function set_point(){
 //フリーハンド
 function set_freehand(){
     var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
+    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -883,7 +872,7 @@ function chgCanvasSize () {
     bbobj.chgScroll();
 }
 
-//ナヴィゲーションタブエリアを非表示にする
+//ナビゲーションタブエリアを非表示にする
 function closeNav() {
     if ($("nav").is(":visible")) {
         $("nav>div").removeClass("selected");
