@@ -134,6 +134,9 @@ div.caption {
         z-index:999;
         background-color:#F0F0F0;
         background-image:url("../image/bg.png");
+        transform-origin:0px 0px;
+        -ms-transform-origin:0px 0px;
+        -webkit-transform-origin:0px 0px;
     }
 
     header h1 {
@@ -190,6 +193,9 @@ div.caption {
         margin-left:0;
         margin-right:0;
         z-index:999;
+        transform-origin:0px -80px;
+        -ms-transform-origin:0px -80px;
+        -webkit-transform-origin:0px -80px;
     }
 
     div.menucell {

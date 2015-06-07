@@ -199,16 +199,91 @@ function initialize(){
     $("#lst_layer").change(function (){closeNav();bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
+  //タッチによるピンチ、スクロールにメニューを追従させる
+    if (window.TouchEvent) {
+        var intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
+            headerHeight = $("header").outerHeight(),
+            headelem = document.getElementsByTagName("header")[0];
+
+        function chgMenuScale() {
+          //headerとメニュー幅を固定・拡縮
+            var scale = window.innerWidth / window.outerWidth;
+            $("header, div.ribbonmenu").css("transform","scale(" + scale + ")")
+                                       .css("-ms-transform","scale(" + scale + ")")
+                                       .css("-webkit-transform","scale(" + scale + ")");
+
+            var headrect   = headelem.getBoundingClientRect(),
+                docrect    = document.documentElement.getBoundingClientRect();
+
+            if (correctFlag) {
+                var menuTop  = Math.round(window.pageYOffset + docrect.top
+                                          + headelem.offsetTop - headrect.top);
+                $("header").css("top", menuTop);
+                $("div.ribbonmenu").css("top", menuTop+headerHeight);
+
+                menuLeft = Math.round(window.pageXOffset + docrect.left
+                                      + headelem.offsetLeft - headrect.left);
+                $("header, div.ribbonmenu").css("left", menuLeft);
+            }
+            bbobj.chgScroll();
+        }
+
+        //スクロール終了待ち処理 タイマーをリセットするのみ
+        function doWhileScroll()  {
+            if (timeoutID) clearTimeout(timeoutID);
+            timeoutID = setTimeout(doWhenScrollEnded,60);
+        }
+
+        //スクロール停止後 改めて移動処理を行ってからbodyのマージンを変更
+        function doWhenScrollEnded()  {
+            clearInterval(intervalID);
+            intervalID=null;
+            timeoutID=null;
+            window.removeEventListener('scroll',doWhileScroll);
+            chgMenuScale();
+            $("body").css("margin-top", (headerHeight+5) * window.innerWidth / window.outerWidth);
+
+            //処理遅れの救済処置
+            setTimeout(chgMenuScale,100);
+            setTimeout(chgMenuScale,200);
+            setTimeout(chgMenuScale,300);
+        }
+
+        window.addEventListener('touchstart',
+                                function(e) {
+                                    window.removeEventListener('scroll',doWhileScroll);
+                                    if (! intervalID) {
+                                        intervalID=setInterval(function(){chgMenuScale();},1000/30);
+                                    }
+                                });
+
+        window.addEventListener('touchend',
+                                function(e){
+                                    if (e.touches.length < 1) {
+                                        //スクロール終了待ちに移行
+                                        timeoutID = setTimeout(doWhenScrollEnded,60);
+                                        window.addEventListener('scroll',doWhileScroll);
+                                    }
+                                   });
+        chgMenuScale();
+        $("body").css("margin-top", headerHeight * window.innerWidth / window.outerWidth +5);
+        $("header, div.ribbonmenu").css("width", window.outerWidth);
+
+        //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
+        window.scrollTo(0,1);
+        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
+        window.scrollTo(0,0);
+    }
+
   //ウィンドウサイズの変更に対する対処
     $(window).resize(function(){
-        //canvasの幅を調整し、jCanvaScriptの処理に反映させる
-        chgCanvasSize();
-        bbobj.chgScroll();
+        //キャンバスエリアの幅を調整、jCanvaScriptの処理に反映させる
+        chgCanvasAreaSize();
 
         //メニューの表示・非表示対処
         if ($("div.menutitle").is(":visible")) {
             //各ブロックをcssのデフォルトに戻す
-            $("div.ribbonmenu>div").removeAttr('style');
+            $("body,header,div.ribbonmenu,div.ribbonmenu>div").removeAttr('style');
 
             //メニュー全体はスイッチを基に表示：非表示を決める
             if ($("span#menusw_on").is(":visible")) {
@@ -267,7 +342,7 @@ function chg_map(callback) {
                             jsonp         : false,
                             jsonpCallback : "stageData",
                             success       : function(data,status){
-                                                chgCanvasSize();
+                                                chgCanvasAreaSize();
                                                 var turretData = data["turret"];
                                                 for(i=0;i<turretData.length;i++) {
                                                     bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
@@ -860,15 +935,10 @@ function sanitize_filename(path) {
         }
 }
 
-//キャンバスエリアが画面幅を超えないように調整
-function chgCanvasSize () {
-    if ( $("canvas#"+CanvasName).outerWidth() <= $('body').innerWidth()) {
-        $("div#"+DivName).width($("canvas#"+CanvasName).outerWidth() + scrollBarWidth)
-                      .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
-    } else {
-        $("div#"+DivName).width("100%")
-                      .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
-    }
+//キャンバスエリアの幅を変更する
+function chgCanvasAreaSize () {
+    $("div#"+DivName).width($("canvas#"+CanvasName).outerWidth() + scrollBarWidth)
+                     .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
     bbobj.chgScroll();
 }
 
