@@ -63,6 +63,7 @@
             <option value="kinich"       data-scale="[1.096*0.7]">キニシュ砂岸</option>
             <option value="nesos"        data-scale="[1.515*0.7]">ネソス島実験ドーム</option>
             <option value="beanavis"     data-scale="[0.895]">ベネヴィス高原地帯</option>
+            <option value="malinasedna"  data-scale="[0.866*0.8]">マリナセドナ大雪山</option>
         </select></div>
         <div class="map_selector"><select id="map" class="formtext">
             <!-- 絞り込み用にdata-stage属性を指定すること -->
@@ -201,6 +202,7 @@
             <option data-stage="nesos" value="nesos_b" data-layer="[]">構造β-05</option>
             <option data-stage="beanavis" value="beanavis_a" data-layer="[]">湧水の波紋</option>
             <option data-stage="beanavis" value="beanavis_b" data-layer="[]">祝福無き礼拝堂</option>
+            <option data-stage="malinasedna" value="malinasedna_a" data-layer="[]">雪濠の凱歌</option>
         </select></div>
         <div class="submitbtn"><button id="change_map">選択</button></div>
         </form>
@@ -253,7 +255,7 @@
               <option label="ファルコン偵察機" value="[50,500,8]">ファルコン</option>
               <option label="アウル偵察機" value="[120,200,11]">アウル</option>
               <option label="ロビン偵察機" value="[250,20,0.6]">ロビン</option>
-              <option label="ストーク偵察機" value="[70,48,12]">ストーク</option>
+              <option label="ストーク偵察機" value="[80,48,12]">ストーク</option>
               <option label="ギィ" value="[100,200,11]">ギィ</option>
               </select>
           </div>
@@ -310,9 +312,9 @@
           <div class="form">
               <select id="lst_sonde" size="4" class="formlst">
                   <!--valueは 射出半径と索敵半径を指定 -->
-                  <option label="滞空索敵弾" value="[350,60]">滞空索敵弾</option>
-                  <option label="小型索敵弾" value="[450,45]">小型索敵弾</option>
-                  <option label="広域索敵弾" value="[250,75]">広域索敵弾</option>
+                  <option label="滞空索敵弾" value="[350,65]">滞空索敵弾</option>
+                  <option label="小型索敵弾" value="[450,55]">小型索敵弾</option>
+                  <option label="広域索敵弾" value="[250,80]">広域索敵弾</option>
               </select>
           </div>
           <div class="submitbtn"><button id="submit_sonde">設置</button></div>
@@ -359,8 +361,9 @@
                   <option label="T30"  value="[400,35,10]">T30</option>
                   <option label="タウル重装砲"     value="[250,18,0]">タウル</option>
                   <option label="ヴァーゴ重装砲"   value="[250,16,0]">ヴァーゴ</option>
-                  <option label="ドラード重装砲"   value="[250,22,0]">ドラード</option>
-                  <option label="ハイドラ重装砲"   value="[250,14,0]">ハイドラ</option>
+                  <option label="ドラード重装砲"   value="[250,24,0]">ドラード</option>
+                  <option label="ハイドラ重装砲"   value="[250,15,0]">ハイドラ</option>
+                  <option label="モノセロス重装砲" value="[250,28,0]">モノセロス</option>
               </select>
           </div>
           <div class="submitbtn"><button id="submit_howitzer">設置</button></div>
@@ -583,7 +586,6 @@
 <li>Javascriptが動作するHTML5互換環境であれば、<strong>多分</strong>動きます。<br>
 IE，Firefox，Chromeは大ざっぱながら動作確認をしています。<br>
 IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いください。
-<li>バグ報告やご要望は<a href="http://bbcompass.blog.fc2.com/">開発室</a>へ。ただし、<strong>対応される保障はありません</strong>。
 <li>新マップが出たときは何pixelで何メートルなのか教えてもらえると喜びます。
 <li>このサイトで使われているコード類は、<a href="https://github.com/amaduki/bbCompass">github</a>にて公開しています。<br>
 <li>画像も含めてZIP圧縮した配布版を<a href="http://ux.getuploader.com/bbcompass/">アップローダ</a>においてあります。
@@ -614,6 +616,8 @@ IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いくだ
 <textarea id="changelog" rows="10" cols="50"></textarea><br>
 <p>※お願い※<br>更新履歴に記載があるのに新マップが読み込めない、上手く動作しないといった不具合がある場合、
 <strong>更新(Ctrl+F5)を押して再読み込み</strong>を試してください。改善する場合があります。</p>
+<p>また、更新と直接関係ないお知らせや開発メモは<span style="font-size:130%;"><a href="http://bbcompass.blog.fc2.com/">ブログ</a></span>に書いていますので、
+よければこちらもご確認ください。不具合の報告やご意見もコメント欄にて受付いたします。</p>
 </div>
 <div id="Address">
 <address>製作者：<a href="http://bbcompass.blog.fc2.com/">暇人@BB</a></address>
