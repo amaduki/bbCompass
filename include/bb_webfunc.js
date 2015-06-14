@@ -200,7 +200,7 @@ function initialize(){
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
   //タッチによるピンチ、スクロールにメニューを追従させる
-    if (window.TouchEvent) {
+    if (window.TouchEvent && (! $("div.menutitle").is(":visible"))) {
         var intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
             headerHeight = $("header").outerHeight(),
             headelem = document.getElementsByTagName("header")[0];
