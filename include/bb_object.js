@@ -1772,15 +1772,18 @@
                 event.initMouseEvent(type, true, true, window,
                                      ((type == 'dblclick')?2:1),
                                      touch.screenX, touch.screenY,
-                                     touch.clientX, touch.clientY,
+                                     (touch.clientX + window.pageXOffset
+                                       + document.documentElement.getBoundingClientRect().left),
+                                     (touch.clientY + window.pageYOffset
+                                       + document.documentElement.getBoundingClientRect().top),
                                      false, false, false, false, 0, null); 
             touch.target.dispatchEvent(event); 
         };
 
         function pointInObj(touch) {
-            var cnvrect = jc.canvas(bbobj.id).cnv.getBoundingClientRect();
-            var x = touch.pageX - cnvrect.left - window.pageXOffset,
-                y = touch.pageY - cnvrect.top - window.pageYOffset,
+            var cnvrect = document.getElementById(bbobj.id).getBoundingClientRect();
+                 x = touch.clientX - cnvrect.left,
+                 y = touch.clientY - cnvrect.top,
                 result = false;
 
             for (var objid in (bbobj.member)) {
