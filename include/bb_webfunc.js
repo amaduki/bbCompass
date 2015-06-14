@@ -116,6 +116,7 @@ $(document).ready(function(){
         if (ev.target == ev.currentTarget) {ev.stopPropagation()}
     });
     $("div#CanvasArea").bind('contextmenu', function(ev) {
+        if (! $("div.menutitle").is(":visible")) return true;
         ev.preventDefault();
         var offset   = {top:  ev.pageY,
                         left: ev.pageX};
