@@ -211,6 +211,7 @@ function initialize(){
             headelem = document.getElementsByTagName("header")[0];
 
       //PC版・スマホ版の表示切替を仕込む
+      //firefoxのバグ対策で属性書き換えではなく、タグごと消して作り直す必要あり
         var sw=$("span#viewsw");
         sw.show();
         sw.bind('click', function(ev){
@@ -221,15 +222,16 @@ function initialize(){
                          if (pcmode) {
                              pcmode=false;
                              sw.text('PC版');
-                             $('meta[name=viewport]').attr("content",'width=device-width,initial-scale=1.0');
-                             initMenuScale();
+                             $('meta[name=viewport]').remove();
+                             $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
 
-                             //処理遅れの救済処置
-                             setTimeout(chgMenuScale,100);
+                             //処理遅れる場合があるようなので、少し遅延させる
+                             setTimeout(initMenuScale,100);
                          } else {
                              pcmode=true;
                              sw.text('スマホ版');
-                             $('meta[name=viewport]').attr("content",'width=980');
+                             $('meta[name=viewport]').remove();
+                             $('head').append('<meta name="viewport" content="width=980">');
                          }
                          $(window).resize();
                      });
