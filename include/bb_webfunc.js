@@ -13,6 +13,7 @@ var turretSpec={"R":[200,180],
                 "L":[200,180]};
 var turretCircle=8;
 
+// 読み込み時の処理
 $(document).ready(function(){
     $("#lst_scout").change(function(){$("#name_scout").val($("#lst_scout option:selected").text());});
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
@@ -200,12 +201,40 @@ function initialize(){
     $("#lst_layer").change(function (){closeNav();bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
-  //タッチによるピンチ、スクロールにメニューを追従させる
+  //スマホ用メニュー制御
     if (window.TouchEvent && (! $("div.menutitle").is(":visible"))) {
-        var intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
+
+      //各種制御用変数
+        var pcmode=false,
+            intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
             headerHeight = $("header").outerHeight(),
             headelem = document.getElementsByTagName("header")[0];
 
+      //PC版・スマホ版の表示切替を仕込む
+        var sw=$("span#viewsw");
+        sw.show();
+        sw.bind('click', function(ev){
+                         if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
+                         if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
+                         window.removeEventListener('scroll',doWhileScroll);
+                         $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
+                         if (pcmode) {
+                             pcmode=false;
+                             sw.text('PC版');
+                             $('meta[name=viewport]').attr("content",'width=device-width,initial-scale=1.0');
+                             initMenuScale();
+
+                             //処理遅れの救済処置
+                             setTimeout(chgMenuScale,100);
+                         } else {
+                             pcmode=true;
+                             sw.text('スマホ版');
+                             $('meta[name=viewport]').attr("content",'width=980');
+                         }
+                         $(window).resize();
+                     });
+
+      //スクローズ時のメニュー追従処理
         function chgMenuScale() {
           //headerとメニュー幅を固定・拡縮
             var scale = window.innerWidth / window.outerWidth;
@@ -231,13 +260,13 @@ function initialize(){
 
         //スクロール終了待ち処理 タイマーをリセットするのみ
         function doWhileScroll()  {
-            if (timeoutID) clearTimeout(timeoutID);
-            timeoutID = setTimeout(doWhenScrollEnded,60);
+            if (timeoutID) window.clearTimeout(timeoutID);
+            timeoutID = window.setTimeout(doWhenScrollEnded,60);
         }
 
         //スクロール停止後 改めて移動処理を行ってからbodyのマージンを変更
         function doWhenScrollEnded()  {
-            clearInterval(intervalID);
+            window.clearInterval(intervalID);
             intervalID=null;
             timeoutID=null;
             window.removeEventListener('scroll',doWhileScroll);
@@ -252,23 +281,33 @@ function initialize(){
 
         window.addEventListener('touchstart',
                                 function(e) {
+                                    //PCモードでは何もしない
+                                    if (pcmode) return;
+
                                     window.removeEventListener('scroll',doWhileScroll);
                                     if (! intervalID) {
-                                        intervalID=setInterval(function(){chgMenuScale();},1000/30);
+                                        intervalID=window.setInterval(function(){chgMenuScale();},1000/30);
                                     }
                                 });
 
         window.addEventListener('touchend',
                                 function(e){
+                                    //PCモードでは何もしない
+                                    if (pcmode) return;
+
                                     if (e.touches.length < 1) {
                                         //スクロール終了待ちに移行
-                                        timeoutID = setTimeout(doWhenScrollEnded,60);
+                                        timeoutID = window.setTimeout(doWhenScrollEnded,60);
                                         window.addEventListener('scroll',doWhileScroll);
                                     }
                                    });
-        chgMenuScale();
-        $("body").css("margin-top", headerHeight * window.innerWidth / window.outerWidth +5);
-        $("header, div.ribbonmenu").css("width", window.outerWidth);
+
+        function initMenuScale() {
+            chgMenuScale();
+            $("body").css("margin-top", headerHeight * window.innerWidth / window.outerWidth +5);
+            $("header, div.ribbonmenu").css("width", window.outerWidth);
+        }
+        initMenuScale();
 
         //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
         window.scrollTo(0,1);
@@ -304,7 +343,6 @@ function initialize(){
             } else {
                 $("div.ribbonmenu").hide();
             }
-
         }
     }); 
 
