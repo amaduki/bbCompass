@@ -67,7 +67,7 @@
   改造する場合は人が読めないと困るので、元ファイルも同梱しています。
   (つまり、そのまま使うだけであれば.min.jsだけをアップロードすればOKです)
 
-  また、jcanvas/js-deflate/jquery/uuid/scp/scrollの各ディレクトリは外部ライブラリです。
+  また、jcanvas/js-deflate/jquery/uuid/scpの各ディレクトリは外部ライブラリです。
   jqueryとuuidについてはダウンロードしたそのままを使っていますが、
   jCanvaScriptはgithubから取得した物を自前でminimizeして利用している場合もあり、
   一応元ファイルとminimizeしたファイルの双方を同梱することにしています。
