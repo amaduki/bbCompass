@@ -1,6 +1,7 @@
 body{
     background-color:#F0F0F0;
     background-image:url("../image/bg.png");
+    -webkit-text-size-adjust:100%;
 }
 
 h1,h3{
@@ -10,74 +11,277 @@ h1,h3{
 }
 
 div.caption {
+    position:relative;
     background:url("../image/bbtexture.png");
 }
 
-/* メニュー部 */
-div.menutitle{
-    width:95%;
-    max-width:62em;
-    min-width:50em;
-    margin-left:auto;
-    margin-right:auto;
-    height:30px;
-    border-top-left-radius:10px;
-    border-top-right-radius:10px;
-    background-color:#000066;
-    box-shadow:0px 2px 4px gray;
-    -webkit-box-shadow:0px 2px 4px gray;
-}
-
-div.menutitle span#titletext{
-    float:left;
-    color:white;
-    font-size:26px;
-    margin-left:0.5em;
-}
-
-div.menutitle span#menusw_on,div.menutitle span#menusw_off{
-    float:right;
-    margin-right:0.5em;
-    color:white;
-    font-size:26px;
-    text-decoration:underline;
-    cursor:pointer;
-}
-
-div.menutitle span#menusw_on{
+header span#viewsw {
+    position:absolute;
     display:none;
+    color:white;
+    background-color:#000066;
+    right:30px;
+    top:0.2em;
+    padding:0.3em;
+    border-radius:5px;
+    font-size:50%;
+    box-shadow:0px 2px 4px gray;
 }
 
-div.ribbonmenu{
-    width:95%;
-    max-width:62em;
-    min-width:50em;
-    margin-left:auto;
-    margin-right:auto;
-    margin-bottom:30px;
+@media only screen and (min-width : 850px) { 
+    /* メニュー部 */
+    div.menutitle{
+        width:95%;
+        min-width:50em;
+        margin-left:auto;
+        margin-right:auto;
+        height:30px;
+        border-top-left-radius:10px;
+        border-top-right-radius:10px;
+        background-color:#000066;
+        box-shadow:0px 2px 4px gray;
+        -webkit-box-shadow:0px 2px 4px gray;
+    }
+
+    nav {
+        display:none;
+    }
+
+    div.menutitle span#titletext{
+        float:left;
+        color:white;
+        font-size:26px;
+        margin-left:0.5em;
+    }
+
+    div.menutitle span#menusw_on,div.menutitle span#menusw_off{
+        float:right;
+        margin-right:0.5em;
+        color:white;
+        font-size:26px;
+        text-decoration:underline;
+        cursor:pointer;
+    }
+
+    div.menutitle span#menusw_on{
+        display:none;
+    }
+
+    div.ribbonmenu{
+        width:95%;
+        min-width:50em;
+        margin-left:auto;
+        margin-right:auto;
+        margin-bottom:30px;
+    }
+
+    div.menucell{
+        height:15em;
+    }
+
+    div.menusubcell#subcell_graph{
+        float:left;
+        width: 100%;
+        margin-left: -10.6em;
+        margin-right: -21.3em;
+    }
+
+    div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
+        display:block;
+        width: 10.5em;
+    }
+
+    div.menucell#menu_graph{
+        margin-left:10.6em;
+        margin-right:21.3em;
+    }
+
+    /* 設置部 */
+    div#map_area .formtext{
+        max-width:8em;
+    }
+
+    #lst_layer{
+        width:7em;
+        white-space: nowrap;
+    }
+
+    #lst_object{
+        width:6em;
+        white-space: nowrap;
+    }
+
+    /* 制御部 */
+    #obj_area{
+        float:left;
+        width:100%;
+        margin-right:-3.4em;
+        margin-left:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont{
+        text-align:center;
+        float:left;
+        width:3em;
+        margin-right:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont button{
+        margin-top:0.2em;
+        margin-bottom:0.2em;
+    }
 }
 
-div.menucell{
-    height:15em;
+@media only screen and (max-width : 849px) { 
+    body {
+        margin-top:85px;
+    }
+
+    header {
+        position:fixed;
+        top:0px;
+        left:0px;
+        width:100%;
+        height:80px;
+        z-index:999;
+        background-color:#F0F0F0;
+        background-image:url("../image/bg.png");
+        transform-origin:0px 0px;
+        -ms-transform-origin:0px 0px;
+        -webkit-transform-origin:0px 0px;
+    }
+
+    header h1 {
+        height:80px;
+        margin:0px;
+        margin-bottom:-30px;
+        overflow:hidden;
+    }
+
+    /* メニュー部 */
+    div.menutitle {
+        display:none;
+    }
+
+    nav {
+        width:100%;
+        height:28px;
+        background-color:white;
+        border-bottom:2px solid #000066;
+    }
+
+    nav div.menutab {
+        float:left;
+        background-color:#000066;
+        border:1px solid #000066;
+        border-radius: 5px 5px 0 0;
+        position:relative;
+        top:2px;
+        width:8em;
+        height:25px;
+        text-align:center;
+        color:white;
+        overflow:hidden;
+        margin:0 5px;
+    }
+
+    nav>div.menutab>span {
+        vertical-align:middle;
+    }
+
+    nav div.menutab:nth-child(2n) {
+        margin:0 5px;
+    }
+
+    nav div.selected{
+        background-color:white;
+        color:#000066;
+    }
+
+    div.ribbonmenu {
+        position:fixed;
+        top:80px;left:0px;
+        width:100%;
+        margin-left:0;
+        margin-right:0;
+        z-index:999;
+        transform-origin:0px -80px;
+        -ms-transform-origin:0px -80px;
+        -webkit-transform-origin:0px -80px;
+    }
+
+    div.menucell {
+        height:20em;
+    }
+
+    div.menusubcell#subcell_graph{
+        width: 100%;
+        display:none;
+    }
+
+    div.menucell#menu_map,div.menucell#menu_cont{
+        float:left;
+        width: 49%;
+    }
+
+    div#menu_view {
+       display:none;
+    }
+
+    div.ribbonmenu button {
+        width:70%;
+        height:30px;
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+
+    div.ribbonmenu select, div.ribbonmenu input {
+        margin-top:5px;
+        margin-bottom:5px;
+        padding:0.2em;
+    }
+
+    div.name{
+        padding-top:0.2em;
+        padding-bottom:0.2em;
+    }
+
+    /* 設置部 */
+    div#map_area .formtext{
+        min-width:70%;
+    }
+
+    #lst_layer{
+        min-width:70%;
+        white-space: nowrap;
+    }
+
+    /* 制御部 */
+    #lst_object{
+        width:55%;
+        white-space: nowrap;
+    }
+
+    #obj_area{
+        float:left;
+        width:100%;
+        margin-right:-45%;
+        margin-left:0.2em;
+        margin-top:0.3em;
+    }
+
+    #obj_cont{
+        text-align:center;
+        float:left;
+        width:40%;
+        margin-right:0.2em;
+        margin-top:0.3em;
+    }
 }
 
-div.menusubcell#subcell_graph{
-    float:left;
-    width: 100%;
-    margin-left: -10.6em;
-    margin-right: -21.3em;
-}
-
-div.menucell#menu_map,div.menucell#menu_cont,div.menucell#menu_view{
-    width: 10.5em;
-}
-
-div.menucell#menu_graph{
-    margin-left:10.6em;
-    margin-right:21.3em;
-}
-
-/* 設置部 */
+/* 設置部共通 */
 div#objsel_area {
     float:left;
     width:100%;
@@ -85,17 +289,14 @@ div#objsel_area {
 }
 
 div#objselector {
+    position:relative;
     background-color:#FFFFFF;
     border:1px solid gainsboro;
     margin:0.3em;
     margin-right:12em;
     height:12em;
-    overflow:hidden;
-}
-
-div#objsel_area div.viewport {
-    position:relative;
-    margin-right:13px;
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
 div#objselector div.option{
@@ -143,10 +344,6 @@ div.item{
     white-space: nowrap;
 }
 
-div#map_area .formtext{
-    max-width:8em;
-}
-
 div#objpoint .formtext{
     max-width:5em;
 }
@@ -183,7 +380,7 @@ div.submitbtn{
     text-align:center;
 }
 
-/* マップ部 */
+/* マップ部共通 */
 div.map_selector{
     text-align:left;
     margin-top:0.3em;
@@ -205,16 +402,12 @@ select#map > option.scramble,select#map.scramble{
     background-color:lightcoral;
 }
 
-#lst_layer{
-    width:7em;
-    white-space: nowrap;
-}
-
 #map_area,#layer_area{
     margin:0.3em;
 }
 
-/* 表示部 */
+
+/* 表示部共通 */
 div#cursorselector {
     margin-top:0.3em;
     margin-bottom:0.3em;
@@ -228,34 +421,6 @@ div#cursorselector > div{
     text-align:center;
     line-height:30px;
 }
-
-/* 制御部 */
-#lst_object{
-    width:6em;
-    white-space: nowrap;
-}
-
-#obj_area{
-    float:left;
-    width:100%;
-    margin-right:-3.4em;
-    margin-left:0.2em;
-    margin-top:0.3em;
-}
-
-#obj_cont{
-    text-align:center;
-    float:left;
-    width:3em;
-    margin-right:0.2em;
-    margin-top:0.3em;
-}
-
-#obj_cont button{
-    margin-top:0.2em;
-    margin-bottom:0.2em;
-}
-
 
 /* canvasまわり */
 div#LoadArea{
@@ -402,21 +567,32 @@ div#Loading{
     margin:0px auto;
 }
 
-#Changes{
-    float:right;
-    margin-left:-28em;
-    width:28em;
-}
-
-#Thanks_Attention{
-    float:left;
-    width:100%;
-}
-
-#Thanks,#Attention{
-    margin-right:30em;
-}
-
 #Address{
+    clear:both;
     text-align:right;
+}
+
+textarea#changelog{
+    width:90%;
+}
+
+/* 画面幅が広い場合変更履歴と謝辞等を左右に分けて配置*/
+@media only screen and (min-width : 850px) { 
+    #Changes{
+        position:relative;
+        float:right;
+        width:28em;
+        z-index:1;
+    }
+
+    #Thanks_Attention{
+        position:relative;
+        float:left;
+        margin-right:-28em;
+        width:100%;
+    }
+
+    #Thanks,#Attention{
+        margin-right:30em;
+    }
 }
