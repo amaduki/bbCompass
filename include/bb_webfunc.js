@@ -228,12 +228,17 @@ function initialize(){
                                   $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
 
                                   //処理遅れる場合があるようなので、少し遅延させる
-                                  setTimeout(initMenuScale,100);
+                                  setTimeout(initMenuScale,100)
                               } else {
                                   pcmode=true;
                                   sw.text('スマホ版');
                                   $('meta[name=viewport]').remove();
                                   $('head').append('<meta name="viewport" content="width=980">');
+
+                                  //古いWebKit対策。styleが残ってる場合少し遅らせてstyleに空白を設定
+                                  if ($("body").attr('style')) {
+                                      setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
+                                  }
                               }
                               $(window).resize();
                           });
