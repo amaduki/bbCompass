@@ -4,15 +4,16 @@
 <meta charset="utf-8">
 <meta name="keywords" content="borderbreak,ボーダーブレイク,コンパス">
 <meta name="description" content="セガのゲーム「ボーダーブレイク」用のコンパスツールもどき">
-<meta name=viewport content="width=device-width, initial-scale=1">
 <title>BBコンパスもどき</title>
 <link rel=stylesheet type="text/css" href="./include/ribbonmenu.css">
 <link rel=stylesheet type="text/css" href="./include/bb_compass.css">
 <link rel="stylesheet" type="text/css" href="include/scp/jquery.simple-color-picker.css">
+<link rel="stylesheet" type="text/css" href="include/scroll/jquery.tinyscrollbar.css">
 <script type="text/javascript" src="./include/uuid/uuid.js"></script>
 <script type="text/javascript" src="./include/jquery/jquery-2.0.2.min.js"></script>
 <script type="text/javascript" src="./include/scp/jquery.simple-color-picker.js"></script>
 <script type="text/javascript" src="./include/jcanvas/jCanvaScript.1.5.18.min.js"></script>
+<script type="text/javascript" src="./include/scroll/jquery.tinyscrollbar.min.js"></script>
 <script type="text/javascript" src="./include/bb_object.min.js"></script>
 <script type="text/javascript" src="./include/bb_query.min.js"></script>
 <script type="text/javascript" src="./include/bb_webfunc.min.js"></script>
@@ -21,13 +22,7 @@
 </head>
 <body onload="initialize()">
 <header>
-  <div class="caption">
-      <h1>BBコンパスもどき<span id="viewsw">PC版</span></h1>
-  </div>
-  <nav>
-      <div class="menutab selected" id="menutab_map"><span>マップ/操作</span></div>
-      <div class="menutab" id="menutab_item"><span>アイテム設置</span></div>
-  </nav>
+<div class="caption"><h1>BBコンパスもどき</h1></div>
 </header>
 
 <div class="menutitle">
@@ -228,6 +223,8 @@
       <div class="celltitle" id="head_graph">設置</div>
       <div id="objsel_area">
         <div id="objselector" class="selector">
+            <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+            <div class="viewport">
                 <div class="option selected" data-target="objscout"><img src="./image/menu/scout.png" alt="メニュー偵察機"><br>偵察機</div>
                 <div class="option" data-target="objsensor"><img src="./image/menu/sensor.png" alt="メニューセンサー"><br>センサー</div>
                 <div class="option" data-target="objradar"><img src="./image/menu/radar.png" alt="メニューレーダー"><br>レーダー</div>
@@ -243,6 +240,7 @@
                 <div class="option" data-target="objfreehand"><img src="./image/menu/freehand.png" alt="メニュー手書き"><br>手書き</div>
             </div>
         </div>
+      </div>
 
        <!--偵察機-->
       <div class="setobj" id="objscout"><form name="scout" action="javascript:set_scout();">
@@ -546,7 +544,7 @@
 
 <div id="LoadArea">
   <div id="CanvasArea">
-     <canvas width="300" height="700" id="BBCompass"></canvas>
+     <canvas width="800" height="700" id="BBCompass"></canvas>
   </div>
   <div class="ContextMenu">
      <div class="Spacer"><!-- --></div>
@@ -581,14 +579,6 @@
 </div>
 <div id="WorkArea">
 </div>
-<div id="Changes">
-<div class="caption"><h3>更新履歴</h3></div>
-<textarea id="changelog" rows="10" cols="50"></textarea><br>
-<p>※お願い※<br>更新履歴に記載があるのに新マップが読み込めない、上手く動作しないといった不具合がある場合、
-<strong>更新(Ctrl+F5)を押して再読み込み</strong>を試してください。改善する場合があります。</p>
-<p>また、更新と直接関係ないお知らせや開発メモは<span style="font-size:130%;"><a href="http://bbcompass.blog.fc2.com/">ブログ</a></span>に書いていますので、
-よければこちらもご確認ください。不具合の報告やご意見もコメント欄にて受付いたします。</p>
-</div>
 <div id="Thanks_Attention">
 <div id="Attention">
 <div class="caption"><h3>注意事項など</h3></div>
@@ -617,10 +607,19 @@ IE8はHTML5非対応なので、XP環境の方はFirefoxなどをお使いくだ
 <li><a href="http://jcscript.com/" target="_blank">jCanvaScript</a>
 <li><a href="http://jquery.com/" target="_blank">jQuery</a>
 <li><a href="http://rachel-carvalho.github.com/simple-color-picker/" target="_blank">simpleColorPicker jQuery plugin</a>
+<li><a href="http://baijs.nl/tinyscrollbar/" target="_blank">Tiny Scrollbar</a>(私家改造版)
 <li><a href="https://github.com/LiosK/UUID.js" target="_blank">UUID.js</a>
 <li><a href="https://github.com/dankogai/js-deflate" target="_blank">js-deflate</a>(私家改造版)
 </ul>
 </div>
+</div>
+<div id="Changes">
+<div class="caption"><h3>更新履歴</h3></div>
+<textarea id="changelog" rows="10" cols="50"></textarea><br>
+<p>※お願い※<br>更新履歴に記載があるのに新マップが読み込めない、上手く動作しないといった不具合がある場合、
+<strong>更新(Ctrl+F5)を押して再読み込み</strong>を試してください。改善する場合があります。</p>
+<p>また、更新と直接関係ないお知らせや開発メモは<span style="font-size:130%;"><a href="http://bbcompass.blog.fc2.com/">ブログ</a></span>に書いていますので、
+よければこちらもご確認ください。不具合の報告やご意見もコメント欄にて受付いたします。</p>
 </div>
 <div id="Address">
 <address>製作者：<a href="http://bbcompass.blog.fc2.com/">暇人@BB</a></address>

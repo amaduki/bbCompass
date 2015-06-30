@@ -50,6 +50,11 @@
     │       jquery.simple-color-picker.js
     │       LICENSE
     │
+    ├─scroll/
+    │       jquery.tinyscrollbar.css
+    │       jquery.tinyscrollbar.js
+    │       jquery.tinyscrollbar.min.js
+    │
     └─uuid/
              License.txt
              uuid.js
@@ -72,6 +77,7 @@
   jCanvaScriptはgithubから取得した物を自前でminimizeして利用している場合もあり、
   一応元ファイルとminimizeしたファイルの双方を同梱することにしています。
   simple color pickerはjQuery2.0.2に対応していないため、1行だけ書き換え。
+  tinyscrollbarはいくつかの動作を自分で書き換えたバージョンを、
   js-deflateについてはデータ形式を少し書き換えたものを、それぞれ利用しています。
 
 

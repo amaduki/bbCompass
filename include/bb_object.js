@@ -174,10 +174,6 @@
 
         this.touchToMouse(canvas);
 
-        var ptsize=5,                            //オブジェクトの操作点を示す白点のサイズ
-            ptcolsize=7,                         //操作点を縁取りする色つき円のサイズ
-            pttrasize=(window.TouchEvent)?15:7;  //操作点そのもののサイズ
-
       //
       //BB_baseオブジェクト
       //
@@ -346,22 +342,18 @@
             jcanvas.text(this._text, 0, -10)
                    .layer(this.id).color('#FFFFFF').font('15px sans-serif').align('center');
 
-
-            var ptcol  = jcanvas.circle(ptx, pty, ptcolsize, this._color, true).layer(this.id).opacity(1),
-                pt     = jcanvas.circle(ptx, pty, ptsize, "#FFFFFF", true).layer(this.id),
-                pttra  = jcanvas.circle(ptx, pty, pttrasize, "rgba(0,0,0,0)", true).layer(this.id),
+            var ptcol  = jcanvas.circle(ptx, pty, 7, this._color, true).layer(this.id).opacity(1),
+                pt     = jcanvas.circle(ptx, pty, 5, "#FFFFFF", true).layer(this.id),
                 radius = jcanvas.text(Math.floor(this._radius)+"m", ptx/2, pty/2).baseline("top")
                                 .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
-
             jcanvas.layer(this.id).draggable();
 
             var txtheight= radius.getRect().height;  //translateTo時に高さがずれるので補正項
             var callback = function () {
-                               var pos1=center.position(),pos2=pttra.position(),
+                               var pos1=center.position(),pos2=pt.position(),
                                    dx=pos2.x-pos1.x, dy=pos2.y-pos1.y,
                                    centerx=(pos1.x+pos2.x)/2, centery=(pos1.y+pos2.y)/2,
                                    newrad = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-                               pt.translateTo(pos2.x, pos2.y);
                                ptcol.translateTo(pos2.x, pos2.y);
                                line.points([[0, 0],
                                             [pt._x+pt._transformdx, pt._y+pt._transformdy]]);
@@ -373,15 +365,15 @@
                                obj._ptpos  = {x:pt._x+pt._transformdx, y:pt._y+pt._transformdy};
                            };
 
-            pttra.draggable(callback);
-            pttra.optns.drag.val=false;
-            pttra.mouseover(function () {
+            pt.draggable(callback);
+            pt.optns.drag.val=false;
+            pt.mouseover(function () {
                             jcanvas.layer(obj.id).optns.drag.val=false;
-                            pttra.optns.drag.val=true;
+                            pt.optns.drag.val=true;
                          });
-            pttra.mouseout(function () {
+            pt.mouseout(function () {
                             jcanvas.layer(obj.id).optns.drag.val=true;
-                            pttra.optns.drag.val=false;
+                            pt.optns.drag.val=false;
                         });
             return this;
         };
@@ -441,12 +433,10 @@
 
             var line     = jcanvas.line({points:[[x1, y1], [x2, y2]], color:this._color})
                                   .opacity(1).lineStyle({lineWidth:3}).layer(this.id),
-                pt1col   = jcanvas.circle(x1, y1, ptcolsize, this._color, true).layer(this.id),
-                pt1      = jcanvas.circle(x1, y1, ptsize, "#FFFFFF", true).layer(this.id),
-                pt1tra   = jcanvas.circle(x1, y1, pttrasize, "rgba(0,0,0,0)", true).layer(this.id),
-                pt2col   = jcanvas.circle(x2, y2, ptcolsize, this._color, true).layer(this.id),
-                pt2      = jcanvas.circle(x2, y2, ptsize, "#FFFFFF", true).layer(this.id),
-                pt2tra   = jcanvas.circle(x2, y2, pttrasize, "rgba(0,0,0,0)", true).layer(this.id),
+                pt1col   = jcanvas.circle(x1, y1, 7, this._color, true).layer(this.id),
+                pt1      = jcanvas.circle(x1, y1, 5, "#FFFFFF", true).layer(this.id),
+                pt2col   = jcanvas.circle(x2, y2, 7, this._color, true).layer(this.id),
+                pt2      = jcanvas.circle(x2, y2, 5, "#FFFFFF", true).layer(this.id),
                 linename = jcanvas.text(this._text, centerx, centery+above)
                                   .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id),
                 linelen  = jcanvas.text(Math.floor(this._length)+"m", centerx, centery-below)
@@ -455,14 +445,12 @@
             
             var txtheight= linelen.getRect().height;  //translateTo時に高さがずれるので補正項
             var callback = function () {
-                               var pos1=pt1tra.position(), pos2=pt2tra.position(),
+                               var pos1=pt1.position(), pos2=pt2.position(),
                                    dx=pos2.x-pos1.x, dy=pos2.y-pos1.y,
                                    centerx=(pos1.x+pos2.x)/2, centery=(pos1.y+pos2.y)/2,
                                    newlen = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
                                pt1col.translateTo(pos1.x, pos1.y);
                                pt2col.translateTo(pos2.x, pos2.y);
-                               pt1.translateTo(pos1.x, pos1.y);
-                               pt2.translateTo(pos2.x, pos2.y);
                                line.points([[pt1._x+pt1._transformdx, pt1._y+pt1._transformdy],
                                             [pt2._x+pt2._transformdx, pt2._y+pt2._transformdy]]);
                                linename.translateTo(centerx, centery+above-txtheight);
@@ -472,21 +460,21 @@
                                obj._pt1pos={x:pt1._x+pt1._transformdx ,y:pt1._y+pt1._transformdy};
                                obj._pt2pos={x:pt2._x+pt2._transformdx ,y:pt2._y+pt2._transformdy};
                            };
-            pt1tra.draggable(callback);
-            pt1tra.optns.drag.val=false;
-            pt2tra.draggable(callback);
-            pt2tra.optns.drag.val=false;
-            pt1tra.mouseover(function () {
+            pt1.draggable(callback);
+            pt1.optns.drag.val=false;
+            pt2.draggable(callback);
+            pt2.optns.drag.val=false;
+            pt1.mouseover(function () {
                               jcanvas.layer(obj.id).optns.drag.val=false;
-                              pt1tra.optns.drag.val=true;
+                              pt1.optns.drag.val=true;
                           });
-            pt1tra.mouseout(function () {
+            pt1.mouseout(function () {
                             jcanvas.layer(obj.id).optns.drag.val=true;
-                            pt1tra.optns.drag.val=false;
+                            pt1.optns.drag.val=false;
                          });
-            pt2tra.mouseover(function () {
+            pt2.mouseover(function () {
                               jcanvas.layer(obj.id).optns.drag.val=false;
-                              pt2tra.optns.drag.val=true;
+                              pt2.optns.drag.val=true;
                          });
             pt2.mouseout(function () {
                              jcanvas.layer(obj.id).optns.drag.val=true;
@@ -526,7 +514,6 @@
 
         this.BB_point.prototype.draw = function () {
             jcanvas.circle(0, 0, this._size, this._color, true).opacity(1).layer(this.id);
-            jcanvas.circle(0, 0, pttrasize, "rgba(0,0,0,0)", true).layer(this.id);
             if (this._align == 1) {
                 // 左側
                 var text = jcanvas.text(this._text, (-1) * (this._size + 5) , 0)
@@ -574,7 +561,7 @@
                 area  = jcanvas.scout(0, 0, px_rad, px_len, this._color, true).opacity(0.2).layer(this.id),
                 areaf = jcanvas.scout(0, 0, px_rad, px_len, this._color, false).opacity(1).layer(this.id),
                 mask  = jcanvas.scout_mask(0, 0, px_rad, px_len).layer(this.id);
-            jcanvas.circle(0, 0, ptsize, '#FFFFFF', true).layer(this.id);
+            jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
             jcanvas.text(this._text, 0, -10)
                    .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
             jcanvas.layer(this.id).draggable();
@@ -651,7 +638,7 @@
             var px_rad = bbobj.meter_to_pixel(this._radius);
             jcanvas.circle(0, 0, px_rad, this._color, false).opacity(1).layer(this.id);
             jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.5).layer(this.id);
-            jcanvas.circle(0, 0, ptsize, this._color, true).layer(this.id).color('#FFFFFF');
+            jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
             jcanvas.text(this._text, 0, -10)
                    .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
             jcanvas.layer(this.id).draggable();
@@ -700,7 +687,6 @@
             var area = jcanvas.sector(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
             jcanvas.circle(0, 0, img_rad, this._color, true).opacity(0.9).layer(this.id);
             jcanvas.circle(0, 0, img_rad-2, '#ffffff', true).layer(this.id);
-            jcanvas.circle(0, 0, pttrasize, 'rgba(0,0,0,0)', true).layer(this.id);
             jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id)
                    .rotate(90);
             var text = jcanvas.text(this._text, 60, 0)
@@ -780,14 +766,14 @@
             //射程範囲の表示
             jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
             var range   = jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.2).layer(this.id);
-            jcanvas.circle(0, 0, ptsize, '#FFFFFF', true).layer(this.id);
+            jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
             jcanvas.text(this._text, 0, -40)
                    .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
 
             //照準円の表示
             var tgtline = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, false).opacity(1).layer(this.id),
                 tgt     = jcanvas.circle(this._markerx, this._markery, px_rad2, this._color, true).opacity(0.5).layer(this.id),
-                cross   = jcanvas.crosshair(this._markerx, this._markery).layer(this.id);
+                point   = jcanvas.circle(this._markerx, this._markery, 3, '#FFFFFF', true).layer(this.id);
             jcanvas.layer(this.id).draggable();
 
             var dragfunc = function (cursor) {
@@ -807,14 +793,14 @@
                                     if (followflag) {
                                         tgt.translateTo(pos.x,pos.y);
                                         tgtline.translateTo(pos.x,pos.y);
-                                        cross.translateTo(pos.x,pos.y);
+                                        point.translateTo(pos.x,pos.y);
                                     } else {
                                         var rad = Math.atan2((cursor.y-base.y),(cursor.x-base.x));
                                         var x = base.x+px_rad1*Math.cos(rad);
                                         var y = base.y+px_rad1*Math.sin(rad);
                                         tgt.translateTo(x,y);
                                         tgtline.translateTo(x,y);
-                                        cross.translateTo(x,y);
+                                        point.translateTo(x,y);
                                     }
                                     obj._markerx=point._x+point._transformdx;
                                     obj._markery=point._y+point._transformdy;
@@ -835,16 +821,16 @@
                                 var base  = range.position();
                                 tgt.translateTo(base.x,base.y);
                                 tgtline.translateTo(base.x,base.y);
-                                cross.translateTo(base.x,base.y);
+                                point.translateTo(base.x,base.y);
                                 obj._markerx=point._x+point._transformdx;
                                 obj._markery=point._y+point._transformdy;
                                 return false;
                             };
 
 
-            //索敵地点の処理
+            //砲撃地点の処理
             tgt.draggable(dragfunc);
-            cross.draggable(dragfunc);
+            point.draggable(dragfunc);
 
             //初期状態ではレイヤを優先するため、個別ドラッグを抑止。
             //ターゲット部分でボタンが押下された場合のみターゲットの個別ドラッグを有効化。
@@ -855,9 +841,9 @@
 
             //中心点も同様に処理させる
             //ただし、dblclickはpropagationするのでtgtに任せる
-            cross.optns.drag.val=false;
-            cross.mouseover(tgtdrag);
-            cross.mouseout(tgtundrag);
+            point.optns.drag.val=false;
+            point.mouseover(tgtdrag);
+            point.mouseout(tgtundrag);
 
             return this;
         };
@@ -912,14 +898,11 @@
 
             var line     = jcanvas.line({points:[[px_rad, 0], [(-1) * px_rad, 0]], color:this._color})
                                   .opacity(1).lineStyle({lineWidth:3}).layer(this.id),
-                pt1col   = jcanvas.circle(px_rad, 0, ptcolsize, this._color, true).layer(this.id),
-                pt1      = jcanvas.circle(px_rad, 0, ptsize, "#FFFFFF", true).layer(this.id),
-                pt1tra   = jcanvas.circle(px_rad, 0, pttrasize, "rgba(0,0,0,0)", true).layer(this.id),
-                pt2col   = jcanvas.circle((-1) * px_rad, 0, ptcolsize, this._color, true).layer(this.id),
-                pt2      = jcanvas.circle((-1) * px_rad, 0, ptsize, "#FFFFFF", true).layer(this.id),
-                pt2tra   = jcanvas.circle((-1) * px_rad, 0, pttrasize, "rgba(0,0,0,0)", true).layer(this.id),
-                center   = jcanvas.circle(0, 0, img_rad, this._color, true).layer(this.id),
-                centertra= jcanvas.circle(0, 0, pttrasize, "rgba(0,0,0,0)",true).layer(this.id);
+                pt1col   = jcanvas.circle(px_rad, 0, 7, this._color, true).layer(this.id),
+                pt1      = jcanvas.circle(px_rad, 0, 5, "#FFFFFF", true).layer(this.id),
+                pt2col   = jcanvas.circle((-1) * px_rad, 0, 7, this._color, true).layer(this.id),
+                pt2      = jcanvas.circle((-1) * px_rad, 0, 5, "#FFFFFF", true).layer(this.id),
+                center   = jcanvas.circle(0, 0, img_rad, this._color, true).layer(this.id);
 
             jcanvas.circle(0, 0, img_rad-2, '#FFFFFF', true).layer(this.id);
             jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
@@ -950,18 +933,32 @@
                           };
 
             //端点は角度変更
-            pt1tra.mousedown(mdEvent);
-            pt1tra.mouseover(function () {
+            pt1.mousedown(mdEvent);
+            pt1.mouseover(function () {
                                jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
                            });
-            pt1tra.mouseout(function () {
+            pt1.mouseout(function () {
                               jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
                           });
-            pt2tra.mousedown(mdEvent);
-            pt2tra.mouseover(function () {
+            pt1col.mousedown(mdEvent);
+            pt1col.mouseover(function () {
                                jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
                            });
-            pt2tra.mouseout(function () {
+            pt1col.mouseout(function () {
+                              jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                          });
+            pt2.mousedown(mdEvent);
+            pt2.mouseover(function () {
+                               jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                           });
+            pt2.mouseout(function () {
+                              jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
+                          });
+            pt2col.mousedown(mdEvent);
+            pt2col.mouseover(function () {
+                               jcanvas.layer(obj.id).optns.drag.val=false;  // ドラッグ無効
+                           });
+            pt2col.mouseout(function () {
                               jcanvas.layer(obj.id).optns.drag.val=true;    // ドラッグ有効
                           });
             return this;
@@ -1001,7 +998,7 @@
             //射程範囲の表示
             jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
             var range   = jcanvas.circle(0, 0, px_rad1, this._color, true).opacity(0.2).layer(this.id);
-            jcanvas.circle(0, 0, ptsize, '#FFFFFF', true).layer(this.id);
+            jcanvas.circle(0, 0, 3, '#FFFFFF', true).layer(this.id);
             jcanvas.text(this._text, 0, -40)
                    .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
 
@@ -1121,7 +1118,7 @@
             jcanvas.circle(0, 0, px_rad1, this._color, false).opacity(1).layer(this.id);
             jcanvas.circle(0, 0, px_rad2, this._color, true).opacity(0.2).layer(this.id);
             jcanvas.circle(0, 0, px_rad2, this._color, false).opacity(1).layer(this.id);
-            jcanvas.circle(0, 0, ptsize, this._color, true).layer(this.id).color('#FFFFFF');
+            jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
             jcanvas.text(this._text, 0, -10)
                    .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
             jcanvas.layer(this.id).draggable();
@@ -1171,7 +1168,6 @@
             var area = jcanvas.sector(0, 0, px_rad, this._angle, this._color, true).opacity(0.5).layer(this.id);
             jcanvas.circle(0, 0, img_rad, this._color, true).opacity(0.9).layer(this.id);
             jcanvas.circle(0, 0, img_rad-2, '#ffffff', true).layer(this.id);
-            jcanvas.circle(0, 0, pttrasize, 'rgba(0,0,0,0)', true).layer(this.id);
             jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
             var text = jcanvas.text(this._text, 50, 0)
                        .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
@@ -1307,7 +1303,7 @@
 
             jcanvas.scout(0, 0, px_rad1, px_len, this._color, true).opacity(0.2).layer(this.id);
             jcanvas.scout(0, 0, px_rad1, px_len, this._color, false).opacity(1).layer(this.id);
-            var self =jcanvas.circle(0, 0, ptsize, '#FFFFFF', true).layer(this.id);
+            var self =jcanvas.circle(0, 0, 3, this._color, true).layer(this.id).color('#FFFFFF');
 
             //攻撃範囲表示
             for ( var i = 0; i < this._center.length; ++i ) {
@@ -1398,9 +1394,8 @@
                 bar     = jcanvas.line([[0,7],[0,25]], this._color)
                                  .lineStyle({lineWidth:2}).layer(this.id),
                 arrow   = jcanvas.line([[5,15],[0,25],[-5,15]], this._color, true).layer(this.id),
-                center  = jcanvas.circle(0, 0, ptcolsize, this._color, true).layer(this.id),
-                centerf = jcanvas.circle(0, 0, ptsize, '#FFFFFF', true).layer(this.id);
-                jcanvas.circle(0, 0, pttrasize, 'rgba(0,0,0,0)', true).layer(this.id);
+                center  = jcanvas.circle(0, 0, 7, this._color, true).layer(this.id),
+                centerf = jcanvas.circle(0, 0, 5, '#FFFFFF', true).layer(this.id);
 
             jcanvas.text(this._text, 0, -10)
                    .align('center').color('#FFFFFF').font('15px sans-serif').layer(this.id);
@@ -1495,7 +1490,6 @@
                 px_rad     = Math.sqrt(Math.pow(this._image.width,2) + Math.pow(this._image.height,2))*0.5;
             jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.9).layer(this.id);
             jcanvas.circle(0, 0, px_rad-2, '#FFFFFF', true).layer(this.id);
-            jcanvas.circle(0, 0, pttrasize, 'rgba(0,0,0,0)', true).layer(this.id);
             jcanvas.image(this._image, img_width * (-0.5), img_height * (-0.5), img_width , img_height).layer(this.id);
             jcanvas.text(this._text, img_width * 0.5 + 5 , 0)
                    .layer(this.id).color('#FFFFFF').font('15px sans-serif')
@@ -1733,7 +1727,7 @@
     BB.prototype.touchToMouse = function(canvas) {
         var clickthr=5;  // クリックとみなす範囲の閾値
 
-        var touchid=0,mouseoverflag=false,touchflag=false,startX=0,startY=0,clkflag;
+        var touchid=0,mouseoverflag=false,touchflag=false,dblclkflag=0,startX=0,startY=0;
         var bbobj=this;
 
         function getTouch (ev){
@@ -1772,18 +1766,15 @@
                 event.initMouseEvent(type, true, true, window,
                                      ((type == 'dblclick')?2:1),
                                      touch.screenX, touch.screenY,
-                                     (touch.clientX + window.pageXOffset
-                                       + document.documentElement.getBoundingClientRect().left),
-                                     (touch.clientY + window.pageYOffset
-                                       + document.documentElement.getBoundingClientRect().top),
+                                     touch.clientX, touch.clientY, 
                                      false, false, false, false, 0, null); 
             touch.target.dispatchEvent(event); 
         };
 
         function pointInObj(touch) {
-            var cnvrect = document.getElementById(bbobj.id).getBoundingClientRect();
-                 x = touch.clientX - cnvrect.left,
-                 y = touch.clientY - cnvrect.top,
+            var cnvrect = jc.canvas(bbobj.id).cnv.getBoundingClientRect();
+            var x = touch.clientX-cnvrect.left,
+                y = touch.clientY-cnvrect.top,
                 result = false;
 
             for (var objid in (bbobj.member)) {
@@ -1817,10 +1808,14 @@
                                     e.preventDefault();
                                     mouseoverflag=true;
 
-                                    startX=touch.pageX;
-                                    startY=touch.pageY;
-
-                                    clkflag=setTimeout(function(){clkflag=0},300);
+                                    //前回タッチからの距離が閾値を超えていたらダブルクリック判定を外す
+                                    if (dblclkflag && (Math.abs(startX - touch.clientX)>clickthr
+                                                       || Math.abs(startY - touch.clientY)>clickthr)) {
+                                        clearTimeout(dblclkflag);
+                                        dblclkflag=0;
+                                    }
+                                    startX=touch.clientX;
+                                    startY=touch.clientY;
                                     dispatchMouseEvent('mousemove',touch);
                                     jc.canvas(BB.id).frame();
                                     dispatchMouseEvent('mousedown',touch);
@@ -1838,12 +1833,10 @@
                                         cnvy    = cnvrect.top,
                                         width   = e.target.offsetWidth||e.target.width,
                                         height  = e.target.offsetHeight||e.target.height;
-                                    var clix    = touch.pageX - window.pageXOffset,
-                                        cliy    = touch.pageY - window.pageYOffset;
 
                                     //canvasの枠内ならmousemove、枠外ならmouseout
-                                    if (clix > cnvx && cliy > cnvy
-                                        && clix < cnvx+width && cliy < cnvy+height) {
+                                    if (touch.clientX > cnvx && touch.clientY > cnvy
+                                        && touch.clientX < cnvx+width && touch.clientY < cnvy+height) {
                                         if (! mouseoverflag) dispatchMouseEvent('mouseover',touch);
                                         dispatchMouseEvent('mousemove',touch);
                                         mouseoverflag=true;
@@ -1863,13 +1856,20 @@
                                     if (! mouseoverflag) return;
                                     var touch=getTouch(e);
                                     dispatchMouseEvent('mouseup',touch);
-                                    //タッチ開始からの距離が閾値以下ならクリックイベントも発火
-                                    if (Math.abs(startX - touch.pageX)<clickthr
-                                        && Math.abs(startY - touch.pageY)<clickthr
-                                        && clkflag != 0) {
-
-                                        if (clkflag) clearTimeout(clkflag);
-                                        dispatchMouseEvent('click',touch)
+                                    //タッチ開始からの距離が閾値以下ならクリック扱い
+                                    if (Math.abs(startX - touch.clientX)<clickthr
+                                        && Math.abs(startY - touch.clientY)<clickthr) {
+                                        if (dblclkflag) {
+                                            dispatchMouseEvent('click',touch)
+                                            dispatchMouseEvent('dblclick',touch)
+                                            clearTimeout(dblclkflag);
+                                            dblclkflag=0;
+                                        } else {
+                                            dispatchMouseEvent('click',touch)
+                                            dblclkflag=setTimeout(function(){dblclkflag=0},500);
+                                            startX=touch.clientX;
+                                            startY=touch.clientY;
+                                        }
                                     }
                                     mouseoverflag=false;},
                                 false);

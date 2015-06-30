@@ -13,7 +13,6 @@ var turretSpec={"R":[200,180],
                 "L":[200,180]};
 var turretCircle=8;
 
-// 読み込み時の処理
 $(document).ready(function(){
     $("#lst_scout").change(function(){$("#name_scout").val($("#lst_scout option:selected").text());});
     $("#lst_sensor").change(function(){$("#name_sensor").val($("#lst_sensor option:selected").text());});
@@ -59,7 +58,7 @@ $(document).ready(function(){
     // 初回のリセット
     $("#stage").change();
 
-  //メニューのオブジェクト選択
+  //メニュー
     $("div#objselector div.option").click(function () {
         if ($(this).hasClass("selected")) {
             return false;
@@ -74,50 +73,12 @@ $(document).ready(function(){
                                    });
     });
 
-  //狭い時用メニュー
-    $("div.menutab#menutab_map").click(function(ev){
-        if ($("div.menucell#menu_map,div.menucell#menu_cont").is(":visible")) {
-            $("div.ribbonmenu").fadeOut("fast");
-            $("div.menutab").removeClass("selected");
-        } else {
-            $("div.menutab").removeClass("selected");
-            $("div.ribbonmenu").fadeOut("fast",function(){
-                $("div.ribbonmenu>*").hide();
-                $("div.menucell#menu_map,div.menucell#menu_cont").show();
-                $("div.ribbonmenu").fadeIn("fast");
-                $("div.menutab#menutab_map").addClass("selected");
-            });
-        }
-    });
-
-    $("div.menutab#menutab_item").click(function(ev){
-        if ($("div.menusubcell#subcell_graph").is(":visible")) {
-            $("div.ribbonmenu").fadeOut("fast");
-            $("div.menutab").removeClass("selected");
-        } else {
-            $("div.menutab").removeClass("selected");
-            $("div.ribbonmenu").fadeOut("fast",function(){
-                $("div.ribbonmenu>*").hide();
-                $("div.menusubcell#subcell_graph").show();
-                $("div.ribbonmenu").fadeIn("fast");
-                $("div.menutab#menutab_item").addClass("selected");
-            });
-        }
-    });
-
-  //メニュー部のタッチによるスクロール防止と、独自スクロール処理のbind
-    $("header,div.ribbonmenu").bind('touchmove',function(ev){
-        ev.preventDefault();
-    });
-    bindScroll($("div#objselector"));
-
   //コンテキストメニュー
     $("div.ContextMenu").bind('contextmenu', function(ev){ev.preventDefault()});
     $("div.ContextMenu li.hasChild").bind('click', function(ev){
         if (ev.target == ev.currentTarget) {ev.stopPropagation()}
     });
     $("div#CanvasArea").bind('contextmenu', function(ev) {
-        if (! $("div.menutitle").is(":visible")) return true;
         ev.preventDefault();
         var offset   = {top:  ev.pageY,
                         left: ev.pageX};
@@ -166,6 +127,7 @@ $(document).ready(function(){
             $(this).children(".ContextChild").hide();
         }
     );
+    $('#objselector').tinyscrollbar({invertscroll:true});
 
   //ズーム
     $("#lst_scale").change(function() {
@@ -193,168 +155,14 @@ function initialize(){
     bbobj=new BB(CanvasName);
 
     var cnvArea = document.getElementById(DivName);
-    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.clientWidth;
-    scrollBarHeight = cnvArea.offsetHeight - cnvArea.clientHeight+6;
+    scrollBarWidth  = cnvArea.offsetWidth - cnvArea.scrollWidth;
+    scrollBarHeight = cnvArea.offsetHeight - cnvArea.scrollHeight+6;
     $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
                     .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
 
-    $("#lst_layer").change(function (){closeNav();bbobj.setbgdiff($("#lst_layer").val())});
+    $("#lst_layer").change(function (){bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
-
-  //スマホ用メニュー制御
-    if (window.TouchEvent && (! $("div.menutitle").is(":visible"))) {
-
-      //各種制御用変数
-        var pcmode=false,
-            intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
-            headerHeight = $("header").outerHeight(),
-            headelem = document.getElementsByTagName("header")[0];
-
-      //スマホらしきUserAgent限定で、PC版・スマホ版の切替機能を仕込む
-      //firefoxのバグ対策で属性書き換えではなく、タグごと消して作り直し
-        var ua=navigator.userAgent;
-        if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0  || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0) {
-             var sw=$("span#viewsw");
-             sw.show();
-             sw.bind('click', function(ev){
-                              if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
-                              if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
-                              window.removeEventListener('scroll',doWhileScroll);
-                              $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
-                              if (pcmode) {
-                                  pcmode=false;
-                                  sw.text('PC版');
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
-
-                                  //処理遅れる場合があるようなので、少し遅延させる
-                                  setTimeout(initMenuScale,100)
-                              } else {
-                                  pcmode=true;
-                                  sw.text('スマホ版');
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=980">');
-
-                                  //古いWebKit対策。styleが残ってる場合少し遅らせてstyleに空白を設定
-                                  if ($("body").attr('style')) {
-                                      setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
-                                  }
-                              }
-                              $(window).resize();
-                          });
-      }
-
-      //スクローズ時のメニュー追従処理
-        function chgMenuScale() {
-          //headerとメニュー幅を固定・拡縮
-            var scale = window.innerWidth / window.outerWidth;
-            $("header, div.ribbonmenu").css("transform","scale(" + scale + ")")
-                                       .css("-ms-transform","scale(" + scale + ")")
-                                       .css("-webkit-transform","scale(" + scale + ")");
-
-            var headrect   = headelem.getBoundingClientRect(),
-                docrect    = document.documentElement.getBoundingClientRect();
-
-            if (correctFlag) {
-                var menuTop  = Math.round(window.pageYOffset + docrect.top
-                                          + headelem.offsetTop - headrect.top);
-                $("header").css("top", menuTop);
-                $("div.ribbonmenu").css("top", menuTop+headerHeight);
-
-                menuLeft = Math.round(window.pageXOffset + docrect.left
-                                      + headelem.offsetLeft - headrect.left);
-                $("header, div.ribbonmenu").css("left", menuLeft);
-            }
-            bbobj.chgScroll();
-        }
-
-        //スクロール終了待ち処理 タイマーをリセットするのみ
-        function doWhileScroll()  {
-            if (timeoutID) window.clearTimeout(timeoutID);
-            timeoutID = window.setTimeout(doWhenScrollEnded,60);
-        }
-
-        //スクロール停止後 改めて移動処理を行ってからbodyのマージンを変更
-        function doWhenScrollEnded()  {
-            window.clearInterval(intervalID);
-            intervalID=null;
-            timeoutID=null;
-            window.removeEventListener('scroll',doWhileScroll);
-            chgMenuScale();
-            $("body").css("margin-top", (headerHeight+5) * window.innerWidth / window.outerWidth);
-
-            //処理遅れの救済処置
-            setTimeout(chgMenuScale,100);
-            setTimeout(chgMenuScale,200);
-            setTimeout(chgMenuScale,300);
-        }
-
-        window.addEventListener('touchstart',
-                                function(e) {
-                                    //PCモードでは何もしない
-                                    if (pcmode) return;
-
-                                    window.removeEventListener('scroll',doWhileScroll);
-                                    if (! intervalID) {
-                                        intervalID=window.setInterval(function(){chgMenuScale();},1000/30);
-                                    }
-                                });
-
-        window.addEventListener('touchend',
-                                function(e){
-                                    //PCモードでは何もしない
-                                    if (pcmode) return;
-
-                                    if (e.touches.length < 1) {
-                                        //スクロール終了待ちに移行
-                                        timeoutID = window.setTimeout(doWhenScrollEnded,60);
-                                        window.addEventListener('scroll',doWhileScroll);
-                                    }
-                                   });
-
-        function initMenuScale() {
-            chgMenuScale();
-            $("body").css("margin-top", headerHeight * window.innerWidth / window.outerWidth +5);
-            $("header, div.ribbonmenu").css("width", window.outerWidth);
-        }
-        initMenuScale();
-
-        //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
-        window.scrollTo(0,1);
-        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
-        window.scrollTo(0,0);
-    }
-
-  //ウィンドウサイズの変更に対する対処
-    $(window).resize(function(){
-        //キャンバスエリアの幅を調整、jCanvaScriptの処理に反映させる
-        chgCanvasAreaSize();
-
-        //メニューの表示・非表示対処
-        if ($("div.menutitle").is(":visible")) {
-            //各ブロックをcssのデフォルトに戻す
-            $("body,header,div.ribbonmenu,div.ribbonmenu>div").removeAttr('style');
-
-            //メニュー全体はスイッチを基に表示：非表示を決める
-            if ($("span#menusw_on").is(":visible")) {
-                $("div.ribbonmenu").hide();
-            } else {
-                $("div.ribbonmenu").show();
-            }
-        } else {
-            if ($("div.menutab#menutab_map").hasClass("selected")) {
-                $("div.menusubcell#subcell_graph").hide();
-                $("div.menucell#menu_map,div.menucell#menu_cont").show();
-                $("div.ribbonmenu").show();
-            } else if ($("div.menutab#menutab_item").hasClass("selected")) {
-                $("div.menucell#menu_map,div.menucell#menu_cont").hide();
-                $("div.menusubcell#subcell_graph").show();
-                $("div.ribbonmenu").show();
-            } else {
-                $("div.ribbonmenu").hide();
-            }
-        }
-    }); 
+    $(window).resize(function(){bbobj.chgScroll();});
 
   //query stringがあれば再現処理に入る
     if (window.location.search) {
@@ -380,6 +188,8 @@ function chg_map(callback) {
 
     bbobj.setbg("./map/"+stage+"/"+file+".jpg", scale[0], scale[1],
                 function(){
+                    $("#"+DivName).width($("#"+CanvasName).outerWidth() + scrollBarWidth)
+                                  .height($("#"+CanvasName).outerHeight() + scrollBarHeight);
                     $("#lst_scale").val(1);
                     $("ul#contextZoom").children("li").removeClass("checked");
                     $("li#contextZoom_1").addClass("checked");
@@ -391,7 +201,6 @@ function chg_map(callback) {
                             jsonp         : false,
                             jsonpCallback : "stageData",
                             success       : function(data,status){
-                                                chgCanvasAreaSize();
                                                 var turretData = data["turret"];
                                                 for(i=0;i<turretData.length;i++) {
                                                     bbobj.put_turret(turretData[i][0], turretData[i][1], turretData[i][2],
@@ -413,9 +222,6 @@ function chg_map(callback) {
         $("#lst_layer").append($('<option value="./map/'+stage+"/"+file+'_'+ (i+1) +'.jpg'+'"></option>').text(layer[i]));
     }
     $("#lst_layer").val("");
-
-    closeNav();
-
 }
 
 //偵察機
@@ -430,7 +236,6 @@ function set_scout() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -445,7 +250,6 @@ function set_sensor() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -461,7 +265,6 @@ function set_radar() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -477,7 +280,6 @@ function set_sonde() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -492,7 +294,6 @@ function set_ndsensor() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -508,7 +309,6 @@ function set_howitzer(){
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -546,7 +346,6 @@ function set_misc() {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -568,7 +367,6 @@ function set_icon(){
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -590,7 +388,6 @@ function set_waft(file) {
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -606,7 +403,6 @@ function set_circle(){
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -621,7 +417,6 @@ function set_line(){
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
@@ -633,14 +428,12 @@ function set_point(){
         add_object(obj.id, coalesce_name(obj));
         obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
         obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
-        closeNav();
     }
 }
 
 //フリーハンド
 function set_freehand(){
     var obj = bbobj.add_freehand($("#name_freehand").val(), $("#col_freehand").val());
-    closeNav();
 
     if (obj) {
         add_object(obj.id, coalesce_name(obj));
@@ -994,118 +787,4 @@ function sanitize_filename(path) {
         } else {
             return null;
         }
-}
-
-//キャンバスエリアの幅を変更する
-function chgCanvasAreaSize () {
-    $("div#"+DivName).width($("canvas#"+CanvasName).outerWidth() + scrollBarWidth)
-                     .height($("canvas#"+CanvasName).outerHeight() + scrollBarHeight);
-    bbobj.chgScroll();
-}
-
-//ナビゲーションタブエリアを非表示にする
-function closeNav() {
-    if ($("nav").is(":visible")) {
-        $("nav>div").removeClass("selected");
-        $("div.ribbonmenu").fadeOut();
-    }
-}
-
-//スクロール関連独自処理
-function bindScroll(ojQuery) {
-    ojQuery.each(function(i, elem) {
-        elem.addEventListener ('wheel',
-                               function(e) {
-                                   //スクロールが上限に達している場合はデフォルト動作を阻害する
-                                   if ((e.deltaX < 0) && (elem.scrollLeft <= 0)
-                                       || (e.deltaX > 0) && (elem.scrollLeft >= elem.scrollWidth - elem.clientWidth)
-                                       || (e.deltaY < 0) && (elem.scrollTop <= 0)
-                                       || (e.deltaY > 0) && (elem.scrollTop >= elem.scrollHeight - elem.clientHeight)) {
-                                       e.preventDefault();
-                                       return;
-                                   }
-
-                                   if (e.deltaMode == 0) {
-                                       elem.scrollLeft = elem.scrollLeft + e.deltaX;
-                                       elem.scrollTop  = elem.scrollTop + e.deltaY;
-                                   } else if (e.deltaMode == 1){
-                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * element.style.lineHeight;
-                                       elem.scrollTop  = elem.scrollTop + e.deltaY * element.style.lineHeight;
-                                   } else if (e.deltaMode == 2){
-                                       elem.scrollLeft = elem.scrollLeft + e.deltaX * document.documentElement.clientWidth;
-                                       elem.scrollTop  = elem.scrollTop + e.deltaY * document.documentElement.clientHeight;
-                                   } else {
-                                       return;
-                                   }
-                                   e.preventDefault();
-                                   return;
-                               },
-                               false);
-
-        if (window.TouchEvent) {
-            var startX,startY,scrollStartX,scrollStartY,scrollLimitX,scrollLimitY,
-                flag,touchid;
-
-            function getTouch (ev){
-                var touch;
-
-                switch (ev.type) {
-                    case "touchstart":
-                        touch   = ev.touches[0];
-                        touchid = touch.identifier;
-                        break
-
-                    case "touchmove":
-                        for (i=0;i<ev.changedTouches.length;i++) {
-                            if (ev.changedTouches[i].identifier == touchid) {
-                                touch=ev.changedTouches[i];
-                                break;
-                            }
-                        }
-                    break;
-                }
-
-                if (touch===undefined) {
-                    return undefined;
-                }
-                return touch;
-            }
-
-            elem.addEventListener ('touchstart',
-                                    function(e){
-                                        var touch=getTouch(e);
-
-                                        flag=true;
-                                        startX=touch.clientX;
-                                        startY=touch.clientY;
-                                        scrollStartX=elem.scrollLeft;
-                                        scrollStartY=elem.scrollTop;
-                                        scrollLimitX=elem.scrollWidth - elem.clientWidth;
-                                        scrollLimitY=elem.scrollHeight - elem.clientHeight;
-                                        return;
-                                    },
-                                    false);
-
-            elem.addEventListener('touchmove',
-                                  function(e){
-                                      //touchstartで拾ったイベントがないなら何もしない
-                                      if (! flag) return;
-                                      var touch=getTouch(e);
-                                      if (touch === undefined) {
-                                          flag=false;
-                                          return;
-                                      }
-
-                                      e.preventDefault();
-                                      elem.scrollLeft=scrollStartX + (touch.clientX - startX) * (-1);
-                                      elem.scrollTop=scrollStartY + (touch.clientY - startY) * (-1);
-                                  },
-                                  false);
-
-            elem.addEventListener('touchend',
-                                  function(e){
-                                      flag=false;
-                                  });
-        }
-    });
 }
