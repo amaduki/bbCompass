@@ -208,7 +208,8 @@ function initialize(){
         var pcmode=false,
             intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
             headerHeight = $("header").outerHeight(),
-            headelem = document.getElementsByTagName("header")[0];
+            headelem = document.getElementsByTagName("header")[0],
+            vp_width = window.outerWidth || document.documentElement.getBoundingClientRect().width;
 
       //スマホらしきUserAgent限定で、PC版・スマホ版の切替機能を仕込む
       //firefoxのバグ対策で属性書き換えではなく、タグごと消して作り直し
@@ -247,7 +248,7 @@ function initialize(){
       //スクローズ時のメニュー追従処理
         function chgMenuScale() {
           //headerとメニュー幅を固定・拡縮
-            var scale = window.innerWidth / window.outerWidth;
+            var scale = window.innerWidth / vp_width;
             $("header, div.ribbonmenu").css("transform","scale(" + scale + ")")
                                        .css("-ms-transform","scale(" + scale + ")")
                                        .css("-webkit-transform","scale(" + scale + ")");
@@ -281,7 +282,7 @@ function initialize(){
             timeoutID=null;
             window.removeEventListener('scroll',doWhileScroll);
             chgMenuScale();
-            $("body").css("margin-top", (headerHeight+5) * window.innerWidth / window.outerWidth);
+            $("body").css("margin-top", (headerHeight+5) * window.innerWidth / vp_width);
 
             //処理遅れの救済処置
             setTimeout(chgMenuScale,100);
@@ -314,8 +315,8 @@ function initialize(){
 
         function initMenuScale() {
             chgMenuScale();
-            $("body").css("margin-top", headerHeight * window.innerWidth / window.outerWidth +5);
-            $("header, div.ribbonmenu").css("width", window.outerWidth);
+            $("body").css("margin-top", headerHeight * window.innerWidth / vp_width +5);
+            $("header, div.ribbonmenu").css("width", vp_width);
         }
         initMenuScale();
 
