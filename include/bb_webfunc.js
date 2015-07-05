@@ -217,6 +217,11 @@ function initialize(){
             vp_width = window.outerWidth || document.documentElement.getBoundingClientRect().width;
             cookies  = document.cookie;
 
+        //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
+        window.scrollTo(0,1);
+        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
+        window.scrollTo(0,0);
+
       //PC版・スマホ版の切替機能を仕込む
       //firefoxのバグ対策のため、metaの属性書き換えではなく、タグごと消して作り直す
          var sw=$("span#viewsw");
@@ -327,10 +332,6 @@ function initialize(){
         }
         initMenuScale();
 
-        //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
-        window.scrollTo(0,1);
-        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
-        window.scrollTo(0,0);
     }
 
   //ウィンドウサイズの変更に対する対処
