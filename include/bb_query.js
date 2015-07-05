@@ -643,9 +643,10 @@ BBCQuery.prototype = {
             case 'line':
                 objdata.unshift(0x02);
                 objdata = objdata.concat(setCol(obj._color));
-                objdata = objdata.concat(setInt8(obj._align));
-                objdata = objdata.concat(setInt8(obj._size));
+                objdata = objdata.concat(setInt16(obj._length));
                 objdata = objdata.concat(setPos(obj.position()));
+                objdata = objdata.concat(setPos(obj._pt1pos));
+                objdata = objdata.concat(setPos(obj._pt2pos));
                 break;
 
             case 'freehand':
