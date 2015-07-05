@@ -5,6 +5,7 @@ var scrollBarWidth=0;
 var scrollBarHeight=0;
 var freehandOnWrite=undefined;
 var bbobj="";
+var wideview=true;
 
 //ターレット関連データ
 var turretSpec={"R":[200,180],
@@ -74,7 +75,8 @@ $(document).ready(function(){
                                    });
     });
 
-  //狭い時用メニュー
+  //狭い時用メニューに関する初期化
+    wideview=$("div.menutitle").is(":visible");
     $("div.menutab#menutab_map").click(function(ev){
         if ($("div.menucell#menu_map,div.menucell#menu_cont").is(":visible")) {
             $("div.ribbonmenu").fadeOut("fast");
@@ -107,6 +109,7 @@ $(document).ready(function(){
 
   //メニュー部のタッチによるスクロール防止と、独自スクロール処理のbind
     $("header,div.ribbonmenu").bind('touchmove',function(ev){
+        if (wideview) return true;
         ev.preventDefault();
     });
     bindScroll($("div#objselector"));
@@ -117,7 +120,7 @@ $(document).ready(function(){
         if (ev.target == ev.currentTarget) {ev.stopPropagation()}
     });
     $("div#CanvasArea").bind('contextmenu', function(ev) {
-        if (! $("div.menutitle").is(":visible")) return true;
+        if (! wideview) return true;
         ev.preventDefault();
         var offset   = {top:  ev.pageY,
                         left: ev.pageX};
@@ -202,7 +205,7 @@ function initialize(){
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
   //スマホ用メニュー制御
-    if (window.TouchEvent && (! $("div.menutitle").is(":visible"))) {
+    if (window.TouchEvent && (! wideview)) {
 
       //各種制御用変数
         var pcmode=false,
@@ -338,6 +341,8 @@ function initialize(){
 
         //メニューの表示・非表示対処
         if ($("div.menutitle").is(":visible")) {
+            wideview=true;
+
             //各ブロックをcssのデフォルトに戻す
             $("body,header,div.ribbonmenu,div.ribbonmenu>div").removeAttr('style');
 
@@ -348,6 +353,8 @@ function initialize(){
                 $("div.ribbonmenu").show();
             }
         } else {
+            wideview=false;
+
             if ($("div.menutab#menutab_map").hasClass("selected")) {
                 $("div.menusubcell#subcell_graph").hide();
                 $("div.menucell#menu_map,div.menucell#menu_cont").show();
