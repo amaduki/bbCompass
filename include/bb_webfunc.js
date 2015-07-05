@@ -236,10 +236,8 @@ function initialize(){
                                   $('meta[name=viewport]').remove();
                                   $('head').append('<meta name="viewport" content="width=980">');
 
-                                  //古いWebKit対策。styleが残ってる場合少し遅らせてstyleに空白を設定
-                                  if ($("body").attr('style')) {
-                                      setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
-                                  }
+                                  //古いWebKit対策。少し遅らせてstyleに空白を設定しなおす
+                                  setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
                               }
                               $(window).resize();
                           });
