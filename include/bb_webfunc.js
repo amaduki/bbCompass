@@ -205,7 +205,9 @@ function initialize(){
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
   //スマホ用メニュー制御
-    if (window.TouchEvent && (! wideview)) {
+    var ua=navigator.userAgent;
+    if (window.TouchEvent && 
+        (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0  || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0)) {
 
       //各種制御用変数
         var pcmode=false,
@@ -215,45 +217,42 @@ function initialize(){
             vp_width = window.outerWidth || document.documentElement.getBoundingClientRect().width;
             cookies  = document.cookie;
 
-      //スマホらしきUserAgent限定で、PC版・スマホ版の切替機能を仕込む
-      //firefoxのバグ対策で属性書き換えではなく、タグごと消して作り直し
-        var ua=navigator.userAgent;
-        if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0  || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0) {
-             var sw=$("span#viewsw");
-             sw.show();
-             sw.bind('click', function(ev){
-                              if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
-                              if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
-                              window.removeEventListener('scroll',doWhileScroll);
-                              $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
-                              if (pcmode) {
-                                  pcmode=false;
-                                  sw.text('PC版');
-                                  document.cookie = 'pcmode=false;max-age=0';
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
+      //PC版・スマホ版の切替機能を仕込む
+      //firefoxのバグ対策のため、metaの属性書き換えではなく、タグごと消して作り直す
+         var sw=$("span#viewsw");
+         sw.show();
+         sw.bind('click', function(ev){
+                          if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
+                          if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
+                          window.removeEventListener('scroll',doWhileScroll);
+                          $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
+                          if (pcmode) {
+                              pcmode=false;
+                              sw.text('PC版');
+                              document.cookie = 'pcmode=false;max-age=0';
+                              $('meta[name=viewport]').remove();
+                              $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
 
-                                  //処理遅れる場合があるようなので、少し遅延させる
-                                  setTimeout(initMenuScale,100);
-                              } else {
-                                  pcmode=true;
-                                  sw.text('スマホ版');
-                                  document.cookie = 'pcmode=true;max-age=2592000';
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=980">');
-                                  //古いWebKit対策。少し遅らせてstyleに空白を設定しなおす
-                                  setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
-                              }
-                              $(window).resize();
-                          });
+                              //処理遅れる場合があるようなので、少し遅延させる
+                              setTimeout(initMenuScale,100);
+                          } else {
+                              pcmode=true;
+                              sw.text('スマホ版');
+                              document.cookie = 'pcmode=true;max-age=2592000';
+                              $('meta[name=viewport]').remove();
+                              $('head').append('<meta name="viewport" content="width=980">');
+                              //古いWebKit対策。少し遅らせてstyleに空白を設定しなおす
+                              setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
+                          }
+                          $(window).resize();
+                      });
 
-            // cookieに指定があればPCモードに切り替えておく
-            if (document.cookie.replace(new RegExp("(?:^|.*;\\s*)pcmode\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1")=="true") {
-                sw.click();
-            }
+        // cookieに指定があればPCモードに切り替えておく
+        if (document.cookie.replace(new RegExp("(?:^|.*;\\s*)pcmode\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1")=="true") {
+            sw.click();
         }
 
-      //スクローズ時のメニュー追従処理
+      //スクロール時のメニュー追従処理
         function chgMenuScale() {
           //headerとメニュー幅を固定・拡縮
             var scale = window.innerWidth / vp_width;
