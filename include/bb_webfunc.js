@@ -217,10 +217,20 @@ function initialize(){
             vp_width = window.outerWidth || document.documentElement.getBoundingClientRect().width;
             cookies  = document.cookie;
 
-        //Y軸のスクロールに関する挙動からメニュー位置補正の方針を決める
-        window.scrollTo(0,1);
-        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
-        window.scrollTo(0,0);
+        //古いandroidの標準ブラウザの挙動が特殊なので、
+        //androidはY軸のスクロールに関する挙動からメニュー位置補正の方針を決める
+        if (ua.indexOf('Android') > 0) {
+            window.addEventListener('scroll',
+                                    (function(){ return function f(){
+                                        correctFlag = (-headelem.getBoundingClientRect().top != window.pageYOffset);
+                                        window.removeEventListener('scroll',f,true);
+                                    }})(),
+                                    true);
+            window.scrollTo(0,1);
+        } else {
+            //iOSなどは常に補正ありで問題なさそう
+            correctFlag=true;
+        }
 
       //PC版・スマホ版の切替機能を仕込む
       //firefoxのバグ対策のため、metaの属性書き換えではなく、タグごと消して作り直す
