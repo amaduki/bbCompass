@@ -185,7 +185,7 @@ $(document).ready(function(){
 
 });
 
-//canvas初期化
+//各種初期化処理
 function initialize(){
     /* canvas要素の存在チェックとCanvas未対応ブラウザの対処 */
     var canvas = document.getElementById(CanvasName);
@@ -203,6 +203,41 @@ function initialize(){
 
     $("#lst_layer").change(function (){closeNav();bbobj.setbgdiff($("#lst_layer").val())});
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
+
+  //ウィンドウサイズの変更に対する対処
+    $(window).resize(function(){
+        //キャンバスエリアの幅を調整、jCanvaScriptの処理に反映させる
+        chgCanvasAreaSize();
+
+        //メニューの表示・非表示対処
+        if ($("div.menutitle").is(":visible")) {
+            wideview=true;
+
+            //各ブロックをcssのデフォルトに戻す
+            $("body,header,div.ribbonmenu,div.ribbonmenu>div").removeAttr('style');
+
+            //メニュー全体はスイッチを基に表示：非表示を決める
+            if ($("span#menusw_on").is(":visible")) {
+                $("div.ribbonmenu").hide();
+            } else {
+                $("div.ribbonmenu").show();
+            }
+        } else {
+            wideview=false;
+
+            if ($("div.menutab#menutab_map").hasClass("selected")) {
+                $("div.menusubcell#subcell_graph").hide();
+                $("div.menucell#menu_map,div.menucell#menu_cont").show();
+                $("div.ribbonmenu").show();
+            } else if ($("div.menutab#menutab_item").hasClass("selected")) {
+                $("div.menucell#menu_map,div.menucell#menu_cont").hide();
+                $("div.menusubcell#subcell_graph").show();
+                $("div.ribbonmenu").show();
+            } else {
+                $("div.ribbonmenu").hide();
+            }
+        }
+    }); 
 
   //スマホ用メニュー制御
     var ua=navigator.userAgent;
@@ -232,8 +267,10 @@ function initialize(){
             correctFlag=true;
             //inputやselectからフォーカスアウトした際に位置合わせしなおす
             $("select, input, textarea").bind('blur',function(){
-                                               window.setTimeout(chgMenuScale, 200);
-                                               window.setTimeout(chgMenuScale, 700);
+                                               if(! wideview) {
+                                                   window.setTimeout(chgMenuScale, 200);
+                                                   window.setTimeout(chgMenuScale, 700);
+                                               }
                                            });
         }
 
@@ -274,6 +311,12 @@ function initialize(){
 
       //スクロール時のメニュー追従処理
         function chgMenuScale() {
+            //幅広表示の時は座標の再計算だけして抜ける(無効化漏れのフォロー)
+            if (wideview) {
+                bbobj.chgScroll();
+                return false;
+            }
+
           //headerとメニュー幅を固定・拡縮
             var scale = window.innerWidth / vp_width;
             $("header, div.ribbonmenu").css("transform","scale(" + scale + ")")
@@ -294,6 +337,7 @@ function initialize(){
                 $("header, div.ribbonmenu").css("left", menuLeft);
             }
             bbobj.chgScroll();
+            return true;
         }
 
         //スクロール終了待ち処理 タイマーをリセットするのみ
@@ -308,19 +352,20 @@ function initialize(){
             intervalID=null;
             timeoutID=null;
             window.removeEventListener('scroll',doWhileScroll);
-            chgMenuScale();
-            $("body").css("margin-top", (headerHeight+5) * window.innerWidth / vp_width);
+            if (chgMenuScale()) {
+                $("body").css("margin-top", (headerHeight+5) * window.innerWidth / vp_width);
 
-            //処理遅れの救済処置
-            setTimeout(chgMenuScale,100);
-            setTimeout(chgMenuScale,200);
-            setTimeout(chgMenuScale,300);
+                //処理遅れの救済処置
+                setTimeout(chgMenuScale,100);
+                setTimeout(chgMenuScale,200);
+                setTimeout(chgMenuScale,300);
+            }
         }
 
         window.addEventListener('touchstart',
                                 function(e) {
-                                    //PCモードでは何もしない
-                                    if (pcmode) return;
+                                    //幅広表示の時は何もしない
+                                    if (wideview) return;
 
                                     window.removeEventListener('scroll',doWhileScroll);
                                     if (! intervalID) {
@@ -330,8 +375,8 @@ function initialize(){
 
         window.addEventListener('touchend',
                                 function(e){
-                                    //PCモードでは何もしない
-                                    if (pcmode) return;
+                                    //幅広表示の時は何もしない
+                                    if (wideview) return;
 
                                     if (e.touches.length < 1) {
                                         //スクロール終了待ちに移行
@@ -341,49 +386,15 @@ function initialize(){
                                    });
 
         function initMenuScale() {
-            chgMenuScale();
-            $("body").css("margin-top", headerHeight * window.innerWidth / vp_width +5);
-            $("header, div.ribbonmenu").css("width", vp_width);
+            if (chgMenuScale()) {
+                $("body").css("margin-top", headerHeight * window.innerWidth / vp_width +5);
+                $("header, div.ribbonmenu").css("width", vp_width);
+            }
         }
 
         //リロード時のウィンドウサイズ変更に対応
         window.setTimeout(initMenuScale,100);
     }
-
-  //ウィンドウサイズの変更に対する対処
-    $(window).resize(function(){
-        //キャンバスエリアの幅を調整、jCanvaScriptの処理に反映させる
-        chgCanvasAreaSize();
-
-        //メニューの表示・非表示対処
-        if ($("div.menutitle").is(":visible")) {
-            wideview=true;
-
-            //各ブロックをcssのデフォルトに戻す
-            $("body,header,div.ribbonmenu,div.ribbonmenu>div").removeAttr('style');
-
-            //メニュー全体はスイッチを基に表示：非表示を決める
-            if ($("span#menusw_on").is(":visible")) {
-                $("div.ribbonmenu").hide();
-            } else {
-                $("div.ribbonmenu").show();
-            }
-        } else {
-            wideview=false;
-
-            if ($("div.menutab#menutab_map").hasClass("selected")) {
-                $("div.menusubcell#subcell_graph").hide();
-                $("div.menucell#menu_map,div.menucell#menu_cont").show();
-                $("div.ribbonmenu").show();
-            } else if ($("div.menutab#menutab_item").hasClass("selected")) {
-                $("div.menucell#menu_map,div.menucell#menu_cont").hide();
-                $("div.menusubcell#subcell_graph").show();
-                $("div.ribbonmenu").show();
-            } else {
-                $("div.ribbonmenu").hide();
-            }
-        }
-    }); 
 
   //query stringがあれば再現処理に入る
     if (window.location.search) {
