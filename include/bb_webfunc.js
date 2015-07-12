@@ -345,8 +345,9 @@ function initialize(){
             $("body").css("margin-top", headerHeight * window.innerWidth / vp_width +5);
             $("header, div.ribbonmenu").css("width", vp_width);
         }
-        initMenuScale();
 
+        //リロード時のウィンドウサイズ変更に対応
+        window.setTimeout(initMenuScale,100);
     }
 
   //ウィンドウサイズの変更に対する対処
