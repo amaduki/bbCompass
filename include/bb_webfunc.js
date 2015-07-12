@@ -231,7 +231,7 @@ function initialize(){
             //iOSなどは常に補正ありで問題なさそう
             correctFlag=true;
             //inputやselectからフォーカスアウトした際に位置合わせしなおす
-            $("select, input").bind('blur',function(){
+            $("select, input, textarea").bind('blur',function(){
                                                window.setTimeout(chgMenuScale, 200);
                                                window.setTimeout(chgMenuScale, 700);
                                            });
