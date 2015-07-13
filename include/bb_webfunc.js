@@ -274,42 +274,7 @@ function initialize(){
                                            });
         }
 
-      //PC版・スマホ版の切替機能を仕込む
-      //firefoxのバグ対策のため、metaの属性書き換えではなく、タグごと消して作り直す
-         var sw=$("span#viewsw");
-         sw.show();
-         sw.bind('click', function(ev){
-                              if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
-                              if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
-                              window.removeEventListener('scroll',doWhileScroll);
-                              $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
-                              if (pcmode) {
-                                  pcmode=false;
-                                  sw.text('PC版');
-                                  document.cookie = 'pcmode=false;max-age=0';
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
-
-                                  //処理遅れる場合があるようなので、少し遅延させる
-                                  setTimeout(initMenuScale,100);
-                              } else {
-                                  pcmode=true;
-                                  sw.text('スマホ版');
-                                  document.cookie = 'pcmode=true;max-age=2592000';
-                                  $('meta[name=viewport]').remove();
-                                  $('head').append('<meta name="viewport" content="width=980">');
-                                  //古いWebKit対策。少し遅らせてstyleに空白を設定しなおす
-                                  setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
-                              }
-                              $(window).resize();
-                          });
-
-        // cookieに指定があればPCモードに切り替えておく
-        if (document.cookie.replace(new RegExp("(?:^|.*;\\s*)pcmode\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1")=="true") {
-            sw.click();
-        }
-
-      //スクロール時のメニュー追従処理
+      //スクロール時のメニュー追従処理に使う関数を定義
         function chgMenuScale() {
             //幅広表示の時は座標の再計算だけして抜ける(無効化漏れのフォロー)
             if (wideview) {
@@ -362,6 +327,42 @@ function initialize(){
             }
         }
 
+      //PC版・スマホ版の切替機能を仕込む
+      //firefoxのバグ対策のため、metaの属性書き換えではなく、タグごと消して作り直す
+         var sw=$("span#viewsw");
+         sw.show();
+         sw.bind('click', function(ev){
+                              if (timeoutID) {window.clearTimeout(timeoutID);timeoutID=null;}
+                              if (intervalID) {window.clearInterval(intervalID);intervalID=null;}
+                              window.removeEventListener('scroll',doWhileScroll);
+                              $("body, header, div.ribbonmenu, div.ribbonmenu>div").removeAttr('style');
+                              if (pcmode) {
+                                  pcmode=false;
+                                  sw.text('PC版');
+                                  document.cookie = 'pcmode=false;max-age=0';
+                                  $('meta[name=viewport]').remove();
+                                  $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
+
+                                  //処理遅れる場合があるようなので、少し遅延させる
+                                  setTimeout(initMenuScale,100);
+                              } else {
+                                  pcmode=true;
+                                  sw.text('スマホ版');
+                                  document.cookie = 'pcmode=true;max-age=2592000';
+                                  $('meta[name=viewport]').remove();
+                                  $('head').append('<meta name="viewport" content="width=980">');
+                                  //古いWebKit対策。少し遅らせてstyleに空白を設定しなおす
+                                  setTimeout(function(){$("body, header, div.ribbonmenu, div.ribbonmenu>div").attr('style','')},50);
+                              }
+                              $(window).resize();
+                          });
+
+        // cookieに指定があればPCモードに切り替えておく
+        if (document.cookie.replace(new RegExp("(?:^|.*;\\s*)pcmode\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1")=="true") {
+            sw.click();
+        }
+
+      // スクロール関連のイベント定義
         window.addEventListener('touchstart',
                                 function(e) {
                                     //幅広表示の時は何もしない
