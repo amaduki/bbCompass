@@ -1838,8 +1838,8 @@
                                         cnvy    = cnvrect.top,
                                         width   = e.target.offsetWidth||e.target.width,
                                         height  = e.target.offsetHeight||e.target.height;
-                                    var clix    = touch.pageX - window.pageXOffset,
-                                        cliy    = touch.pageY - window.pageYOffset;
+                                    var clix    = touch.clientX,
+                                        cliy    = touch.clientY;
 
                                     //canvasの枠内ならmousemove、枠外ならmouseout
                                     if (clix > cnvx && cliy > cnvy
