@@ -35,12 +35,12 @@ header span#viewsw {
         min-width:50em;
         margin-left:auto;
         margin-right:auto;
-        height:30px;
         border-top-left-radius:10px;
         border-top-right-radius:10px;
         background-color:#000066;
         box-shadow:0px 2px 4px gray;
         -webkit-box-shadow:0px 2px 4px gray;
+        overflow:hidden;
     }
 
     nav {
