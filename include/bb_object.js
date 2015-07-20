@@ -1733,39 +1733,8 @@
     BB.prototype.touchToMouse = function(canvas) {
         var clickthr=5;  // クリックとみなす範囲の閾値
 
-        var touchid=0,mouseoverflag=false,touchflag=false,startX=0,startY=0,clkflag;
+        var mouseoverflag=false,touchflag=false,startX=0,startY=0,clkflag;
         var bbobj=this;
-
-        function getTouch (ev){
-            var touch;
-            switch (ev.type) {
-                case "touchstart":
-                    touch   = ev.touches[0];
-                    touchid = touch.identifier;
-                    break
-                case "touchmove":
-                    for (i=0;i<ev.changedTouches.length;i++) {
-                        if (ev.changedTouches[i].identifier == touchid) {
-                            touch=ev.changedTouches[i];
-                            break;
-                        }
-                    }
-                    break;
-                case "touchend":
-                    for (i=0;i<ev.changedTouches.length;i++) {
-                        if (ev.changedTouches[i].identifier == touchid) {
-                            touch=ev.changedTouches[i];
-                            break;
-                        }
-                    }
-                    break;
-            }
-
-            if (touch===undefined) {
-                    return false;
-            }
-            return touch;
-        }
 
         function dispatchMouseEvent(type, touch) {
             var event = document.createEvent("MouseEvent"); 
@@ -1811,10 +1780,16 @@
 
         canvas.addEventListener('touchstart',
                                 function(e){
-                                    var touch=getTouch(e);
+                                    //マルチタッチの場合は変換処理を止める
+                                    if (e.touches.length >= 2) {
+                                        touchflag=false;
+                                        return;
+                                    }
+
+                                    var touch=e.touches[0];
                                     touchflag=pointInObj(touch);
                                     if (! touchflag) return;
-                                    e.preventDefault();
+
                                     mouseoverflag=true;
 
                                     startX=touch.pageX;
@@ -1830,7 +1805,8 @@
         canvas.addEventListener('touchmove',
                                 function(e){
                                     if (! touchflag) return;
-                                    var touch=getTouch(e);
+
+                                    var touch=e.changedTouches[0];
                                     e.preventDefault();
 
                                     var cnvrect = e.target.getBoundingClientRect();
@@ -1857,11 +1833,13 @@
                                 function(e){
                                     //touch処理中でなければpreventDefaultせずに抜ける
                                     if (! touchflag) return;
+
                                     e.preventDefault();
 
                                     //mouseout時はpreventDefaultしてから抜ける
                                     if (! mouseoverflag) return;
-                                    var touch=getTouch(e);
+
+                                    var touch=e.changedTouches[0];
                                     dispatchMouseEvent('mouseup',touch);
                                     //タッチ開始からの距離が閾値以下ならクリックイベントも発火
                                     if (Math.abs(startX - touch.pageX)<clickthr
