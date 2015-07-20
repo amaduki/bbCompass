@@ -208,9 +208,9 @@ header span#viewsw {
         margin-left:0;
         margin-right:0;
         z-index:999;
-        transform-origin:0px -80px;
-        -ms-transform-origin:0px -80px;
-        -webkit-transform-origin:0px -80px;
+        transform-origin:0px -75px;
+        -ms-transform-origin:0px -75px;
+        -webkit-transform-origin:0px -75px;
     }
 
     div.menucell {
