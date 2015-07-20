@@ -76,7 +76,6 @@ $(document).ready(function(){
     });
 
   //狭い時用メニューに関する初期化
-    wideview=$("div.menutitle").is(":visible");
     $("div.menutab#menutab_map").click(function(ev){
         if ($("div.menucell#menu_map,div.menucell#menu_cont").is(":visible")) {
             $("div.ribbonmenu").fadeOut("fast");
@@ -205,6 +204,7 @@ function initialize(){
     $("#"+DivName).scroll(function(){bbobj.chgScroll();});
 
   //ウィンドウサイズの変更に対する対処
+    wideview=$("div.menutitle").is(":visible");
     $(window).resize(function(){
         //キャンバスエリアの幅を調整、jCanvaScriptの処理に反映させる
         chgCanvasAreaSize();
