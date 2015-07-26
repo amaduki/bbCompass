@@ -249,8 +249,14 @@ function initialize(){
             intervalID=null,timeoutID=null,scrollHandler,correctFlag=false,
             headerHeight = $("header").outerHeight(),
             headelem = document.getElementsByTagName("header")[0],
-            vp_width = window.outerWidth || document.documentElement.getBoundingClientRect().width;
+            vp_width, //後でinitMenuScaleが初期化するため、ここでは触らない
             cookies  = document.cookie;
+
+        //向きが変わっていたら幅を取り直す
+        var media = window.matchMedia("(orientation: portrait)");
+        media.addListener(function(m) {
+            window.setTimeout(initMenuScale,50);
+        });
 
         //古いandroidの標準ブラウザの挙動が特殊なので、
         //androidはY軸のスクロールに関する挙動からメニュー位置補正の方針を決める
@@ -322,8 +328,8 @@ function initialize(){
 
                 //処理遅れの救済処置
                 setTimeout(chgMenuScale,100);
-                setTimeout(chgMenuScale,200);
                 setTimeout(chgMenuScale,300);
+                setTimeout(chgMenuScale,500);
             }
         }
 
@@ -343,7 +349,7 @@ function initialize(){
                                   $('meta[name=viewport]').remove();
                                   $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0">');
 
-                                  //処理遅れる場合があるようなので、少し遅延させる
+                                  //処理が遅れる場合があるようなので、少し遅延させる
                                   setTimeout(initMenuScale,100);
                               } else {
                                   pcmode=true;
@@ -387,6 +393,8 @@ function initialize(){
                                    });
 
         function initMenuScale() {
+            vp_width = window.outerWidth 
+                     || document.documentElement.getBoundingClientRect().width;
             if (chgMenuScale()) {
                 $("body").css("margin-top", headerHeight * window.innerWidth / vp_width +5);
                 $("header, div.ribbonmenu").css("width", vp_width);
