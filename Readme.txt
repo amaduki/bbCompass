@@ -83,9 +83,6 @@ BBコンパスもどき
     ・simpleColorPicker jQuery plugin  http://rachel-carvalho.github.com/simple-color-picker/
       MIT License
 
-    ・Tiny Scrollbar  http://baijs.nl/tinyscrollbar/
-      MIT License
-
     ・js-deflate  https://github.com/dankogai/js-deflate
       the GNU General Public License (GPL) Version 2
 
