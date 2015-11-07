@@ -245,6 +245,7 @@
               <div class="option" data-target="objradar"><img src="./image/menu/radar.png" alt="メニューレーダー"><br>レーダー</div>
               <div class="option" data-target="objsonde"><img src="./image/menu/sonde.png" alt="メニュー滞空"><br>滞空索敵</div>
               <div class="option" data-target="objndsensor"><img src="./image/menu/ndsensor.png" alt="メニューＮＤ"><br>ＮＤ索敵</div>
+              <div class="option" data-target="objvsensor"><img src="./image/menu/vsensor.png" alt="メニューV"><br>Ｖセンサ</div>
               <div class="option" data-target="objhowitzer"><img src="./image/menu/howitzer.png" alt="メニュー砲撃"><br>砲撃</div>
               <div class="option" data-target="objwaft"><img src="./image/menu/waft.png" alt="メニューワフト"><br>ワフト</div>
               <div class="option" data-target="objmisc"><img src="./image/menu/misc.png" alt="メニューその他"><br>その他</div>
@@ -353,6 +354,24 @@
               </select>
           </div>
           <div class="submitbtn"><button id="submit_ndsensor">設置</button></div>
+      </form></div>
+
+      <!--Vセンサー-->
+      <div class="setobj hidden" id="objvsensor"><form name="vsensor" action="javascript:set_vsensor();">
+          <div class="title">Vセンサー</div>
+          <div class="name">名前：</div>
+          <div class="form"><input id="name_vsensor" type="text" class="formtext"></div>
+          <div class="name">色：</div>
+          <div class="form"><input id="col_vsensor" type="text" value="#9900ff" class="colorpick"></div>
+          <div class="name">種別：</div>
+          <div class="form">
+              <select id="lst_vsensor" size="4" class="formlst">
+                  <!--valueは 索敵半径を指定 -->
+                  <option label="Vセンサー投射機" value="[55,160]">Vセンサー</option>
+                  <option label="小型Vセンサー投射機" value="[40,130]">小型Vセンサー</option>
+              </select>
+          </div>
+          <div class="submitbtn"><button id="submit_vsensor">設置</button></div>
       </form></div>
 
       <!--榴弾-->

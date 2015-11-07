@@ -969,6 +969,75 @@
         };
 
       //
+      //BB_vsensorオブジェクト
+      //
+        this.BB_vsensor = function (_text, _radiusa, _radiusb, _color, _mode, _callback) {
+            if (_color===undefined) {_color='rgb(153, 0, 255)';}
+            if (_mode===undefined)  {_mode='A';}
+            this.id=UUID.genV1().toString();
+
+            this.type="vsensor";
+            this._text=_text;
+            this._radiusa=_radiusa;
+            this._radiusb=_radiusb;
+            this._color=_color;
+            this._mode=_mode;
+
+            //描画して登録。初期座標は偵察半径分ずらす
+            this.draw();
+            var px_rad = bbobj.meter_to_pixel(this._radiusa);
+            this.move(px_rad, px_rad);
+            this.regist();
+            if (typeof(_callback) === "function"){_callback.apply(this);};
+        };
+        this.BB_vsensor.prototype=new this.BB_base();
+
+        this.BB_vsensor.prototype.draw = function () {
+            var px_rad,modecolor,
+                obj = this;
+
+            if (this._mode == 'A') {
+                px_rad = bbobj.meter_to_pixel(this._radiusa);
+                modecolor='#66FF66';
+            } else {
+                px_rad = bbobj.meter_to_pixel(this._radiusb);
+                modecolor='#00FFFF';
+            }
+
+            var area=jcanvas.circle(0, 0, px_rad, this._color, false).opacity(1).layer(this.id);
+            jcanvas.circle(0, 0, px_rad, this._color, true).opacity(0.5).layer(this.id);
+            jcanvas.circle(0, 0, ptsize, this._color, true).layer(this.id).color('#FFFFFF');
+            jcanvas.text(this._text, 0, 20)
+                   .align('center').layer(this.id).color('#FFFFFF').font('15px sans-serif');
+
+            var moderect = jcanvas.rect(-7, -25, 14, 17, modecolor, true).layer(this.id);
+            var modetext = jcanvas.text(this._mode, 0, -12)
+                           .align('center').layer(this.id).color('#000000').font('15px sans-serif');
+
+            clickfunc = function() {
+                obj.modechg.apply(obj);
+                return false;
+            };
+
+            moderect.click(clickfunc);
+            modetext.click(clickfunc);
+            area.dblclick(clickfunc);
+
+            jcanvas.layer(this.id).draggable();
+            return this;
+        };
+
+        this.BB_vsensor.prototype.modechg = function () {
+            if (this._mode == 'A') {
+                this._mode = 'B';
+            } else {
+                this._mode = 'A';
+            }
+            this.redraw();
+            return false;
+        }
+
+      //
       //BB_howitzerオブジェクト
       //
         this.BB_howitzer = function (_text, _radius1, _radius2, _radius3, _color, _callback) {
@@ -2071,6 +2140,10 @@
 
     BB.prototype.add_ndsensor = function (string, radius, color, _callback) {
         return new this.BB_ndsensor(string, radius, color, _callback);
+    };
+
+    BB.prototype.add_vsensor = function (string, radiusa, radiusb, color, mode, _callback) {
+        return new this.BB_vsensor(string, radiusa, radiusb, color, mode, _callback);
     };
 
     BB.prototype.add_howitzer = function (string, radius1, radius2, radius3, color, _callback) {

@@ -21,6 +21,7 @@ $(document).ready(function(){
     $("#lst_radar").change(function(){$("#name_radar").val($("#lst_radar option:selected").text());});
     $("#lst_sonde").change(function(){$("#name_sonde").val($("#lst_sonde option:selected").text());});
     $("#lst_ndsensor").change(function(){$("#name_ndsensor").val($("#lst_ndsensor option:selected").text());});
+    $("#lst_vsensor").change(function(){$("#name_vsensor").val($("#lst_vsensor option:selected").text());});
     $("#lst_howitzer").change(function(){$("#name_howitzer").val($("#lst_howitzer option:selected").text());});
     $("#lst_misc").change(function(){$("#name_misc").val($("#lst_misc option:selected").text());});
     $("#lst_icon").change(function(){$("#name_icon").val($("#lst_icon option:selected").text());});
@@ -558,6 +559,25 @@ function set_ndsensor() {
     }
 }
 
+//Vセンサー
+function set_vsensor() {
+    if(! $("#lst_vsensor").val()) {return;}
+    if(! $("#col_vsensor").val()) {return;}
+
+    var param = eval($("#lst_vsensor").val());
+
+    var obj = bbobj.add_vsensor($("#name_vsensor").val(),
+                                param[0], param[1],
+                                $("#col_vsensor").val(),'A');
+
+    if (obj) {
+        add_object(obj.id, coalesce_name(obj));
+        obj.move($("#"+DivName).scrollLeft(),$("#"+DivName).scrollTop());
+        obj.mousedown(function(){$("#lst_object").val(obj.id);return false;});
+        closeNav();
+    }
+}
+
 //砲撃
 function set_howitzer(){
     if(! $("#lst_howitzer").val()) {return;}
@@ -973,6 +993,10 @@ function coalesce_name(obj){
 
         case 'ndsensor':
             name = "(ND)";
+            break;
+
+        case 'vsensor':
+            name = "(Vセンサー)";
             break;
 
         case 'howitzer':
