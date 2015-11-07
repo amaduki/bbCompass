@@ -1967,8 +1967,6 @@
 
 
     //
-
-
     //ターレット配置
     //
     BB.prototype.put_turret = function (x, y, rot, radius, angle, hookrad, color, test) {
@@ -1985,7 +1983,7 @@
             px_rad = bbobj.meter_to_pixel(radius),
             area   = this.jcanvas.sector(x, y, px_rad, angle, color, true)
                                  .rotateTo(rot-90, x, y).opacity(0.3).visible(visible).level(1),
-            line   = this.jcanvas.sector(x, y, px_rad, angle, this.color, false).level(1)
+            line   = this.jcanvas.sector(x, y, px_rad, angle, color, false).level(1)
                                  .rotateTo(rot-90, x, y).opacity(1).visible(visible),
             hooker = this.jcanvas.circle(x, y, hookrad, 'rgba(0,0,0,0)', true)
                                  .rotateTo(rot-90, x, y).level(3).name("turrets");
@@ -2050,6 +2048,7 @@
                              line.visible(visible);
                          });
     };
+
 
     //
     //オブジェクト描画
