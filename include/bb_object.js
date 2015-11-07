@@ -1765,10 +1765,13 @@
                 if (result) {break;}
             }
 
-            //ターレットは個別のオブジェクトとして扱われていないため
+            //ターレットと索敵施設は個別のオブジェクトとして扱われていないため
             //nameを利用したグループで別途チェックを行う
             if (! result) {
-                var targets = jc(".turrets").elements;
+                var targets = Array.prototype.concat(
+                                  jc(".turrets").elements,
+                                  jc(".searchers").elements);
+
                 for (var i=0; i<targets.length; i++) {
                     result = targets[i].isPointIn(x,y);
                     if (result) {break;}
@@ -1990,6 +1993,46 @@
         if (test) {
             this.jcanvas.line([[x, y], [x, y-20]], 'rgba(255,255,255,1)')
                         .rotateTo(rot, x, y).lineStyle({lineWidth:2});
+            hooker.color('rgba(255,255,255,1)').level('top');
+        }
+
+        hooker.mouseover(function(){
+                             area.visible(true);
+                             line.visible(true);
+                         });
+        hooker.mouseout(function(){
+                             area.visible(visible);
+                             line.visible(visible);
+                         });
+        hooker.click(function(){
+                             visible = ! (visible);
+                             area.visible(visible);
+                             line.visible(visible);
+                         });
+    };
+
+
+    //
+    //索敵装置配置
+    //
+    BB.prototype.put_searcher = function (x, y, radius, hookrad, color, test) {
+        if (x===undefined) {return undefined;}
+        if (y===undefined) {return undefined;}
+        if (radius===undefined) {return undefined;}
+        if (hookrad===undefined) {hookrad=8;}
+        if (color===undefined) {color='rgb(153, 255, 255)';}
+        if (test===undefined) {test=false;}
+
+        var visible = false,
+            px_rad = bbobj.meter_to_pixel(radius),
+            area   = this.jcanvas.circle(x, y, px_rad, color, true)
+                                 .opacity(0.3).visible(visible).level(1),
+            line   = this.jcanvas.circle(x, y, px_rad, color, false)
+                                 .opacity(1).visible(visible).level(1),
+            hooker = this.jcanvas.circle(x, y, hookrad, 'rgba(0,0,0,0)', true)
+                                 .level(3).name("searchers");
+
+        if (test) {
             hooker.color('rgba(255,255,255,1)').level('top');
         }
 
