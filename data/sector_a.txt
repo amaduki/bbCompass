@@ -1,0 +1,10 @@
+stageData( {
+  "turret":[
+    [165, 472,  45, "R", false],
+    [782, 286, 278, "R", false]
+  ],
+  "searcher":[
+    [295, 373, 85, false],
+    [643, 300, 85, false],
+  ]
+});
